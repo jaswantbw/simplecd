@@ -1,0 +1,10 @@
+com\simplecd\config\SimpleCdProperties.class
+com\simplecd\controller\BuildController.class
+com\simplecd\controller\AuthController.class
+com\simplecd\config\WebConfig.class
+com\simplecd\model\BuildJob.class
+com\simplecd\SimpleCdApplication.class
+com\simplecd\config\AuthInterceptor.class
+com\simplecd\model\BuildStatus.class
+com\simplecd\service\BuildExecutorService.class
+com\simplecd\service\BuildService.class

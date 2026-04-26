@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SimpleCD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --bg: #f4f7f6;
+            --panel: #ffffff;
+            --text: #18312d;
+            --muted: #5d746f;
+            --accent: #1f7a64;
+            --accent-dark: #155646;
+            --border: #d2dfdb;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 18%, #dff2ea 0%, #dff2ea 22%, transparent 23%),
+                radial-gradient(circle at 88% 82%, #e7f5ef 0%, #e7f5ef 20%, transparent 21%),
+                var(--bg);
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 12px 24px rgba(31, 122, 100, 0.08);
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .logo { height: 58px; }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.7rem;
+        }
+
+        .logout {
+            margin-left: auto;
+            color: var(--accent-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logout:hover { text-decoration: underline; }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 8px 0 18px;
+        }
+
+        .tab-link {
+            text-decoration: none;
+            color: var(--accent-dark);
+            background: #e8f4ef;
+            border: 1px solid #c8e2d8;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .tab-link:hover {
+            background: #d9eee6;
+        }
+
+        .section-title {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .subtle {
+            color: var(--muted);
+            margin: 0 0 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 620px;
+            padding: 11px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            font-size: 0.98rem;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 11px 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover { background: var(--accent-dark); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #edf7f2;
+        }
+
+        .small-link {
+            color: var(--accent-dark);
+            font-weight: 600;
+        }
+
+        @media (max-width: 780px) {
+            body { padding: 12px; }
+
+            .header h1 { font-size: 1.35rem; }
+
+            .logo { height: 48px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <img src="/images/logo.png" alt="Logo" class="logo">
+            <h1>SimpleCD</h1>
+            <a href="/logout" class="logout">Logout</a>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="#code-repository" class="tab-link">Code Repository</a>
+            <a href="#pipeline" class="tab-link">Pipeline</a>
+            <a href="#artifact" class="tab-link">Artifact</a>
+            <a href="#log" class="tab-link">Log</a>
+        </div>
+    </div>
+
+    <div class="card" id="code-repository">
+        <h2 class="section-title">Code Repository</h2>
+        <p class="subtle">Provide repository details to trigger the pipeline.</p>
+
+        <form method="post" action="/build">
+            <label>Git Repository URL</label>
+            <input type="text" name="repoUrl" required>
+
+            <label>Branch</label>
+            <input type="text" name="branch" value="main" required>
+
+            <button type="submit">Start Build</button>
+        </form>
+    </div>
+
+    <div class="card" id="pipeline">
+        <h2 class="section-title">Pipeline</h2>
+        <p class="subtle">Triggered builds are listed below as pipeline runs.</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Job ID</th>
+                <th>Repo</th>
+                <th>Branch</th>
+                <th>Status</th>
+                <th>Log</th>
+                <th>Artifact</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="job : ${jobs}">
+                <td th:text="${job.jobId}"></td>
+                <td th:text="${job.repoUrl}"></td>
+                <td th:text="${job.branch}"></td>
+                <td th:text="${job.status}"></td>
+                <td>
+                    <a class="small-link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a>
+                </td>
+                <td th:text="${job.artifactPath}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" id="artifact">
+        <h2 class="section-title">Artifact</h2>
+        <p class="subtle">Artifact location is shown in the table under the Artifact column.</p>
+    </div>
+
+    <div class="card" id="log">
+        <h2 class="section-title">Log</h2>
+        <p class="subtle">Use the Open Log link in pipeline entries to stream build output.</p>
+    </div>
+</div>
+
+</body>
+</html>
