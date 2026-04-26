@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SimpleCD</title>
+</head>
+<body>
+
+<h1>SimpleCD</h1>
+<h3>Manual Build Console</h3>
+
+<form method="post" action="/build">
+    <label>Git Repository URL</label><br>
+    <input type="text" name="repoUrl" style="width:500px" required><br><br>
+
+    <label>Branch</label><br>
+    <input type="text" name="branch" value="main" required><br><br>
+
+    <button type="submit">Start Build</button>
+</form>
+
+<hr>
+
+<h2>Build History</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>Job ID</th>
+        <th>Repo</th>
+        <th>Branch</th>
+        <th>Status</th>
+        <th>Logs</th>
+        <th>Artifact</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="job : ${jobs}">
+        <td th:text="${job.jobId}"></td>
+        <td th:text="${job.repoUrl}"></td>
+        <td th:text="${job.branch}"></td>
+        <td th:text="${job.status}"></td>
+        <td>
+            <a th:href="@{'/logs/' + ${job.jobId}}">View Logs</a>
+        </td>
+        <td th:text="${job.artifactPath}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SimpleCD Logs</title>
+</head>
+<body>
+
+<h1>Build Logs</h1>
+
+<p>
+    <b>Job ID:</b> <span th:text="${job.jobId}"></span><br>
+    <b>Status:</b> <span th:text="${job.status}"></span>
+</p>
+
+<pre id="logBox"
+     style="background:#111;color:#0f0;padding:15px;height:500px;overflow:auto;">
+Loading logs...
+</pre>
+
+<a href="/">Back</a>
+
+<script th:inline="javascript">
+    const jobId = /*[[${job.jobId}]]*/ "";
+
+    function loadLogs() {
+        fetch("/api/logs/" + jobId)
+            .then(response => response.text())
+            .then(data => {
+                const logBox = document.getElementById("logBox");
+                logBox.textContent = data;
+                logBox.scrollTop = logBox.scrollHeight;
+            });
+    }
+
+    setInterval(loadLogs, 2000);
+    loadLogs();
+</script>
+
+</body>
+</html>
