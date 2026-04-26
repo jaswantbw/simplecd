@@ -2,10 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>SimpleCD</title>
+    <style>
+        .header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .logo { height: 60px; }
+    </style>
 </head>
 <body>
 
-<h1>SimpleCD</h1>
+<div class="header">
+    <img src="/images/logo.png" alt="Logo" class="logo">
+    <h1>SimpleCD</h1>
+</div>
 <h3>Manual Build Console</h3>
 
 <form method="post" action="/build">
