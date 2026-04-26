@@ -5,6 +5,8 @@ C:\simplecd\src\main\java\com\simplecd\controller\AuthController.java
 C:\simplecd\src\main\java\com\simplecd\controller\BuildController.java
 C:\simplecd\src\main\java\com\simplecd\model\BuildJob.java
 C:\simplecd\src\main\java\com\simplecd\model\BuildStatus.java
+C:\simplecd\src\main\java\com\simplecd\model\Repository.java
 C:\simplecd\src\main\java\com\simplecd\service\BuildExecutorService.java
 C:\simplecd\src\main\java\com\simplecd\service\BuildService.java
+C:\simplecd\src\main\java\com\simplecd\service\RepositoryService.java
 C:\simplecd\src\main\java\com\simplecd\SimpleCdApplication.java

@@ -1,3 +1,4 @@
+com\simplecd\service\RepositoryService.class
 com\simplecd\config\SimpleCdProperties.class
 com\simplecd\controller\BuildController.class
 com\simplecd\controller\AuthController.class
@@ -7,4 +8,5 @@ com\simplecd\SimpleCdApplication.class
 com\simplecd\config\AuthInterceptor.class
 com\simplecd\model\BuildStatus.class
 com\simplecd\service\BuildExecutorService.class
+com\simplecd\model\Repository.class
 com\simplecd\service\BuildService.class

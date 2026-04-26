@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @Controller
 public class BuildController {
@@ -23,6 +22,7 @@ public class BuildController {
     public String index(Model model) {
         Collection<BuildJob> jobs = buildService.getAllJobs();
         model.addAttribute("jobs", jobs);
+        model.addAttribute("countQueued",  jobs.stream().filter(j -> j.getStatus() == BuildStatus.QUEUED).count());
         model.addAttribute("countSuccess", jobs.stream().filter(j -> j.getStatus() == BuildStatus.SUCCESS).count());
         model.addAttribute("countRunning", jobs.stream().filter(j -> j.getStatus() == BuildStatus.RUNNING).count());
         model.addAttribute("countFailed",  jobs.stream().filter(j -> j.getStatus() == BuildStatus.FAILED).count());
@@ -50,5 +50,22 @@ public class BuildController {
     @GetMapping("/api/logs/{jobId}")
     public String getLogs(@PathVariable String jobId) {
         return buildService.readLogs(jobId);
+    }
+
+    @ResponseBody
+    @PostMapping("/api/clone-repo")
+    public String cloneRepository(@RequestParam String repoUrl, @RequestParam String pat) {
+        try {
+            buildService.cloneRepository(repoUrl, pat);
+            return "Repository cloned successfully";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/api/repositories")
+    public Collection<?> getRepositories() {
+        return buildService.getAllRepositories();
     }
 }

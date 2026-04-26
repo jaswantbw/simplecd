@@ -3,6 +3,9 @@
 <head>
     <title>SimpleCD — Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --sidebar-bg: #0d2b25;
@@ -20,13 +23,18 @@
             --border: #d0deda;
             --text: #17302b;
             --muted: #577068;
-            --red: #c0392b;
-            --yellow: #d68910;
-            --green: #1a8a5e;
+            --red: #dc3545;
+            --yellow: #ffc107;
+            --green: #28a745;
+            --blue: #007bff;
+            --gray: #6c757d;
+            --orange: #F97316;
+            --purple: #6f42c1;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 20px; }
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Heebo", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
@@ -71,7 +79,7 @@
             padding: 9px 18px;
             cursor: pointer;
             color: var(--sidebar-text);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
             border-left: 3px solid transparent;
             transition: background 0.15s, color 0.15s, border-color 0.15s;
@@ -102,7 +110,7 @@
             gap: 16px;
             flex-shrink: 0;
         }
-        .topbar-page-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+        .topbar-page-title { display: none; }
         .topbar-spacer { flex: 1; }
         .topbar-badge { background: var(--accent-light); color: var(--accent-dark); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid #b8ddd4; }
         .topbar-logout { color: var(--accent-dark); font-weight: 700; font-size: 0.9rem; text-decoration: none; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; transition: background 0.15s; }
@@ -111,10 +119,46 @@
         .section { display: none; }
         .section.active { display: block; }
         .section-header { margin-bottom: 22px; }
-        .section-header h2 { font-size: 1.35rem; font-weight: 700; color: var(--text); }
-        .section-header p { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+        .section-header h2 { font-size: 2.1rem; font-weight: 800; color: var(--text); letter-spacing: 0.01em; margin-bottom: 6px; }
+        .section-header p { color: var(--muted); font-size: 0.96rem; margin-top: 0; }
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 26px; }
         .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(31,122,100,0.06); }
+        .stat-group-title { margin: 0 0 12px; font-size: 0.95rem; font-weight: 800; color: var(--accent-dark); letter-spacing: 0.03em; text-transform: uppercase; }
+        .stat-card-blue { border: 0; background: linear-gradient(135deg, #007bff 0%, #3399ff 100%); }
+        .stat-card-orange { border: 0; background: linear-gradient(135deg, #F97316 0%, #fb923c 100%); }
+        .stat-card-red { border: 0; background: linear-gradient(135deg, #dc3545 0%, #ef4444 100%); }
+        .stat-card-green { border: 0; background: linear-gradient(135deg, #28a745 0%, #34c759 100%); }
+        .stat-card-yellow { border: 0; background: linear-gradient(135deg, #ffc107 0%, #ffd43b 100%); }
+        .stat-card-gray { border: 0; background: linear-gradient(135deg, #6c757d 0%, #868e96 100%); }
+        .stat-card-purple { border: 0; background: linear-gradient(135deg, #6f42c1 0%, #8e5de6 100%); }
+        .stat-card-blue .stat-label,
+        .stat-card-orange .stat-label,
+        .stat-card-red .stat-label,
+        .stat-card-green .stat-label,
+        .stat-card-yellow .stat-label,
+        .stat-card-gray .stat-label,
+        .stat-card-purple .stat-label {
+            color: #111111;
+        }
+        .stat-card-blue .stat-value,
+        .stat-card-orange .stat-value,
+        .stat-card-red .stat-value,
+        .stat-card-green .stat-value,
+        .stat-card-yellow .stat-value,
+        .stat-card-gray .stat-value,
+        .stat-card-purple .stat-value {
+            color: #111111 !important;
+            text-shadow: none;
+        }
+        .stat-card-blue .stat-sub,
+        .stat-card-orange .stat-sub,
+        .stat-card-red .stat-sub,
+        .stat-card-green .stat-sub,
+        .stat-card-yellow .stat-sub,
+        .stat-card-gray .stat-sub,
+        .stat-card-purple .stat-sub {
+            color: #111111;
+        }
         .stat-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
         .stat-value { font-size: 2rem; font-weight: 800; color: var(--accent-dark); line-height: 1; }
         .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
@@ -134,12 +178,29 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #f7fbf9; }
         .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
-        .badge-success { background: #d4f5e2; color: #14643b; }
-        .badge-running { background: #fef9e1; color: #9a6a00; }
-        .badge-failed  { background: #fde8e6; color: #8c1c0f; }
-        .badge-pending { background: #e8eef2; color: #3a5060; }
+        .badge-success { background: #eaf8ee; color: var(--green); border: 1px solid #bde5c8; }
+        .badge-failed { background: #fdecef; color: var(--red); border: 1px solid #f3bcc5; }
+        .badge-running { background: #eaf3ff; color: var(--blue); border: 1px solid #bdd8ff; }
+        .badge-pending { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
+        .badge-aborted { background: #fff8e1; color: #8a6d00; border: 1px solid #ffe08a; }
+        .badge-unstable { background: #fff1e8; color: var(--orange); border: 1px solid #ffc9a8; }
+        .badge-blocked { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
+        .badge-cancelled { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
+        .badge-draft { background: #f3ebff; color: var(--purple); border: 1px solid #d5b8ff; }
         .link { color: var(--accent-dark); font-weight: 600; text-decoration: none; }
         .link:hover { text-decoration: underline; }
+        .add-repo-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--accent); color: white; border: 0; border-radius: 8px; font-size: 1.5rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+        .add-repo-btn:hover { background: var(--accent-dark); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-overlay.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--panel); border-radius: 14px; padding: 28px; box-shadow: 0 20px 48px rgba(15,47,41,0.2); max-width: 500px; width: 90%; }
+        .modal-header { margin-bottom: 18px; }
+        .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--text); }
+        .modal-close { float: right; font-size: 1.8rem; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; width: 28px; height: 28px; }
+        .modal-close:hover { color: var(--text); }
+        .modal-body { margin-bottom: 18px; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-footer button { margin: 0; }
         .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
         .empty-state svg { margin-bottom: 12px; opacity: 0.35; }
         .empty-state p { font-size: 0.92rem; }
@@ -221,28 +282,60 @@
                 <h2>Dashboard</h2>
                 <p>Overview of your CI/CD activity</p>
             </div>
+
+            <h3 class="stat-group-title">Work Items</h3>
             <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Builds</div>
-                    <div class="stat-value" th:text="${jobs.size()}">0</div>
-                    <div class="stat-sub">all time</div>
+                <div class="stat-card stat-card-purple">
+                    <div class="stat-label">Propose</div>
+                    <div class="stat-value" style="color:var(--purple);" th:text="${countQueued}">0</div>
+                    <div class="stat-sub">queued work</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Successful</div>
+                <div class="stat-card stat-card-blue">
+                    <div class="stat-label">Active</div>
+                    <div class="stat-value" style="color:var(--blue);" th:text="${countRunning}">0</div>
+                    <div class="stat-sub">in progress</div>
+                </div>
+                <div class="stat-card stat-card-orange">
+                    <div class="stat-label">Resolve</div>
+                    <div class="stat-value" style="color:var(--orange);" th:text="${countSuccess}">0</div>
+                    <div class="stat-sub">work finished, pending validation</div>
+                </div>
+                <div class="stat-card stat-card-red">
+                    <div class="stat-label">Block</div>
+                    <div class="stat-value" style="color:var(--red);" th:text="${countFailed}">0</div>
+                    <div class="stat-sub">dependency or validation issue</div>
+                </div>
+                <div class="stat-card stat-card-green">
+                    <div class="stat-label">Close</div>
                     <div class="stat-value" style="color:var(--green);" th:text="${countSuccess}">0</div>
                     <div class="stat-sub">completed</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Running</div>
-                    <div class="stat-value" style="color:var(--yellow);" th:text="${countRunning}">0</div>
-                    <div class="stat-sub">in progress</div>
+            </div>
+
+            <h3 class="stat-group-title">Current Status</h3>
+            <div class="stat-grid">
+                <div class="stat-card stat-card-green">
+                    <div class="stat-label">Builds</div>
+                    <div class="stat-value" style="color:var(--green);" th:text="${countSuccess}">0</div>
+                    <div class="stat-sub">builds successful</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card stat-card-blue">
+                    <div class="stat-label">Running</div>
+                    <div class="stat-value" style="color:var(--blue);" th:text="${countRunning}">0</div>
+                    <div class="stat-sub">currently running</div>
+                </div>
+                <div class="stat-card stat-card-gray">
+                    <div class="stat-label">Block</div>
+                    <div class="stat-value" style="color:var(--gray);" th:text="${countQueued}">0</div>
+                    <div class="stat-sub">waiting state</div>
+                </div>
+                <div class="stat-card stat-card-red">
                     <div class="stat-label">Failed</div>
                     <div class="stat-value" style="color:var(--red);" th:text="${countFailed}">0</div>
-                    <div class="stat-sub">errors</div>
+                    <div class="stat-sub">failed jobs</div>
                 </div>
             </div>
+
             <div class="panel">
                 <h3>Recent Pipeline Runs</h3>
                 <div class="table-wrap">
@@ -254,7 +347,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                         </tr>
@@ -271,9 +364,18 @@
         <div class="section" id="section-code-repository">
             <div class="section-header">
                 <h2>Code Repository</h2>
-                <p>Provide a Git repository URL and branch to trigger a new pipeline run.</p>
+                <p>Add GitHub repositories and trigger pipeline runs.</p>
             </div>
             <div class="panel">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+                    <h3 style="margin:0;flex:1;">Your Repositories</h3>
+                    <button class="add-repo-btn" onclick="openAddRepoModal()">+</button>
+                </div>
+                <div id="repos-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+                    <div style="text-align:center;padding:28px;color:var(--muted);grid-column:1/-1;">No repositories yet. Click + to add one.</div>
+                </div>
+            </div>
+            <div class="panel" style="margin-top:20px;">
                 <h3>Trigger New Build</h3>
                 <form method="post" action="/build">
                     <div class="form-group">
@@ -288,6 +390,32 @@
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                         Run Pipeline
                     </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Repo Modal -->
+        <div class="modal-overlay" id="addRepoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="modal-close" onclick="closeAddRepoModal()">×</button>
+                    <h3>Add GitHub Repository</h3>
+                </div>
+                <form method="post" action="/api/clone-repo" id="addRepoForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Repository URL</label>
+                            <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Personal Access Token (PAT)</label>
+                            <input type="password" name="pat" placeholder="github_pat_..." required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeAddRepoModal()" style="background:#e8f5f0;color:var(--accent-dark);">Cancel</button>
+                        <button type="submit" style="background:var(--accent);color:white;">Clone Repository</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -308,7 +436,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                             <td th:text="${job.artifactPath ?: '—'}"></td>
@@ -338,7 +466,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td th:text="${job.artifactPath}" style="font-family:monospace;font-size:0.82rem;"></td>
-                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : 'badge-failed'" class="badge" th:text="${job.status}"></span></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -366,7 +494,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                         </tr>
@@ -412,7 +540,7 @@
                             <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
-                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span></td>
                         </tr>
                         <tr th:if="${jobs.isEmpty()}">
                             <td colspan="4" style="text-align:center;color:var(--muted);padding:28px;">No data yet.</td>
@@ -526,7 +654,61 @@
         el.classList.add('active');
         document.getElementById('section-' + target).classList.add('active');
         document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
+
+        // Load repositories when Code Repository section is opened
+        if (target === 'code-repository') {
+            loadRepositories();
+        }
     }
+
+    function loadRepositories() {
+        fetch('/api/repositories')
+            .then(response => response.json())
+            .then(repos => {
+                const reposList = document.getElementById('repos-list');
+                if (repos.length === 0) {
+                    reposList.innerHTML = '<div style="text-align:center;padding:28px;color:var(--muted);grid-column:1/-1;">No repositories yet. Click + to add one.</div>';
+                } else {
+                    reposList.innerHTML = repos.map(repo => `
+                        <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+                            <h4 style="margin:0 0 6px;color:var(--text);font-size:0.95rem;font-weight:700;">${repo.name}</h4>
+                            <p style="margin:0 0 8px;color:var(--muted);font-size:0.82rem;word-break:break-all;">${repo.url}</p>
+                            <p style="margin:0;color:var(--muted);font-size:0.78rem;">Cloned: ${new Date(repo.clonedAt).toLocaleDateString()}</p>
+                        </div>
+                    `).join('');
+                }
+            })
+            .catch(error => console.error('Error loading repositories:', error));
+    }
+
+    function openAddRepoModal() {
+        document.getElementById('addRepoModal').classList.add('active');
+    }
+
+    function closeAddRepoModal() {
+        document.getElementById('addRepoModal').classList.remove('active');
+        document.getElementById('addRepoForm').reset();
+    }
+
+    document.getElementById('addRepoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        try {
+            const response = await fetch('/api/clone-repo', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+            if (response.ok) {
+                alert('Repository cloned successfully!');
+                closeAddRepoModal();
+                loadRepositories();
+            } else {
+                alert('Error cloning repository: ' + response.statusText);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    });
 </script>
 </body>
 </html>
