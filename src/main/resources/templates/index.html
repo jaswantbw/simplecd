@@ -1,234 +1,533 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SimpleCD</title>
+    <title>SimpleCD — Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         :root {
-            --bg: #f4f7f6;
-            --panel: #ffffff;
-            --text: #18312d;
-            --muted: #5d746f;
+            --sidebar-bg: #0d2b25;
+            --sidebar-hover: #1a3d35;
+            --sidebar-active: #1f7a64;
+            --sidebar-text: #a8c9c0;
+            --sidebar-heading: #5e8c82;
+            --sidebar-width: 228px;
+            --header-height: 56px;
             --accent: #1f7a64;
             --accent-dark: #155646;
-            --border: #d2dfdb;
+            --accent-light: #e4f5ef;
+            --bg: #f3f8f6;
+            --panel: #ffffff;
+            --border: #d0deda;
+            --text: #17302b;
+            --muted: #577068;
+            --red: #c0392b;
+            --yellow: #d68910;
+            --green: #1a8a5e;
         }
-
-        * { box-sizing: border-box; }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            margin: 0;
-            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-            background:
-                radial-gradient(circle at 12% 18%, #dff2ea 0%, #dff2ea 22%, transparent 23%),
-                radial-gradient(circle at 88% 82%, #e7f5ef 0%, #e7f5ef 20%, transparent 21%),
-                var(--bg);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
             color: var(--text);
-            padding: 20px;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
-
-        .container {
-            max-width: 1150px;
-            margin: 0 auto;
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
         }
-
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: 0 12px 24px rgba(31, 122, 100, 0.08);
-            padding: 22px;
-            margin-bottom: 16px;
-        }
-
-        .header {
+        .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 14px;
-        }
-
-        .logo { height: 58px; }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.7rem;
-        }
-
-        .logout {
-            margin-left: auto;
-            color: var(--accent-dark);
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .logout:hover { text-decoration: underline; }
-
-        .nav-tabs {
-            display: flex;
-            flex-wrap: wrap;
             gap: 10px;
-            margin: 8px 0 18px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #1e3d36;
+            min-height: var(--header-height);
         }
-
-        .tab-link {
-            text-decoration: none;
-            color: var(--accent-dark);
-            background: #e8f4ef;
-            border: 1px solid #c8e2d8;
-            border-radius: 999px;
-            padding: 8px 14px;
+        .sidebar-brand img { height: 32px; width: 32px; object-fit: contain; border-radius: 6px; }
+        .sidebar-brand-name { font-size: 1.1rem; font-weight: 700; color: #e8f5f0; letter-spacing: 0.02em; }
+        .sidebar-section-label {
+            padding: 18px 18px 6px;
+            font-size: 0.68rem;
             font-weight: 700;
-            font-size: 0.95rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--sidebar-heading);
         }
-
-        .tab-link:hover {
-            background: #d9eee6;
-        }
-
-        .section-title {
-            margin: 0 0 10px;
-            font-size: 1.2rem;
-        }
-
-        .subtle {
-            color: var(--muted);
-            margin: 0 0 14px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            max-width: 620px;
-            padding: 11px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin-bottom: 12px;
-            font-size: 0.98rem;
-        }
-
-        button {
-            border: 0;
-            border-radius: 10px;
-            background: var(--accent);
-            color: white;
-            padding: 11px 18px;
-            font-weight: 700;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 9px 18px;
             cursor: pointer;
+            color: var(--sidebar-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            user-select: none;
+            text-decoration: none;
         }
-
-        button:hover { background: var(--accent-dark); }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid var(--border);
-            background: #fff;
+        .nav-item:hover { background: var(--sidebar-hover); color: #d6efea; }
+        .nav-item.active { background: rgba(31,122,100,0.18); border-left-color: var(--sidebar-active); color: #b8f0e0; }
+        .nav-item svg { flex-shrink: 0; opacity: 0.75; }
+        .nav-item.active svg { opacity: 1; }
+        .sidebar-spacer { flex: 1; }
+        .sidebar-bottom { border-top: 1px solid #1e3d36; padding: 10px 0; }
+        .app-body {
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: 100vh;
+            overflow: hidden;
         }
-
-        th, td {
-            border: 1px solid var(--border);
-            padding: 10px;
-            text-align: left;
-            vertical-align: top;
+        .topbar {
+            height: var(--header-height);
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 26px;
+            gap: 16px;
+            flex-shrink: 0;
         }
-
-        th {
-            background: #edf7f2;
-        }
-
-        .small-link {
-            color: var(--accent-dark);
-            font-weight: 600;
-        }
-
-        @media (max-width: 780px) {
-            body { padding: 12px; }
-
-            .header h1 { font-size: 1.35rem; }
-
-            .logo { height: 48px; }
+        .topbar-page-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+        .topbar-spacer { flex: 1; }
+        .topbar-badge { background: var(--accent-light); color: var(--accent-dark); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid #b8ddd4; }
+        .topbar-logout { color: var(--accent-dark); font-weight: 700; font-size: 0.9rem; text-decoration: none; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; transition: background 0.15s; }
+        .topbar-logout:hover { background: var(--accent-light); }
+        .content-area { flex: 1; overflow-y: auto; padding: 28px 32px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .section-header { margin-bottom: 22px; }
+        .section-header h2 { font-size: 1.35rem; font-weight: 700; color: var(--text); }
+        .section-header p { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 26px; }
+        .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(31,122,100,0.06); }
+        .stat-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--accent-dark); line-height: 1; }
+        .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; box-shadow: 0 2px 8px rgba(31,122,100,0.06); margin-bottom: 20px; }
+        .panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+        input[type="text"] { width: 100%; max-width: 560px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); font-size: 0.95rem; color: var(--text); background: #fafcfb; transition: border-color 0.15s; }
+        input[type="text"]:focus { outline: none; border-color: var(--accent); }
+        button, .btn { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 9px; background: var(--accent); color: white; padding: 10px 18px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+        button:hover, .btn:hover { background: var(--accent-dark); }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead tr { background: #eef7f3; }
+        th { padding: 10px 12px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); text-align: left; }
+        td { padding: 10px 12px; border-bottom: 1px solid #edf2f0; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f7fbf9; }
+        .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+        .badge-success { background: #d4f5e2; color: #14643b; }
+        .badge-running { background: #fef9e1; color: #9a6a00; }
+        .badge-failed  { background: #fde8e6; color: #8c1c0f; }
+        .badge-pending { background: #e8eef2; color: #3a5060; }
+        .link { color: var(--accent-dark); font-weight: 600; text-decoration: none; }
+        .link:hover { text-decoration: underline; }
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
+        .empty-state svg { margin-bottom: 12px; opacity: 0.35; }
+        .empty-state p { font-size: 0.92rem; }
+        .user-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #1f7a64, #0d4a38); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #9ef5d6; margin-bottom: 14px; }
+        .user-info-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #edf2f0; font-size: 0.9rem; }
+        .user-info-row:last-child { border-bottom: none; }
+        .user-info-key { font-weight: 700; color: var(--muted); min-width: 110px; }
+        @media (max-width: 760px) {
+            .sidebar { width: 52px; min-width: 52px; }
+            .sidebar-brand-name, .nav-item span, .sidebar-section-label { display: none; }
+            .app-body { margin-left: 52px; }
+            .content-area { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="card">
-        <div class="header">
-            <img src="/images/logo.png" alt="Logo" class="logo">
-            <h1>SimpleCD</h1>
-            <a href="/logout" class="logout">Logout</a>
+<nav class="sidebar">
+    <div class="sidebar-brand">
+        <img src="/images/logo.png" alt="SimpleCD">
+        <span class="sidebar-brand-name">SimpleCD</span>
+    </div>
+    <div class="sidebar-section-label">Main</div>
+    <a class="nav-item active" data-section="dashboard" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
+    </a>
+    <a class="nav-item" data-section="code-repository" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/><line x1="17.01" y1="12" x2="22.96" y2="12"/></svg>
+        <span>Code Repository</span>
+    </a>
+    <a class="nav-item" data-section="pipelines" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Pipelines</span>
+    </a>
+    <a class="nav-item" data-section="artifacts" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span>Artifacts</span>
+    </a>
+    <a class="nav-item" data-section="logs" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Logs</span>
+    </a>
+    <div class="sidebar-section-label">Manage</div>
+    <a class="nav-item" data-section="reports" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Reports</span>
+    </a>
+    <a class="nav-item" data-section="settings" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+    </a>
+    <a class="nav-item" data-section="documents" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Documents</span>
+    </a>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-bottom">
+        <a class="nav-item" data-section="user-info" onclick="navigate(this)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>User Info</span>
+        </a>
+    </div>
+</nav>
+
+<div class="app-body">
+    <header class="topbar">
+        <span class="topbar-page-title" id="topbar-title">Dashboard</span>
+        <div class="topbar-spacer"></div>
+        <span class="topbar-badge">admin</span>
+        <a href="/logout" class="topbar-logout">Logout</a>
+    </header>
+
+    <div class="content-area">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="section-dashboard">
+            <div class="section-header">
+                <h2>Dashboard</h2>
+                <p>Overview of your CI/CD activity</p>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Builds</div>
+                    <div class="stat-value" th:text="${jobs.size()}">0</div>
+                    <div class="stat-sub">all time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Successful</div>
+                    <div class="stat-value" style="color:var(--green);" th:text="${countSuccess}">0</div>
+                    <div class="stat-sub">completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Running</div>
+                    <div class="stat-value" style="color:var(--yellow);" th:text="${countRunning}">0</div>
+                    <div class="stat-sub">in progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Failed</div>
+                    <div class="stat-value" style="color:var(--red);" th:text="${countFailed}">0</div>
+                    <div class="stat-sub">errors</div>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Recent Pipeline Runs</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Status</th><th>Log</th></tr></thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td th:text="${job.repoUrl}"></td>
+                            <td th:text="${job.branch}"></td>
+                            <td>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                            </td>
+                            <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
+                        </tr>
+                        <tr th:if="${jobs.isEmpty()}">
+                            <td colspan="5" style="text-align:center;color:var(--muted);padding:28px;">No builds yet. Trigger one from Code Repository.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="nav-tabs">
-            <a href="#code-repository" class="tab-link">Code Repository</a>
-            <a href="#pipeline" class="tab-link">Pipeline</a>
-            <a href="#artifact" class="tab-link">Artifact</a>
-            <a href="#log" class="tab-link">Log</a>
+        <!-- CODE REPOSITORY -->
+        <div class="section" id="section-code-repository">
+            <div class="section-header">
+                <h2>Code Repository</h2>
+                <p>Provide a Git repository URL and branch to trigger a new pipeline run.</p>
+            </div>
+            <div class="panel">
+                <h3>Trigger New Build</h3>
+                <form method="post" action="/build">
+                    <div class="form-group">
+                        <label>Git Repository URL</label>
+                        <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <input type="text" name="branch" value="main" required>
+                    </div>
+                    <button type="submit">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Run Pipeline
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <div class="card" id="code-repository">
-        <h2 class="section-title">Code Repository</h2>
-        <p class="subtle">Provide repository details to trigger the pipeline.</p>
+        <!-- PIPELINES -->
+        <div class="section" id="section-pipelines">
+            <div class="section-header">
+                <h2>Pipelines</h2>
+                <p>All triggered pipeline runs and their current statuses.</p>
+            </div>
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Status</th><th>Log</th><th>Artifact</th></tr></thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td th:text="${job.repoUrl}"></td>
+                            <td th:text="${job.branch}"></td>
+                            <td>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                            </td>
+                            <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
+                            <td th:text="${job.artifactPath ?: '—'}"></td>
+                        </tr>
+                        <tr th:if="${jobs.isEmpty()}">
+                            <td colspan="6" style="text-align:center;color:var(--muted);padding:28px;">No pipeline runs found.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        <form method="post" action="/build">
-            <label>Git Repository URL</label>
-            <input type="text" name="repoUrl" required>
+        <!-- ARTIFACTS -->
+        <div class="section" id="section-artifacts">
+            <div class="section-header">
+                <h2>Artifacts</h2>
+                <p>Build outputs and generated artifacts from completed pipeline runs.</p>
+            </div>
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Artifact Path</th><th>Status</th></tr></thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}" th:if="${job.artifactPath != null}">
+                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td th:text="${job.repoUrl}"></td>
+                            <td th:text="${job.branch}"></td>
+                            <td th:text="${job.artifactPath}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : 'badge-failed'" class="badge" th:text="${job.status}"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" th:if="${!hasArtifacts}">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    <p>No artifacts available yet. Successful builds will appear here.</p>
+                </div>
+            </div>
+        </div>
 
-            <label>Branch</label>
-            <input type="text" name="branch" value="main" required>
+        <!-- LOGS -->
+        <div class="section" id="section-logs">
+            <div class="section-header">
+                <h2>Logs</h2>
+                <p>Stream build output by clicking Open Log on any pipeline run.</p>
+            </div>
+            <div class="panel">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td th:text="${job.repoUrl}"></td>
+                            <td th:text="${job.branch}"></td>
+                            <td>
+                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span>
+                            </td>
+                            <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
+                        </tr>
+                        <tr th:if="${jobs.isEmpty()}">
+                            <td colspan="5" style="text-align:center;color:var(--muted);padding:28px;">No log entries yet.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-            <button type="submit">Start Build</button>
-        </form>
-    </div>
+        <!-- REPORTS -->
+        <div class="section" id="section-reports">
+            <div class="section-header">
+                <h2>Reports</h2>
+                <p>Build statistics and pipeline performance summaries.</p>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Runs</div>
+                    <div class="stat-value" th:text="${jobs.size()}">0</div>
+                    <div class="stat-sub">all time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-value" style="color:var(--green);" th:text="${successRate}">—</div>
+                    <div class="stat-sub">of total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Failed Runs</div>
+                    <div class="stat-value" style="color:var(--red);" th:text="${countFailed}">0</div>
+                    <div class="stat-sub">needs attention</div>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Run History</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Status</th></tr></thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
+                            <td th:text="${job.repoUrl}"></td>
+                            <td th:text="${job.branch}"></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'RUNNING'} ? 'badge-running' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : 'badge-pending'))" class="badge" th:text="${job.status}"></span></td>
+                        </tr>
+                        <tr th:if="${jobs.isEmpty()}">
+                            <td colspan="4" style="text-align:center;color:var(--muted);padding:28px;">No data yet.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <div class="card" id="pipeline">
-        <h2 class="section-title">Pipeline</h2>
-        <p class="subtle">Triggered builds are listed below as pipeline runs.</p>
+        <!-- SETTINGS -->
+        <div class="section" id="section-settings">
+            <div class="section-header">
+                <h2>Settings</h2>
+                <p>Application and system configuration.</p>
+            </div>
+            <div class="panel">
+                <h3>General</h3>
+                <div class="user-info-row"><span class="user-info-key">Application</span><span>SimpleCD</span></div>
+                <div class="user-info-row"><span class="user-info-key">Port</span><span>8080</span></div>
+                <div class="user-info-row"><span class="user-info-key">Runtime</span><span>Embedded Tomcat (Spring Boot 3.3.5)</span></div>
+                <div class="user-info-row"><span class="user-info-key">Java Version</span><span>21+</span></div>
+            </div>
+            <div class="panel">
+                <h3>Authentication</h3>
+                <div class="user-info-row"><span class="user-info-key">Mode</span><span>Session-based</span></div>
+                <div class="user-info-row"><span class="user-info-key">Login Page</span><span>/login</span></div>
+                <div class="user-info-row"><span class="user-info-key">Session Key</span><span><code>authenticated</code></span></div>
+            </div>
+        </div>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Job ID</th>
-                <th>Repo</th>
-                <th>Branch</th>
-                <th>Status</th>
-                <th>Log</th>
-                <th>Artifact</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="job : ${jobs}">
-                <td th:text="${job.jobId}"></td>
-                <td th:text="${job.repoUrl}"></td>
-                <td th:text="${job.branch}"></td>
-                <td th:text="${job.status}"></td>
-                <td>
-                    <a class="small-link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a>
-                </td>
-                <td th:text="${job.artifactPath}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- DOCUMENTS -->
+        <div class="section" id="section-documents">
+            <div class="section-header">
+                <h2>Documents</h2>
+                <p>Quick reference guides and platform documentation.</p>
+            </div>
+            <div class="panel">
+                <h3>Getting Started</h3>
+                <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
+                    <strong style="color:var(--accent-dark);">1. Clone or prepare your Git repository</strong>
+                    <p style="color:var(--muted);font-size:0.88rem;">Ensure your repo has a build script (e.g., pom.xml for Maven or build.gradle for Gradle).</p>
+                </div>
+                <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
+                    <strong style="color:var(--accent-dark);">2. Navigate to Code Repository</strong>
+                    <p style="color:var(--muted);font-size:0.88rem;">Paste your Git URL and specify the branch, then click Run Pipeline.</p>
+                </div>
+                <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
+                    <strong style="color:var(--accent-dark);">3. Monitor in Pipelines</strong>
+                    <p style="color:var(--muted);font-size:0.88rem;">Track your build status in real time from the Pipelines section.</p>
+                </div>
+                <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
+                    <strong style="color:var(--accent-dark);">4. Stream Logs</strong>
+                    <p style="color:var(--muted);font-size:0.88rem;">Click Open Log on any run to stream live build output.</p>
+                </div>
+                <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
+                    <strong style="color:var(--accent-dark);">5. Review Artifacts</strong>
+                    <p style="color:var(--muted);font-size:0.88rem;">Successful builds store artifact paths in the Artifacts section.</p>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>Full Documentation</h3>
+                <p style="color:var(--muted);font-size:0.9rem;margin-bottom:14px;">For the full quick-start guide and setup instructions, visit the public docs page.</p>
+                <a href="/docs" class="btn" target="_blank">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Open Docs
+                </a>
+            </div>
+        </div>
 
-    <div class="card" id="artifact">
-        <h2 class="section-title">Artifact</h2>
-        <p class="subtle">Artifact location is shown in the table under the Artifact column.</p>
-    </div>
+        <!-- USER INFO -->
+        <div class="section" id="section-user-info">
+            <div class="section-header">
+                <h2>User Info</h2>
+                <p>Currently authenticated session details.</p>
+            </div>
+            <div class="panel" style="max-width:500px;">
+                <div class="user-avatar">A</div>
+                <div class="user-info-row"><span class="user-info-key">Username</span><span>admin</span></div>
+                <div class="user-info-row"><span class="user-info-key">Role</span><span><span class="badge badge-success">Administrator</span></span></div>
+                <div class="user-info-row"><span class="user-info-key">Auth Method</span><span>Session-based</span></div>
+                <div class="user-info-row"><span class="user-info-key">Access</span><span>Full</span></div>
+                <div style="margin-top:18px;">
+                    <a href="/logout" class="btn" style="background:#c0392b;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <div class="card" id="log">
-        <h2 class="section-title">Log</h2>
-        <p class="subtle">Use the Open Log link in pipeline entries to stream build output.</p>
     </div>
 </div>
 
+<script>
+    const sectionTitles = {
+        'dashboard': 'Dashboard',
+        'code-repository': 'Code Repository',
+        'pipelines': 'Pipelines',
+        'artifacts': 'Artifacts',
+        'logs': 'Logs',
+        'reports': 'Reports',
+        'settings': 'Settings',
+        'documents': 'Documents',
+        'user-info': 'User Info'
+    };
+    function navigate(el) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const target = el.dataset.section;
+        el.classList.add('active');
+        document.getElementById('section-' + target).classList.add('active');
+        document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
+    }
+</script>
 </body>
 </html>
+

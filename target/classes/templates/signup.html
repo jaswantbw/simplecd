@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SimpleCD Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f7f3;
+            color: #0f2f29;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 640px;
+            background: #fff;
+            border: 1px solid #cee1d9;
+            border-radius: 16px;
+            box-shadow: 0 12px 26px rgba(15, 47, 41, 0.08);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        h1 { margin: 0 0 8px; }
+
+        p {
+            margin: 0 0 10px;
+            color: #4f6660;
+            line-height: 1.5;
+        }
+
+        a {
+            color: #14674f;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <img src="/images/logo.png" alt="SimpleCD Logo">
+    <h1>Sign Up</h1>
+    <p>This demo currently supports admin login only.</p>
+    <p>Please contact your administrator to create new users.</p>
+    <p><a href="/login">Back to Login</a></p>
+</div>
+</body>
+</html>

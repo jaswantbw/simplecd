@@ -34,6 +34,16 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup";
+    }
+
+    @GetMapping("/docs")
+    public String docsPage() {
+        return "docs";
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

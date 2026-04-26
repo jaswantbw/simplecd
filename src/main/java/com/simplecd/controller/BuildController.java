@@ -1,10 +1,14 @@
 package com.simplecd.controller;
 
 import com.simplecd.model.BuildJob;
+import com.simplecd.model.BuildStatus;
 import com.simplecd.service.BuildService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
 
 @Controller
 public class BuildController {
@@ -17,7 +21,13 @@ public class BuildController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("jobs", buildService.getAllJobs());
+        Collection<BuildJob> jobs = buildService.getAllJobs();
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("countSuccess", jobs.stream().filter(j -> j.getStatus() == BuildStatus.SUCCESS).count());
+        model.addAttribute("countRunning", jobs.stream().filter(j -> j.getStatus() == BuildStatus.RUNNING).count());
+        model.addAttribute("countFailed",  jobs.stream().filter(j -> j.getStatus() == BuildStatus.FAILED).count());
+        model.addAttribute("successRate",  jobs.isEmpty() ? "—" : (jobs.stream().filter(j -> j.getStatus() == BuildStatus.SUCCESS).count() * 100 / jobs.size()) + "%");
+        model.addAttribute("hasArtifacts", jobs.stream().anyMatch(j -> j.getArtifactPath() != null));
         return "index";
     }
 
