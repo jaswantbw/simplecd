@@ -2,6 +2,7 @@ package com.simplecd.service;
 
 import com.simplecd.model.BuildJob;
 import com.simplecd.model.BuildStatus;
+import com.simplecd.model.GitProviderSettings;
 import com.simplecd.model.Repository;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,15 @@ public class BuildService {
     private final Map<String, BuildJob> jobs = new ConcurrentHashMap<>();
     private final BuildExecutorService buildExecutorService;
     private final RepositoryService repositoryService;
-    private static final String REPOS_FOLDER = "code-repos";
+    private final GitProviderSettingsService gitProviderSettingsService;
+    private static final String REPOS_FOLDER = "c:\\workspaces";
 
-    public BuildService(BuildExecutorService buildExecutorService, RepositoryService repositoryService) {
+    public BuildService(BuildExecutorService buildExecutorService,
+                        RepositoryService repositoryService,
+                        GitProviderSettingsService gitProviderSettingsService) {
         this.buildExecutorService = buildExecutorService;
         this.repositoryService = repositoryService;
+        this.gitProviderSettingsService = gitProviderSettingsService;
         initializeReposFolder();
     }
 
@@ -38,13 +43,22 @@ public class BuildService {
         }
     }
 
-    public void cloneRepository(String repoUrl, String pat) throws Exception {
+    public void cloneRepository(String repoUrl, String pat, String defaultBranch) throws Exception {
+        String resolvedPat = resolvePat(pat);
+
         // Extract repo name from URL
         String repoName = repoUrl.substring(repoUrl.lastIndexOf("/") + 1).replace(".git", "");
         Path repoPath = Paths.get(REPOS_FOLDER, repoName);
 
+        if (repositoryService.findByUrl(repoUrl) != null || Files.exists(repoPath)) {
+            throw new IllegalArgumentException("Repository already exists: " + repoName);
+        }
+
         // Create auth URL with PAT
-        String authUrl = repoUrl.replace("https://", "https://oauth2:" + pat + "@");
+        String authUrl = repoUrl;
+        if (!resolvedPat.isBlank() && repoUrl.startsWith("https://")) {
+            authUrl = repoUrl.replace("https://", "https://oauth2:" + resolvedPat + "@");
+        }
 
         // Git clone command
         ProcessBuilder pb = new ProcessBuilder("git", "clone", "--depth", "1", authUrl, repoPath.toString());
@@ -64,7 +78,28 @@ public class BuildService {
         }
 
         // Save repository to service after successful clone
-        repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), "main");
+        String branchToSave = (defaultBranch == null || defaultBranch.isBlank()) ? "main" : defaultBranch;
+        repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), branchToSave);
+    }
+
+    public void cloneRepository(String repoUrl, String pat) throws Exception {
+        cloneRepository(repoUrl, pat, "main");
+    }
+
+    public void cloneRepository(String repoUrl) throws Exception {
+        cloneRepository(repoUrl, "", "main");
+    }
+
+    private String resolvePat(String requestPat) {
+        if (requestPat != null && !requestPat.isBlank()) {
+            return requestPat.trim();
+        }
+
+        GitProviderSettings settings = gitProviderSettingsService.getSettings();
+        if (settings == null || settings.getPat() == null) {
+            return "";
+        }
+        return settings.getPat().trim();
     }
 
     public BuildJob startBuild(String repoUrl, String branch) {

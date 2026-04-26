@@ -166,8 +166,13 @@
         .panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
         .form-group { margin-bottom: 14px; }
         label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
-        input[type="text"] { width: 100%; max-width: 560px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); font-size: 0.95rem; color: var(--text); background: #fafcfb; transition: border-color 0.15s; }
-        input[type="text"]:focus { outline: none; border-color: var(--accent); }
+        input[type="text"],
+        input[type="password"],
+        textarea { width: 100%; max-width: 560px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); font-size: 0.95rem; color: var(--text); background: #fafcfb; transition: border-color 0.15s; font-family: inherit; }
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus { outline: none; border-color: var(--accent); }
+        textarea { min-height: 90px; resize: vertical; }
         button, .btn { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 9px; background: var(--accent); color: white; padding: 10px 18px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: background 0.15s; }
         button:hover, .btn:hover { background: var(--accent-dark); }
         .table-wrap { overflow-x: auto; }
@@ -193,7 +198,7 @@
         .add-repo-btn:hover { background: var(--accent-dark); }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
         .modal-overlay.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); border-radius: 14px; padding: 28px; box-shadow: 0 20px 48px rgba(15,47,41,0.2); max-width: 500px; width: 90%; }
+        .modal-content { background: var(--panel); border-radius: 14px; padding: 28px; box-shadow: 0 20px 48px rgba(15,47,41,0.2); max-width: 760px; width: 92%; }
         .modal-header { margin-bottom: 18px; }
         .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--text); }
         .modal-close { float: right; font-size: 1.8rem; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; width: 28px; height: 28px; }
@@ -201,6 +206,13 @@
         .modal-body { margin-bottom: 18px; }
         .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
         .modal-footer button { margin: 0; }
+        .repo-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 8px; max-height: 300px; overflow-y: auto; }
+        .repo-picker-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #f9fcfb; }
+        .repo-picker-card h4 { margin: 0 0 5px; font-size: 0.9rem; color: var(--text); }
+        .repo-picker-card p { margin: 0 0 7px; color: var(--muted); font-size: 0.8rem; word-break: break-all; }
+        .repo-picker-card .mini-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
+        .inline-status { font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+        .inline-status.error { color: var(--red); }
         .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
         .empty-state svg { margin-bottom: 12px; opacity: 0.35; }
         .empty-state p { font-size: 0.92rem; }
@@ -399,22 +411,29 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="modal-close" onclick="closeAddRepoModal()">×</button>
-                    <h3>Add GitHub Repository</h3>
+                    <h3>Add Repository</h3>
                 </div>
                 <form method="post" action="/api/clone-repo" id="addRepoForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Repository URL</label>
-                            <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git" required>
+                            <label>Manual Repository URL (optional)</label>
+                            <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git">
                         </div>
                         <div class="form-group">
-                            <label>Personal Access Token (PAT)</label>
-                            <input type="password" name="pat" placeholder="github_pat_..." required>
+                            <label>Default Branch</label>
+                            <input type="text" name="defaultBranch" value="main">
+                        </div>
+                        <div class="form-group" style="margin-top:16px;">
+                            <label>Available Repositories From Saved Settings</label>
+                            <div id="availableReposInModal" class="repo-picker-grid">
+                                <div style="grid-column:1/-1;color:var(--muted);">Save Git settings first, then open this modal to load repositories.</div>
+                            </div>
+                            <div id="add-repo-status" class="inline-status"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="closeAddRepoModal()" style="background:#e8f5f0;color:var(--accent-dark);">Cancel</button>
-                        <button type="submit" style="background:var(--accent);color:white;">Clone Repository</button>
+                        <button type="submit" style="background:var(--accent);color:white;">Clone Manual Repository</button>
                     </div>
                 </form>
             </div>
@@ -558,6 +577,34 @@
                 <p>Application and system configuration.</p>
             </div>
             <div class="panel">
+                <h3>Git Provider Settings</h3>
+                <p style="color:var(--muted);font-size:0.88rem;margin-bottom:14px;">Save credentials once, then choose repositories directly in Add Repo.</p>
+                <form id="gitSettingsForm">
+                    <div class="form-group">
+                        <label>Repository URL (optional)</label>
+                        <input type="text" name="providerUrl" placeholder="https://github.com/your-org-or-user">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="github-username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password (optional)</label>
+                        <input type="password" name="password" placeholder="password (if needed)">
+                    </div>
+                    <div class="form-group">
+                        <label>Personal Access Token (PAT)</label>
+                        <input type="password" name="pat" placeholder="github_pat_...">
+                    </div>
+                    <div class="form-group">
+                        <label>SSH Key (optional)</label>
+                        <textarea name="sshKey" placeholder="ssh-rsa AAAA..."></textarea>
+                    </div>
+                    <button type="submit">Save Git Settings</button>
+                    <div id="git-settings-status" class="inline-status"></div>
+                </form>
+            </div>
+            <div class="panel">
                 <h3>General</h3>
                 <div class="user-info-row"><span class="user-info-key">Application</span><span>SimpleCD</span></div>
                 <div class="user-info-row"><span class="user-info-key">Port</span><span>8080</span></div>
@@ -647,6 +694,7 @@
         'documents': 'Documents',
         'user-info': 'User Info'
     };
+
     function navigate(el) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -655,10 +703,40 @@
         document.getElementById('section-' + target).classList.add('active');
         document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
 
-        // Load repositories when Code Repository section is opened
         if (target === 'code-repository') {
             loadRepositories();
         }
+
+        if (target === 'settings') {
+            loadGitSettings();
+        }
+    }
+
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function setModalStatus(message, isError = false) {
+        const status = document.getElementById('add-repo-status');
+        if (!status) {
+            return;
+        }
+        status.textContent = message;
+        status.classList.toggle('error', !!isError);
+    }
+
+    function setGitSettingsStatus(message, isError = false) {
+        const status = document.getElementById('git-settings-status');
+        if (!status) {
+            return;
+        }
+        status.textContent = message;
+        status.classList.toggle('error', !!isError);
     }
 
     function loadRepositories() {
@@ -671,8 +749,8 @@
                 } else {
                     reposList.innerHTML = repos.map(repo => `
                         <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
-                            <h4 style="margin:0 0 6px;color:var(--text);font-size:0.95rem;font-weight:700;">${repo.name}</h4>
-                            <p style="margin:0 0 8px;color:var(--muted);font-size:0.82rem;word-break:break-all;">${repo.url}</p>
+                            <h4 style="margin:0 0 6px;color:var(--text);font-size:0.95rem;font-weight:700;">${escapeHtml(repo.name)}</h4>
+                            <p style="margin:0 0 8px;color:var(--muted);font-size:0.82rem;word-break:break-all;">${escapeHtml(repo.url)}</p>
                             <p style="margin:0;color:var(--muted);font-size:0.78rem;">Cloned: ${new Date(repo.clonedAt).toLocaleDateString()}</p>
                         </div>
                     `).join('');
@@ -681,32 +759,160 @@
             .catch(error => console.error('Error loading repositories:', error));
     }
 
+    async function loadGitSettings() {
+        const form = document.getElementById('gitSettingsForm');
+        if (!form) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/git-settings');
+            if (!response.ok) {
+                return;
+            }
+
+            const settings = await response.json();
+            form.providerUrl.value = settings.providerUrl || '';
+            form.username.value = settings.username || '';
+            form.password.value = settings.password || '';
+            form.pat.value = settings.pat || '';
+            form.sshKey.value = settings.sshKey || '';
+        } catch (error) {
+            console.error('Error loading git settings:', error);
+        }
+    }
+
     function openAddRepoModal() {
         document.getElementById('addRepoModal').classList.add('active');
+        loadAvailableGitRepos();
     }
 
     function closeAddRepoModal() {
         document.getElementById('addRepoModal').classList.remove('active');
         document.getElementById('addRepoForm').reset();
+        setModalStatus('');
     }
 
-    document.getElementById('addRepoForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
+    async function loadAvailableGitRepos() {
+        const target = document.getElementById('availableReposInModal');
+        if (!target) {
+            return;
+        }
+
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Loading repositories...</div>';
         try {
+            const response = await fetch('/api/github-repos');
+            const text = await response.text();
+
+            if (!response.ok) {
+                target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Unable to load repositories. Save valid Git settings in Settings tab first.</div>';
+                setModalStatus(text || 'Unable to load repositories.', true);
+                return;
+            }
+
+            const repos = JSON.parse(text);
+            if (!Array.isArray(repos) || repos.length === 0) {
+                target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">No repositories found for saved credentials.</div>';
+                setModalStatus('No repositories found.');
+                return;
+            }
+
+            target.innerHTML = repos.map(repo => `
+                <div class="repo-picker-card">
+                    <h4>${escapeHtml(repo.fullName || repo.name)}</h4>
+                    <p>${escapeHtml(repo.url)}</p>
+                    <div class="mini-meta">Branch: ${escapeHtml(repo.defaultBranch || 'main')} | ${repo.privateRepo ? 'Private' : 'Public'}</div>
+                    <button type="button" onclick="cloneFromAvailableRepo('${escapeHtml(repo.url)}', '${escapeHtml(repo.defaultBranch || 'main')}')">Clone This Repo</button>
+                </div>
+            `).join('');
+            setModalStatus('Select any repository to clone.');
+        } catch (error) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Failed to load repositories.</div>';
+            setModalStatus('Error: ' + error.message, true);
+        }
+    }
+
+    async function cloneFromAvailableRepo(repoUrl, defaultBranch) {
+        try {
+            setModalStatus('Cloning ' + repoUrl + ' ...');
+            const payload = new URLSearchParams();
+            payload.set('repoUrl', repoUrl);
+            payload.set('defaultBranch', defaultBranch || 'main');
+
             const response = await fetch('/api/clone-repo', {
                 method: 'POST',
-                body: new URLSearchParams(formData)
+                body: payload
             });
-            if (response.ok) {
-                alert('Repository cloned successfully!');
-                closeAddRepoModal();
+
+            const text = await response.text();
+            if (response.ok && !text.startsWith('Error:')) {
+                setModalStatus('Repository cloned successfully.');
                 loadRepositories();
             } else {
-                alert('Error cloning repository: ' + response.statusText);
+                setModalStatus(text || 'Clone failed.', true);
             }
         } catch (error) {
-            alert('Error: ' + error.message);
+            setModalStatus('Error: ' + error.message, true);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadGitSettings();
+
+        const addRepoForm = document.getElementById('addRepoForm');
+        if (addRepoForm) {
+            addRepoForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const repoUrl = (formData.get('repoUrl') || '').toString().trim();
+
+                if (!repoUrl) {
+                    setModalStatus('Enter a manual repo URL or pick one from the list below.', true);
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/clone-repo', {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    });
+
+                    const text = await response.text();
+                    if (response.ok && !text.startsWith('Error:')) {
+                        setModalStatus('Repository cloned successfully.');
+                        loadRepositories();
+                    } else {
+                        setModalStatus(text || 'Error cloning repository.', true);
+                    }
+                } catch (error) {
+                    setModalStatus('Error: ' + error.message, true);
+                }
+            });
+        }
+
+        const gitSettingsForm = document.getElementById('gitSettingsForm');
+        if (gitSettingsForm) {
+            gitSettingsForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = new URLSearchParams(new FormData(gitSettingsForm));
+
+                try {
+                    const response = await fetch('/api/git-settings', {
+                        method: 'POST',
+                        body: payload
+                    });
+
+                    if (!response.ok) {
+                        const text = await response.text();
+                        setGitSettingsStatus(text || 'Unable to save settings.', true);
+                        return;
+                    }
+
+                    setGitSettingsStatus('Git settings saved.');
+                } catch (error) {
+                    setGitSettingsStatus('Error: ' + error.message, true);
+                }
+            });
         }
     });
 </script>
