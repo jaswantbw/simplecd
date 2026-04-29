@@ -226,14 +226,15 @@
         .repo-provider-header { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
         .repo-provider-header h4 { margin: 0; font-size: 0.92rem; color: var(--text); }
         .repo-provider-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--border); background: #f3f4f6; color: var(--secondary-text); }
-        .provider-logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.02em; border: 1px solid transparent; }
+        .provider-logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.02em; border: 1px solid transparent; overflow: hidden; }
         .provider-logo-icon.github { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
         .provider-logo-icon.gitlab { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
         .provider-logo-icon.azure { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
         .provider-logo-icon.bitbucket { background: #ecfeff; border-color: #a5f3fc; color: #0e7490; }
         .provider-logo-icon.other { background: #f3f4f6; border-color: #d1d5db; color: #374151; }
+        .provider-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .repo-row { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; padding: 10px 12px; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
-        .repo-row-line { display: grid; grid-template-columns: minmax(180px, 1.8fr) minmax(180px, 1fr) auto; gap: 10px; align-items: center; }
+        .repo-row-line { display: grid; grid-template-columns: minmax(220px, 1fr) auto; gap: 10px; align-items: center; }
         .repo-row-name { font-size: 0.9rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .repo-row-controls { display: flex; align-items: center; gap: 8px; }
         .repo-row-controls label { margin: 0; font-size: 0.76rem; color: var(--muted); }
@@ -525,14 +526,6 @@
                 </div>
                 <form method="post" action="/api/clone-repo" id="addRepoForm">
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>Manual Repository URL (optional)</label>
-                            <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git">
-                        </div>
-                        <div class="form-group">
-                            <label>Default Branch</label>
-                            <input type="text" name="defaultBranch" value="main">
-                        </div>
                         <div class="form-group" style="margin-top:16px;">
                             <label>Available Repositories From Saved Providers</label>
                             <div class="repo-provider-picker">
@@ -581,7 +574,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="closeAddRepoModal()" style="background:#e8f5f0;color:var(--accent-dark);">Cancel</button>
-                        <button type="submit" style="background:var(--accent);color:white;">Clone Manual Repository</button>
                     </div>
                 </form>
             </div>
@@ -868,7 +860,7 @@
         if (!status) {
             return;
         }
-        status.textContent = message;
+        status.textContent = sanitizeUiMessage(message);
         status.classList.toggle('error', !!isError);
     }
 
@@ -884,18 +876,32 @@
     let repoActionStatusTimer = null;
     let notificationBanner = null;
 
+    function sanitizeUiMessage(message) {
+        const raw = String(message || '').trim();
+        if (!raw) {
+            return '';
+        }
+        const lower = raw.toLowerCase();
+        if (lower.includes("can't push refs to remote") || lower.includes('try running pull first to integrate your changes')) {
+            return 'Sync failed. Please check remote access and retry sync.';
+        }
+        return raw;
+    }
+
     function setRepoActionStatus(message, isError = false) {
         const status = document.getElementById('repo-action-status');
         if (!status) {
             return;
         }
 
+        const safeMessage = sanitizeUiMessage(message);
+
         if (repoActionStatusTimer) {
             clearTimeout(repoActionStatusTimer);
             repoActionStatusTimer = null;
         }
 
-        if (!message) {
+        if (!safeMessage) {
             status.textContent = '';
             status.classList.remove('error', 'success-toast', 'error-toast');
             status.classList.add('hidden');
@@ -926,7 +932,7 @@
         notificationBanner.className = `notification-banner ${bannerClass}`;
         notificationBanner.innerHTML = `
             <div class="notification-icon">${icon}</div>
-            <div class="notification-content">${escapeHtml(message)}</div>
+            <div class="notification-content">${escapeHtml(safeMessage)}</div>
         `;
         const appBody = document.querySelector('.app-body');
         if (appBody) {
@@ -935,7 +941,7 @@
             document.body.appendChild(notificationBanner);
         }
 
-        status.textContent = message;
+        status.textContent = safeMessage;
         status.classList.toggle('error', !!isError);
         status.classList.toggle('success-toast', !isError);
         status.classList.toggle('error-toast', !!isError);
@@ -1018,8 +1024,6 @@
             row.querySelectorAll('[data-action]').forEach((button) => {
                 button.addEventListener('click', async () => {
                     const repoId = row.dataset.id || '';
-                    const branchSelect = row.querySelector('.repo-branch-select');
-                    const branch = branchSelect ? branchSelect.value : 'main';
                     const action = button.dataset.action;
 
                     if (!repoId) {
@@ -1029,36 +1033,13 @@
 
                     button.disabled = true;
                     try {
-                        if (action === 'clone') {
-                            const payload = new URLSearchParams();
-                            payload.set('branch', branch || 'main');
-                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/clone`, { method: 'POST', body: payload });
-                            const text = await response.text();
-                            if (response.ok && !text.startsWith('Error:')) {
-                                setRepoActionStatus(text || 'Clone command completed.');
-                                if (branchSelect) {
-                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
-                                }
-                                await loadBranchesForRepoRow(row);
-                            } else {
-                                setRepoActionStatus(text || 'Clone failed.', true);
-                            }
-                            return;
-                        }
-
                         if (action === 'pull') {
-                            const payload = new URLSearchParams();
-                            payload.set('branch', branch || 'main');
-                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/pull`, { method: 'POST', body: payload });
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/pull`, { method: 'POST' });
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
-                                setRepoActionStatus(text || 'Pull command completed.');
-                                if (branchSelect) {
-                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
-                                }
-                                await loadBranchesForRepoRow(row);
+                                setRepoActionStatus(text || 'Sync completed.');
                             } else {
-                                setRepoActionStatus(text || 'Pull failed.', true);
+                                setRepoActionStatus(text || 'Sync failed.', true);
                             }
                             return;
                         }
@@ -1068,26 +1049,8 @@
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
                                 setRepoActionStatus(text || 'Fetch command completed.');
-                                await loadBranchesForRepoRow(row);
                             } else {
                                 setRepoActionStatus(text || 'Fetch failed.', true);
-                            }
-                            return;
-                        }
-
-                        if (action === 'checkout') {
-                            const payload = new URLSearchParams();
-                            payload.set('branch', branch || 'main');
-                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/checkout`, { method: 'POST', body: payload });
-                            const text = await response.text();
-                            if (response.ok && !text.startsWith('Error:')) {
-                                setRepoActionStatus(text || 'Checkout command completed.');
-                                if (branchSelect) {
-                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
-                                }
-                                await loadBranchesForRepoRow(row);
-                            } else {
-                                setRepoActionStatus(text || 'Checkout failed.', true);
                             }
                             return;
                         }
@@ -1143,6 +1106,16 @@
             bitbucket: 'BB',
             other: 'OT'
         };
+        const logoByType = {
+            github: '/images/providers/github-logo.png',
+            gitlab: '/images/providers/gitlab-logo.png',
+            azure: '/images/providers/azure-devops-logo.png',
+            bitbucket: '/images/providers/bitbucket-logo.png'
+        };
+        const logoSrc = logoByType[providerType];
+        if (logoSrc) {
+            return `<span class="provider-logo-icon ${providerType}"><img src="${logoSrc}" alt="${getProviderLabel(providerType)} logo" onerror="this.remove(); this.parentElement.textContent='${textByType[providerType] || 'OT'}';"></span>`;
+        }
         return `<span class="provider-logo-icon ${providerType}">${textByType[providerType] || 'OT'}</span>`;
     }
 
@@ -1322,14 +1295,6 @@
 
     function loadRepositories(options = {}) {
         const existingRepoIds = options.existingRepoIds instanceof Set ? options.existingRepoIds : null;
-        const selectedBranchByRepoId = new Map();
-        document.querySelectorAll('.repo-row').forEach((row) => {
-            const id = row.dataset.id || '';
-            const branchSelect = row.querySelector('.repo-branch-select');
-            if (id && branchSelect && branchSelect.value) {
-                selectedBranchByRepoId.set(id, branchSelect.value);
-            }
-        });
 
         fetch('/api/repositories')
             .then(response => response.json())
@@ -1360,17 +1325,9 @@
                                     <div class="repo-row" data-id="${escapeHtml(repo.id || '')}" data-name="${escapeHtml(repo.name || 'Repository')}">
                                         <div class="repo-row-line">
                                             <div class="repo-row-name" title="${escapeHtml(repo.name || 'Repository')}">${escapeHtml(repo.name || 'Repository')}</div>
-                                            <div class="repo-row-controls">
-                                                <label>Branch:</label>
-                                                <select class="repo-branch-select" data-default-branch="${escapeHtml(selectedBranchByRepoId.get(repo.id) || repo.defaultBranch || 'main')}" disabled>
-                                                    <option value="${escapeHtml(selectedBranchByRepoId.get(repo.id) || repo.defaultBranch || 'main')}">Loading...</option>
-                                                </select>
-                                            </div>
                                             <div class="repo-actions">
-                                                <button class="repo-action-btn" type="button" data-action="clone" title="git clone">Clone</button>
-                                                <button class="repo-action-btn secondary" type="button" data-action="pull" title="git pull origin &lt;branch&gt;">Pull</button>
+                                                <button class="repo-action-btn" type="button" data-action="pull" title="git pull">Sync</button>
                                                 <button class="repo-action-btn secondary" type="button" data-action="fetch" title="git fetch --all --tags --prune">Fetch</button>
-                                                <button class="repo-action-btn secondary" type="button" data-action="checkout" title="git checkout &lt;branch&gt;">Checkout</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1378,26 +1335,6 @@
                             </div>
                         `).join('');
                     bindRepositoryActions();
-
-                    if (existingRepoIds && existingRepoIds.size > 0) {
-                        document.querySelectorAll('.repo-row').forEach((row) => {
-                            const repoId = row.dataset.id || '';
-                            const branchSelect = row.querySelector('.repo-branch-select');
-                            if (!branchSelect) {
-                                return;
-                            }
-
-                            if (existingRepoIds.has(repoId)) {
-                                const selectedBranch = (branchSelect.dataset.defaultBranch || 'main').trim() || 'main';
-                                branchSelect.innerHTML = branchOptions([selectedBranch], selectedBranch);
-                                branchSelect.disabled = false;
-                            } else {
-                                loadBranchesForRepoRow(row);
-                            }
-                        });
-                    } else {
-                        loadBranchesForVisibleRepositories();
-                    }
                 }
             })
             .catch(error => console.error('Error loading repositories:', error));
@@ -1508,8 +1445,8 @@
                     <div class="repo-picker-card">
                         <h4>${escapeHtml(repo.fullName || repo.name)}</h4>
                         <p>${escapeHtml(repo.url)}</p>
-                        <div class="mini-meta">${escapeHtml(repo.providerName || getProviderLabel(type))} | Branch: ${escapeHtml(repo.defaultBranch || 'main')} | ${repo.privateRepo ? 'Private' : 'Public'}</div>
-                        <button type="button" class="clone-available-repo-btn" data-url="${escapeHtml(repo.url)}" data-branch="${escapeHtml(repo.defaultBranch || 'main')}">Clone This Repo</button>
+                        <div class="mini-meta">${escapeHtml(repo.providerName || getProviderLabel(type))} | ${repo.privateRepo ? 'Private' : 'Public'}</div>
+                        <button type="button" class="clone-available-repo-btn" data-url="${escapeHtml(repo.url)}" data-branch="${escapeHtml(repo.defaultBranch || 'main')}">Add Repository</button>
                     </div>
                 `).join('')}
             `).join('');
@@ -1873,31 +1810,7 @@
         if (addRepoForm) {
             addRepoForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const formData = new FormData(e.target);
-                const repoUrl = (formData.get('repoUrl') || '').toString().trim();
-
-                if (!repoUrl) {
-                    setModalStatus('Enter a manual repo URL or pick one from the list below.', true);
-                    return;
-                }
-
-                try {
-                    const existingRepoIds = getCurrentRepoIds();
-                    const response = await fetch('/api/clone-repo', {
-                        method: 'POST',
-                        body: new URLSearchParams(formData)
-                    });
-
-                    const text = await response.text();
-                    if (response.ok && !text.startsWith('Error:')) {
-                        setModalStatus('Repository cloned successfully.');
-                        loadRepositories({ existingRepoIds });
-                    } else {
-                        setModalStatus(text || 'Error cloning repository.', true);
-                    }
-                } catch (error) {
-                    setModalStatus('Error: ' + error.message, true);
-                }
+                setModalStatus('Select a provider repository and click Add Repository.', true);
             });
         }
 
