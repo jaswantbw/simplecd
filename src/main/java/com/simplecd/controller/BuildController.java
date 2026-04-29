@@ -2,7 +2,9 @@ package com.simplecd.controller;
 
 import com.simplecd.model.BuildJob;
 import com.simplecd.model.BuildStatus;
+import com.simplecd.model.GitProviderProfile;
 import com.simplecd.model.GitProviderSettings;
+import com.simplecd.model.ProviderVerificationResult;
 import com.simplecd.model.RemoteRepository;
 import com.simplecd.service.BuildService;
 import com.simplecd.service.GitHubRepositoryDiscoveryService;
@@ -83,6 +85,59 @@ public class BuildController {
     }
 
     @ResponseBody
+    @PostMapping("/api/repositories/{repositoryId}/clone")
+    public String cloneRepositoryById(@PathVariable String repositoryId,
+                                      @RequestParam(required = false, defaultValue = "main") String branch) {
+        try {
+            return buildService.cloneRepositoryById(repositoryId, branch);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/api/repositories/{repositoryId}/pull")
+    public String pullRepository(@PathVariable String repositoryId,
+                                 @RequestParam(required = false, defaultValue = "main") String branch) {
+        try {
+            return buildService.pullRepository(repositoryId, branch);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/api/repositories/{repositoryId}/fetch")
+    public String fetchRepository(@PathVariable String repositoryId) {
+        try {
+            return buildService.fetchRepository(repositoryId);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/api/repositories/{repositoryId}/checkout")
+    public String checkoutRepository(@PathVariable String repositoryId,
+                                     @RequestParam(required = false, defaultValue = "main") String branch) {
+        try {
+            return buildService.checkoutRepository(repositoryId, branch);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/api/repositories/{repositoryId}/branches")
+    public List<String> getRepositoryBranches(@PathVariable String repositoryId) {
+        try {
+            return buildService.getRepositoryBranches(repositoryId);
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
+    @ResponseBody
     @GetMapping("/api/git-settings")
     public GitProviderSettings getGitSettings() {
         return gitProviderSettingsService.getSettings();
@@ -90,23 +145,66 @@ public class BuildController {
 
     @ResponseBody
     @PostMapping("/api/git-settings")
-    public GitProviderSettings saveGitSettings(@RequestParam(defaultValue = "") String providerUrl,
-                                               @RequestParam(defaultValue = "") String username,
-                                               @RequestParam(defaultValue = "") String password,
-                                               @RequestParam(defaultValue = "") String pat,
-                                               @RequestParam(defaultValue = "") String sshKey) {
-        GitProviderSettings settings = new GitProviderSettings();
-        settings.setProviderUrl(providerUrl);
-        settings.setUsername(username);
-        settings.setPassword(password);
-        settings.setPat(pat);
-        settings.setSshKey(sshKey);
+    public GitProviderSettings saveGitSettings(@RequestBody GitProviderSettings settings) {
         return gitProviderSettingsService.saveSettings(settings);
     }
 
     @ResponseBody
-    @GetMapping("/api/github-repos")
-    public List<RemoteRepository> getGitHubRepositories() throws Exception {
-        return gitHubRepositoryDiscoveryService.fetchRepositories();
+    @PostMapping("/api/git-settings/verify")
+    public ProviderVerificationResult verifyGitProvider(@RequestBody GitProviderProfile profile) {
+        return gitHubRepositoryDiscoveryService.verifyProvider(profile);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/remote-repositories")
+    public List<RemoteRepository> getRemoteRepositories(@RequestParam(required = false) String providerId) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchRepositories(providerId);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/azure/collections")
+    public List<String> getAzureCollections(@RequestParam String providerId) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchAzureCollections(providerId);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/github/owners")
+    public List<String> getGitHubOwners(@RequestParam String providerId) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchGitHubOwners(providerId);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/github/repositories")
+    public List<RemoteRepository> getGitHubRepositories(@RequestParam String providerId,
+                                                        @RequestParam(required = false, defaultValue = "") String owner) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchGitHubRepositories(providerId, owner);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/gitlab/groups")
+    public List<String> getGitLabGroups(@RequestParam String providerId) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchGitLabGroups(providerId);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/gitlab/projects")
+    public List<RemoteRepository> getGitLabProjects(@RequestParam String providerId,
+                                                    @RequestParam(required = false, defaultValue = "") String group) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchGitLabProjects(providerId, group);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/azure/projects")
+    public List<String> getAzureProjects(@RequestParam String providerId,
+                                         @RequestParam(required = false, defaultValue = "") String collection) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchAzureProjects(providerId, collection);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/azure/repositories")
+    public List<RemoteRepository> getAzureRepositories(@RequestParam String providerId,
+                                                       @RequestParam(required = false, defaultValue = "") String collection,
+                                                       @RequestParam String project) throws Exception {
+        return gitHubRepositoryDiscoveryService.fetchAzureRepositories(providerId, collection, project);
     }
 }

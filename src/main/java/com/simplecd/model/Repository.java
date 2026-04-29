@@ -9,15 +9,17 @@ public class Repository {
     private String localPath;
     private LocalDateTime clonedAt;
     private String defaultBranch;
+    private String providerType;
 
     public Repository() {}
 
-    public Repository(String id, String name, String url, String localPath, String defaultBranch) {
+    public Repository(String id, String name, String url, String localPath, String defaultBranch, String providerType) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.localPath = localPath;
         this.defaultBranch = defaultBranch;
+        this.providerType = providerType;
         this.clonedAt = LocalDateTime.now();
     }
 
@@ -38,4 +40,7 @@ public class Repository {
 
     public String getDefaultBranch() { return defaultBranch; }
     public void setDefaultBranch(String defaultBranch) { this.defaultBranch = defaultBranch; }
+
+    public String getProviderType() { return providerType; }
+    public void setProviderType(String providerType) { this.providerType = providerType; }
 }

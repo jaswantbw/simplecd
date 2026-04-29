@@ -7,12 +7,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f3f4f6;
+            --panel: #ffffff;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #d1d5db;
+            --accent: #2563eb;
+        }
+
         html { font-size: 20px; }
         body {
             margin: 0;
             font-family: "Heebo", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f7f3;
-            color: #0f2f29;
+            background: var(--bg);
+            color: var(--text);
             padding: 20px;
         }
 
@@ -22,10 +31,10 @@
         }
 
         .card {
-            background: #fff;
-            border: 1px solid #cee1d9;
+            background: var(--panel);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            box-shadow: 0 12px 26px rgba(15, 47, 41, 0.08);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             padding: 24px;
         }
 
@@ -44,10 +53,10 @@
 
         h1 { margin: 0; }
 
-        ul { color: #4f6660; line-height: 1.6; }
+        ul { color: var(--muted); line-height: 1.6; }
 
         a {
-            color: #14674f;
+            color: var(--accent);
             font-weight: 700;
             text-decoration: none;
         }

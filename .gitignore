@@ -1,0 +1,4 @@
+config/git-settings.properties
+target/
+logs/
+workspaces/

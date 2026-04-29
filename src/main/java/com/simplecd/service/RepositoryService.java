@@ -11,9 +11,9 @@ public class RepositoryService {
 
     private final Map<String, Repository> repositories = new ConcurrentHashMap<>();
 
-    public Repository addRepository(String name, String url, String localPath, String defaultBranch) {
+    public Repository addRepository(String name, String url, String localPath, String defaultBranch, String providerType) {
         String id = UUID.randomUUID().toString();
-        Repository repo = new Repository(id, name, url, localPath, defaultBranch);
+        Repository repo = new Repository(id, name, url, localPath, defaultBranch, providerType);
         repositories.put(id, repo);
         return repo;
     }

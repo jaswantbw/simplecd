@@ -8,28 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --sidebar-bg: #0d2b25;
-            --sidebar-hover: #1a3d35;
-            --sidebar-active: #1f7a64;
-            --sidebar-text: #a8c9c0;
-            --sidebar-heading: #5e8c82;
+            --sidebar-bg: #0f2733;
+            --sidebar-hover: rgba(255, 255, 255, 0.08);
+            --sidebar-active-bg: rgba(255, 255, 255, 0.12);
+            --sidebar-text: #ffffff;
+            --sidebar-heading: #818d94;
             --sidebar-width: 228px;
-            --header-height: 56px;
-            --accent: #1f7a64;
-            --accent-dark: #155646;
-            --accent-light: #e4f5ef;
-            --bg: #f3f8f6;
+            --header-height: 50px;
+            --accent: #009688;
+            --accent-dark: #00796B;
+            --accent-light: rgba(0, 150, 136, 0.12);
+            --bg: #dee6eb;
             --panel: #ffffff;
-            --border: #d0deda;
-            --text: #17302b;
-            --muted: #577068;
-            --red: #dc3545;
-            --yellow: #ffc107;
-            --green: #28a745;
-            --blue: #007bff;
-            --gray: #6c757d;
-            --orange: #F97316;
-            --purple: #6f42c1;
+            --panel-soft: #ffffff;
+            --border: #E5E7EB;
+            --border-strong: #E5E7EB;
+            --text: #111827;
+            --muted: #6D7F8B;
+            --disabled: #CCD6DD;
+            --red: #E96D76;
+            --yellow: #f4c030;
+            --green: #18BE94;
+            --blue: #009688;
+            --gray: #CCD6DD;
+            --orange: #f4c030;
+            --purple: #766f94;
+            --secondary-border: #D1D5DB;
+            --secondary-text: #374151;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { font-size: 20px; }
@@ -45,6 +50,7 @@
             width: var(--sidebar-width);
             min-width: var(--sidebar-width);
             background: var(--sidebar-bg);
+            border-right: none;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -59,11 +65,11 @@
             align-items: center;
             gap: 10px;
             padding: 16px 18px;
-            border-bottom: 1px solid #1e3d36;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             min-height: var(--header-height);
         }
         .sidebar-brand img { height: 32px; width: 32px; object-fit: contain; border-radius: 6px; }
-        .sidebar-brand-name { font-size: 1.1rem; font-weight: 700; color: #e8f5f0; letter-spacing: 0.02em; }
+        .sidebar-brand-name { font-size: 1.1rem; font-weight: 700; color: var(--sidebar-text); letter-spacing: 0.02em; }
         .sidebar-section-label {
             padding: 18px 18px 6px;
             font-size: 0.68rem;
@@ -76,22 +82,22 @@
             display: flex;
             align-items: center;
             gap: 11px;
-            padding: 9px 18px;
+            padding: 8px 18px;
             cursor: pointer;
-            color: var(--sidebar-text);
-            font-size: 1rem;
+            color: var(--sidebar-heading);
+            font-size: 0.95rem;
             font-weight: 500;
             border-left: 3px solid transparent;
             transition: background 0.15s, color 0.15s, border-color 0.15s;
             user-select: none;
             text-decoration: none;
         }
-        .nav-item:hover { background: var(--sidebar-hover); color: #d6efea; }
-        .nav-item.active { background: rgba(31,122,100,0.18); border-left-color: var(--sidebar-active); color: #b8f0e0; }
+        .nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-text); }
+        .nav-item.active { background: var(--sidebar-active-bg); border-left-color: transparent; color: var(--sidebar-text); }
         .nav-item svg { flex-shrink: 0; opacity: 0.75; }
         .nav-item.active svg { opacity: 1; }
         .sidebar-spacer { flex: 1; }
-        .sidebar-bottom { border-top: 1px solid #1e3d36; padding: 10px 0; }
+        .sidebar-bottom { border-top: 1px solid rgba(255, 255, 255, 0.08); padding: 10px 0; }
         .app-body {
             margin-left: var(--sidebar-width);
             display: flex;
@@ -99,106 +105,110 @@
             flex: 1;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
         .topbar {
             height: var(--header-height);
-            background: var(--panel);
+            background: #ffffff;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 26px;
+            padding: 0 20px;
             gap: 16px;
             flex-shrink: 0;
         }
         .topbar-page-title { display: none; }
         .topbar-spacer { flex: 1; }
-        .topbar-badge { background: var(--accent-light); color: var(--accent-dark); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid #b8ddd4; }
-        .topbar-logout { color: var(--accent-dark); font-weight: 700; font-size: 0.9rem; text-decoration: none; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; transition: background 0.15s; }
-        .topbar-logout:hover { background: var(--accent-light); }
-        .content-area { flex: 1; overflow-y: auto; padding: 28px 32px; }
+        .topbar-badge { background: #f3f4f6; color: var(--muted); font-size: 0.75rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); }
+        .topbar-logout { color: var(--secondary-text); font-weight: 600; font-size: 0.85rem; text-decoration: none; padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; transition: background 0.15s, border-color 0.15s; background: #ffffff; }
+        .topbar-logout:hover { background: #f9fafb; border-color: var(--secondary-border); }
+        .content-area { flex: 1; overflow-y: auto; padding: 18px 20px; }
         .section { display: none; }
         .section.active { display: block; }
-        .section-header { margin-bottom: 22px; }
-        .section-header h2 { font-size: 2.1rem; font-weight: 800; color: var(--text); letter-spacing: 0.01em; margin-bottom: 6px; }
-        .section-header p { color: var(--muted); font-size: 0.96rem; margin-top: 0; }
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 26px; }
-        .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(31,122,100,0.06); }
-        .stat-group-title { margin: 0 0 12px; font-size: 0.95rem; font-weight: 800; color: var(--accent-dark); letter-spacing: 0.03em; text-transform: uppercase; }
-        .stat-card-blue { border: 0; background: linear-gradient(135deg, #007bff 0%, #3399ff 100%); }
-        .stat-card-orange { border: 0; background: linear-gradient(135deg, #F97316 0%, #fb923c 100%); }
-        .stat-card-red { border: 0; background: linear-gradient(135deg, #dc3545 0%, #ef4444 100%); }
-        .stat-card-green { border: 0; background: linear-gradient(135deg, #28a745 0%, #34c759 100%); }
-        .stat-card-yellow { border: 0; background: linear-gradient(135deg, #ffc107 0%, #ffd43b 100%); }
-        .stat-card-gray { border: 0; background: linear-gradient(135deg, #6c757d 0%, #868e96 100%); }
-        .stat-card-purple { border: 0; background: linear-gradient(135deg, #6f42c1 0%, #8e5de6 100%); }
+        .section-header { margin-bottom: 16px; }
+        .section-header h2 { font-size: 1.5rem; font-weight: 600; color: var(--text); letter-spacing: 0; margin-bottom: 4px; }
+        .section-header p { color: var(--muted); font-size: 0.85rem; margin-top: 0; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
+        .stat-card { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; box-shadow: 1px 2px 3px rgba(0,0,0,0.05); }
+        .stat-group-title { margin: 0 0 10px; font-size: 0.78rem; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+        .stat-card-blue { border-left: 3px solid #00695c; background: #009688; }
+        .stat-card-orange { border-left: 3px solid #e65100; background: #ef6c00; }
+        .stat-card-red { border-left: 3px solid #b71c1c; background: #d32f2f; }
+        .stat-card-green { border-left: 3px solid #1b5e20; background: #2e7d32; }
+        .stat-card-yellow { border-left: 3px solid #b28704; background: #f9a825; }
+        .stat-card-gray { border-left: 3px solid #37474f; background: #546e7a; }
+        .stat-card-purple { border-left: 3px solid #4527a0; background: #673ab7; }
         .stat-card-blue .stat-label,
         .stat-card-orange .stat-label,
         .stat-card-red .stat-label,
         .stat-card-green .stat-label,
-        .stat-card-yellow .stat-label,
         .stat-card-gray .stat-label,
         .stat-card-purple .stat-label {
-            color: #111111;
+            color: rgba(255, 255, 255, 0.86);
         }
         .stat-card-blue .stat-value,
         .stat-card-orange .stat-value,
         .stat-card-red .stat-value,
         .stat-card-green .stat-value,
-        .stat-card-yellow .stat-value,
         .stat-card-gray .stat-value,
         .stat-card-purple .stat-value {
-            color: #111111 !important;
-            text-shadow: none;
+            color: #ffffff !important;
         }
         .stat-card-blue .stat-sub,
         .stat-card-orange .stat-sub,
         .stat-card-red .stat-sub,
         .stat-card-green .stat-sub,
-        .stat-card-yellow .stat-sub,
         .stat-card-gray .stat-sub,
         .stat-card-purple .stat-sub {
-            color: #111111;
+            color: rgba(255, 255, 255, 0.86);
         }
-        .stat-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
-        .stat-value { font-size: 2rem; font-weight: 800; color: var(--accent-dark); line-height: 1; }
-        .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; box-shadow: 0 2px 8px rgba(31,122,100,0.06); margin-bottom: 20px; }
-        .panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+        .stat-card-yellow .stat-label,
+        .stat-card-yellow .stat-value,
+        .stat-card-yellow .stat-sub {
+            color: #1f2937 !important;
+        }
+        .stat-label { font-size: 0.72rem; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+        .stat-value { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }
+        .stat-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; box-shadow: 1px 2px 3px rgba(0,0,0,0.05); margin-bottom: 16px; }
+        .panel h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
         .form-group { margin-bottom: 14px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+        label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
         input[type="text"],
         input[type="password"],
-        textarea { width: 100%; max-width: 560px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); font-size: 0.95rem; color: var(--text); background: #fafcfb; transition: border-color 0.15s; font-family: inherit; }
+        select,
+        textarea { width: 100%; max-width: 560px; padding: 9px 10px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.9rem; color: var(--text); background: var(--panel-soft); transition: border-color 0.15s; font-family: inherit; }
         input[type="text"]:focus,
         input[type="password"]:focus,
+        select:focus,
         textarea:focus { outline: none; border-color: var(--accent); }
         textarea { min-height: 90px; resize: vertical; }
-        button, .btn { display: inline-flex; align-items: center; gap: 7px; border: 0; border-radius: 9px; background: var(--accent); color: white; padding: 10px 18px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-decoration: none; transition: background 0.15s; }
-        button:hover, .btn:hover { background: var(--accent-dark); }
+        button, .btn { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--accent); border-radius: 4px; background: var(--accent); color: white; padding: 8px 14px; font-weight: 600; font-size: 0.82rem; cursor: pointer; text-decoration: none; transition: background 0.15s, transform 0.15s; }
+        button:hover, .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
         .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        thead tr { background: #eef7f3; }
-        th { padding: 10px 12px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border-bottom: 1px solid var(--border); text-align: left; }
-        td { padding: 10px 12px; border-bottom: 1px solid #edf2f0; vertical-align: middle; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead tr { background: #ffffff; }
+        th { padding: 10px 12px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1px solid var(--border-strong); text-align: left; }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f7fbf9; }
-        .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
-        .badge-success { background: #eaf8ee; color: var(--green); border: 1px solid #bde5c8; }
-        .badge-failed { background: #fdecef; color: var(--red); border: 1px solid #f3bcc5; }
-        .badge-running { background: #eaf3ff; color: var(--blue); border: 1px solid #bdd8ff; }
-        .badge-pending { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
-        .badge-aborted { background: #fff8e1; color: #8a6d00; border: 1px solid #ffe08a; }
-        .badge-unstable { background: #fff1e8; color: var(--orange); border: 1px solid #ffc9a8; }
-        .badge-blocked { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
-        .badge-cancelled { background: #f1f3f5; color: var(--gray); border: 1px solid #d6d9dd; }
-        .badge-draft { background: #f3ebff; color: var(--purple); border: 1px solid #d5b8ff; }
-        .link { color: var(--accent-dark); font-weight: 600; text-decoration: none; }
+        tr:hover td { background: #F9FAFB; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+        .badge-success { background: #DCFCE7; color: var(--green); border: 1px solid #BBF7D0; }
+        .badge-failed { background: #FEE2E2; color: var(--red); border: 1px solid #FECACA; }
+        .badge-running { background: #E0F2F1; color: var(--blue); border: 1px solid #B2DFDB; }
+        .badge-pending { background: #F3F4F6; color: var(--gray); border: 1px solid var(--border); }
+        .badge-aborted { background: #FEF3C7; color: var(--yellow); border: 1px solid #FDE68A; }
+        .badge-unstable { background: #FEF3C7; color: var(--orange); border: 1px solid #FDE68A; }
+        .badge-blocked { background: #F3F4F6; color: var(--gray); border: 1px solid var(--border); }
+        .badge-cancelled { background: #F3F4F6; color: var(--gray); border: 1px solid var(--border); }
+        .badge-draft { background: #ede9fe; color: var(--purple); border: 1px solid #ddd6fe; }
+        .link { color: var(--accent); font-weight: 600; text-decoration: none; }
         .link:hover { text-decoration: underline; }
-        .add-repo-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: var(--accent); color: white; border: 0; border-radius: 8px; font-size: 1.5rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+        .add-repo-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: var(--accent); color: white; border: 0; border-radius: 4px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
         .add-repo-btn:hover { background: var(--accent-dark); }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(3,7,13,0.74); z-index: 1000; }
         .modal-overlay.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); border-radius: 14px; padding: 28px; box-shadow: 0 20px 48px rgba(15,47,41,0.2); max-width: 760px; width: 92%; }
+        .modal-content { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 22px; box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1); max-width: 760px; width: 92%; }
         .modal-header { margin-bottom: 18px; }
         .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--text); }
         .modal-close { float: right; font-size: 1.8rem; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; width: 28px; height: 28px; }
@@ -207,17 +217,133 @@
         .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
         .modal-footer button { margin: 0; }
         .repo-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 8px; max-height: 300px; overflow-y: auto; }
-        .repo-picker-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #f9fcfb; }
+        .repo-picker-card { border: 1px solid var(--border); border-radius: 4px; padding: 10px; background: #ffffff; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
         .repo-picker-card h4 { margin: 0 0 5px; font-size: 0.9rem; color: var(--text); }
         .repo-picker-card p { margin: 0 0 7px; color: var(--muted); font-size: 0.8rem; word-break: break-all; }
         .repo-picker-card .mini-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
+        .repo-list { display: flex; flex-direction: column; gap: 10px; }
+        .repo-provider-section { display: flex; flex-direction: column; gap: 10px; }
+        .repo-provider-header { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+        .repo-provider-header h4 { margin: 0; font-size: 0.92rem; color: var(--text); }
+        .repo-provider-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--border); background: #f3f4f6; color: var(--secondary-text); }
+        .provider-logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.02em; border: 1px solid transparent; }
+        .provider-logo-icon.github { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
+        .provider-logo-icon.gitlab { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+        .provider-logo-icon.azure { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+        .provider-logo-icon.bitbucket { background: #ecfeff; border-color: #a5f3fc; color: #0e7490; }
+        .provider-logo-icon.other { background: #f3f4f6; border-color: #d1d5db; color: #374151; }
+        .repo-row { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; padding: 10px 12px; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
+        .repo-row-line { display: grid; grid-template-columns: minmax(180px, 1.8fr) minmax(180px, 1fr) auto; gap: 10px; align-items: center; }
+        .repo-row-name { font-size: 0.9rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .repo-row-controls { display: flex; align-items: center; gap: 8px; }
+        .repo-row-controls label { margin: 0; font-size: 0.76rem; color: var(--muted); }
+        .repo-branch-select { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; color: var(--text); font-size: 0.76rem; padding: 5px 8px; min-width: 108px; }
+        .repo-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+        .repo-action-btn { border: 1px solid var(--accent); background: var(--accent); color: #ffffff; font-size: 0.74rem; font-weight: 600; border-radius: 4px; padding: 6px 10px; cursor: pointer; min-width: 66px; text-align: center; }
+        .repo-action-btn:hover { background: var(--accent-dark); }
+        .repo-action-btn.secondary { background: #ffffff; color: var(--secondary-text); border-color: var(--secondary-border); }
+        .repo-action-btn.secondary:hover { background: #f9fafb; }
+        @media (max-width: 960px) {
+            .repo-row-line { grid-template-columns: 1fr; }
+            .repo-actions { justify-content: flex-start; }
+        }
         .inline-status { font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
         .inline-status.error { color: var(--red); }
+        .provider-settings-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+        .provider-settings-card { border: 1px solid var(--border); border-radius: 6px; padding: 14px; background: #ffffff; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
+        .provider-settings-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+        .provider-settings-title { display: flex; align-items: center; gap: 10px; }
+        .provider-settings-title strong { font-size: 0.9rem; color: var(--text); }
+        .provider-settings-empty { border: 1px dashed var(--border); border-radius: 6px; padding: 16px; color: var(--muted); font-size: 0.84rem; background: #fcfcfc; }
+        .provider-settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .provider-settings-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .provider-add-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+        .provider-create-row { display: grid; grid-template-columns: minmax(220px, 280px) auto; gap: 10px; align-items: end; margin-bottom: 14px; }
+        .provider-secondary-btn { background: #ffffff; color: var(--secondary-text); border: 1px solid var(--secondary-border); }
+        .provider-secondary-btn:hover { background: #f9fafb; }
+        .provider-remove-btn { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+        .provider-remove-btn:hover { background: #ffe4e6; }
+        .provider-verify-btn { background: #ffffff; color: var(--secondary-text); border: 1px solid var(--secondary-border); }
+        .provider-verify-btn:hover { background: #f9fafb; }
+        .provider-card-status { margin-top: 10px; font-size: 0.78rem; color: var(--muted); }
+        .provider-card-status.error { color: var(--red); }
+        .repo-provider-picker { display: grid; grid-template-columns: minmax(220px, 320px) auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+        .provider-browse-panel { border: 1px dashed var(--secondary-border); border-radius: 6px; padding: 10px; margin-bottom: 10px; background: #fbfdff; }
+        .provider-browse-panel.hidden { display: none; }
+        .azure-browse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+        .azure-browse-label { display: block; font-size: 0.74rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+        .azure-browse-select { width: 100%; border: 1px solid var(--secondary-border); border-radius: 4px; background: #ffffff; color: var(--text); font-size: 0.78rem; padding: 7px 8px; }
+        .azure-browse-hint { margin: 0 0 8px; color: var(--muted); font-size: 0.78rem; }
+        .notification-banner {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: none;
+            padding: 12px 18px;
+            border-radius: 0;
+            font-weight: 600;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInUp 0.3s ease-out;
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideOutDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(30px); opacity: 0; }
+        }
+        .notification-banner.success {
+            background: #2e7d32;
+            border-top: 1px solid #1b5e20;
+            color: #ffffff;
+        }
+        .notification-banner.error {
+            background: #2e7d32;
+            border-top: 1px solid #1b5e20;
+            color: #ffffff;
+        }
+        .notification-banner.hidden {
+            display: none;
+        }
+        .notification-banner.fadeout {
+            animation: slideOutDown 0.3s ease-out forwards;
+        }
+        .notification-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+        .notification-banner.success .notification-icon { color: #ffffff; }
+        .notification-banner.error .notification-icon { color: #ffffff; }
+        .notification-content {
+            flex: 1;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        @media (max-width: 760px) {
+            .notification-banner {
+                font-size: 0.82rem;
+                padding: 10px 12px;
+            }
+        }
         .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
         .empty-state svg { margin-bottom: 12px; opacity: 0.35; }
         .empty-state p { font-size: 0.92rem; }
-        .user-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #1f7a64, #0d4a38); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #9ef5d6; margin-bottom: 14px; }
-        .user-info-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #edf2f0; font-size: 0.9rem; }
+        .user-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 14px; }
+        .user-info-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         .user-info-row:last-child { border-bottom: none; }
         .user-info-key { font-weight: 700; color: var(--muted); min-width: 110px; }
         @media (max-width: 760px) {
@@ -359,11 +485,11 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                         </tr>
-                        <tr th:if="${jobs.isEmpty()}">
+                        <tr th:if="${jobs == null or jobs.isEmpty()}">
                             <td colspan="5" style="text-align:center;color:var(--muted);padding:28px;">No builds yet. Trigger one from Code Repository.</td>
                         </tr>
                         </tbody>
@@ -376,33 +502,17 @@
         <div class="section" id="section-code-repository">
             <div class="section-header">
                 <h2>Code Repository</h2>
-                <p>Add GitHub repositories and trigger pipeline runs.</p>
+                <p>Add and Manage Repositories.</p>
             </div>
             <div class="panel">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
                     <h3 style="margin:0;flex:1;">Your Repositories</h3>
                     <button class="add-repo-btn" onclick="openAddRepoModal()">+</button>
                 </div>
-                <div id="repos-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
-                    <div style="text-align:center;padding:28px;color:var(--muted);grid-column:1/-1;">No repositories yet. Click + to add one.</div>
+                <div id="repos-list" class="repo-list">
+                    <div style="text-align:center;padding:28px;color:var(--muted);">No repositories yet. Click + to add one.</div>
                 </div>
-            </div>
-            <div class="panel" style="margin-top:20px;">
-                <h3>Trigger New Build</h3>
-                <form method="post" action="/build">
-                    <div class="form-group">
-                        <label>Git Repository URL</label>
-                        <input type="text" name="repoUrl" placeholder="https://github.com/org/repo.git" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Branch</label>
-                        <input type="text" name="branch" value="main" required>
-                    </div>
-                    <button type="submit">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        Run Pipeline
-                    </button>
-                </form>
+                <div id="repo-action-status" class="inline-status"></div>
             </div>
         </div>
 
@@ -424,9 +534,47 @@
                             <input type="text" name="defaultBranch" value="main">
                         </div>
                         <div class="form-group" style="margin-top:16px;">
-                            <label>Available Repositories From Saved Settings</label>
+                            <label>Available Repositories From Saved Providers</label>
+                            <div class="repo-provider-picker">
+                                <div class="form-group" style="margin-bottom:0;max-width:none;">
+                                    <label>Provider Connection</label>
+                                    <select id="repo-provider-select"></select>
+                                </div>
+                                <button type="button" class="provider-secondary-btn" onclick="reloadSelectedProviderRepos()">Load</button>
+                            </div>
+                            <div id="azure-browse-panel" class="provider-browse-panel hidden">
+                                <p class="azure-browse-hint">Azure selected. Choose collection and project to load repositories.</p>
+                                <div class="azure-browse-grid">
+                                    <div>
+                                        <label class="azure-browse-label">Collection</label>
+                                        <select id="azure-collection-select" class="azure-browse-select"></select>
+                                    </div>
+                                    <div>
+                                        <label class="azure-browse-label">Project</label>
+                                        <select id="azure-project-select" class="azure-browse-select"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="github-browse-panel" class="provider-browse-panel hidden">
+                                <p class="azure-browse-hint">GitHub selected. Choose organization or user to load repositories.</p>
+                                <div class="azure-browse-grid">
+                                    <div>
+                                        <label class="azure-browse-label">Organization / User</label>
+                                        <select id="github-owner-select" class="azure-browse-select"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="gitlab-browse-panel" class="provider-browse-panel hidden">
+                                <p class="azure-browse-hint">GitLab selected. Choose group or subgroup to load projects.</p>
+                                <div class="azure-browse-grid">
+                                    <div>
+                                        <label class="azure-browse-label">Group / Subgroup</label>
+                                        <select id="gitlab-group-select" class="azure-browse-select"></select>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="availableReposInModal" class="repo-picker-grid">
-                                <div style="grid-column:1/-1;color:var(--muted);">Save Git settings first, then open this modal to load repositories.</div>
+                                <div style="grid-column:1/-1;color:var(--muted);">Save one or more provider connections first, then open this modal to load repositories by category.</div>
                             </div>
                             <div id="add-repo-status" class="inline-status"></div>
                         </div>
@@ -455,7 +603,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                             <td th:text="${job.artifactPath ?: '—'}"></td>
@@ -485,7 +633,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td th:text="${job.artifactPath}" style="font-family:monospace;font-size:0.82rem;"></td>
-                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -513,7 +661,7 @@
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
                             <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span>
+                                <span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span>
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                         </tr>
@@ -559,7 +707,7 @@
                             <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
                             <td th:text="${job.repoUrl}"></td>
                             <td th:text="${job.branch}"></td>
-                            <td><span th:classappend="${job.status.name() == 'SUCCESS'} ? 'badge-success' : (${job.status.name() == 'FAILED'} ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : ((job.status.name() == 'BLOCKED') ? 'badge-blocked' : ((job.status.name() == 'CANCELLED') ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))" class="badge" th:text="${job.status}"></span></td>
+                            <td><span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span></td>
                         </tr>
                         <tr th:if="${jobs.isEmpty()}">
                             <td colspan="4" style="text-align:center;color:var(--muted);padding:28px;">No data yet.</td>
@@ -578,29 +726,23 @@
             </div>
             <div class="panel">
                 <h3>Git Provider Settings</h3>
-                <p style="color:var(--muted);font-size:0.88rem;margin-bottom:14px;">Save credentials once, then choose repositories directly in Add Repo.</p>
+                <p style="color:var(--muted);font-size:0.88rem;margin-bottom:14px;">Add a provider connection, verify the URL and credentials, then Add Repo will browse GitHub, GitLab, Azure DevOps, Bitbucket, or other supported providers.</p>
                 <form id="gitSettingsForm">
-                    <div class="form-group">
-                        <label>Repository URL (optional)</label>
-                        <input type="text" name="providerUrl" placeholder="https://github.com/your-org-or-user">
+                    <div class="provider-create-row">
+                        <div class="form-group" style="margin-bottom:0;max-width:none;">
+                            <label>Provider Type</label>
+                            <select id="new-provider-type">
+                                <option value="github">GitHub</option>
+                                <option value="gitlab">GitLab</option>
+                                <option value="azure">Azure DevOps</option>
+                                <option value="bitbucket">Bitbucket</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="button" class="provider-secondary-btn" onclick="addSelectedProviderProfile()">Add Provider</button>
                     </div>
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" name="username" placeholder="github-username">
-                    </div>
-                    <div class="form-group">
-                        <label>Password (optional)</label>
-                        <input type="password" name="password" placeholder="password (if needed)">
-                    </div>
-                    <div class="form-group">
-                        <label>Personal Access Token (PAT)</label>
-                        <input type="password" name="pat" placeholder="github_pat_...">
-                    </div>
-                    <div class="form-group">
-                        <label>SSH Key (optional)</label>
-                        <textarea name="sshKey" placeholder="ssh-rsa AAAA..."></textarea>
-                    </div>
-                    <button type="submit">Save Git Settings</button>
+                    <div id="provider-settings-list" class="provider-settings-list"></div>
+                    <button type="submit">Save Provider Settings</button>
                     <div id="git-settings-status" class="inline-status"></div>
                 </form>
             </div>
@@ -633,7 +775,7 @@
                 </div>
                 <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
                     <strong style="color:var(--accent-dark);">2. Navigate to Code Repository</strong>
-                    <p style="color:var(--muted);font-size:0.88rem;">Paste your Git URL and specify the branch, then click Run Pipeline.</p>
+                    <p style="color:var(--muted);font-size:0.88rem;">Add repositories and use Clone, Pull, or Fetch actions from the repository list.</p>
                 </div>
                 <div class="user-info-row" style="flex-direction:column;gap:4px;align-items:flex-start;">
                     <strong style="color:var(--accent-dark);">3. Monitor in Pipelines</strong>
@@ -739,61 +881,939 @@
         status.classList.toggle('error', !!isError);
     }
 
-    function loadRepositories() {
+    let repoActionStatusTimer = null;
+    let notificationBanner = null;
+
+    function setRepoActionStatus(message, isError = false) {
+        const status = document.getElementById('repo-action-status');
+        if (!status) {
+            return;
+        }
+
+        if (repoActionStatusTimer) {
+            clearTimeout(repoActionStatusTimer);
+            repoActionStatusTimer = null;
+        }
+
+        if (!message) {
+            status.textContent = '';
+            status.classList.remove('error', 'success-toast', 'error-toast');
+            status.classList.add('hidden');
+            
+            if (notificationBanner) {
+                notificationBanner.classList.add('fadeout');
+                setTimeout(() => {
+                    if (notificationBanner && notificationBanner.parentNode) {
+                        notificationBanner.parentNode.removeChild(notificationBanner);
+                    }
+                    notificationBanner = null;
+                }, 300);
+            }
+            return;
+        }
+
+        const icon = isError ? '✕' : '✓';
+        const bannerClass = isError ? 'error' : 'success';
+        
+        if (notificationBanner && notificationBanner.parentNode) {
+            notificationBanner.classList.add('fadeout');
+            setTimeout(() => {
+                notificationBanner.parentNode.removeChild(notificationBanner);
+            }, 300);
+        }
+        
+        notificationBanner = document.createElement('div');
+        notificationBanner.className = `notification-banner ${bannerClass}`;
+        notificationBanner.innerHTML = `
+            <div class="notification-icon">${icon}</div>
+            <div class="notification-content">${escapeHtml(message)}</div>
+        `;
+        const appBody = document.querySelector('.app-body');
+        if (appBody) {
+            appBody.appendChild(notificationBanner);
+        } else {
+            document.body.appendChild(notificationBanner);
+        }
+
+        status.textContent = message;
+        status.classList.toggle('error', !!isError);
+        status.classList.toggle('success-toast', !isError);
+        status.classList.toggle('error-toast', !!isError);
+        status.classList.remove('hidden');
+
+        const duration = isError ? 5000 : 4500;
+        repoActionStatusTimer = setTimeout(() => {
+            if (notificationBanner) {
+                notificationBanner.classList.add('fadeout');
+                setTimeout(() => {
+                    if (notificationBanner && notificationBanner.parentNode) {
+                        notificationBanner.parentNode.removeChild(notificationBanner);
+                    }
+                    notificationBanner = null;
+                }, 300);
+            }
+            status.textContent = '';
+            status.classList.remove('success-toast', 'error-toast');
+            status.classList.add('hidden');
+        }, duration);
+    }
+
+    function branchOptions(branches, selectedBranch) {
+        const normalized = Array.isArray(branches)
+            ? branches.filter(Boolean)
+            : [];
+
+        const uniqueBranches = normalized
+            .map(value => String(value).trim())
+            .filter(Boolean)
+            .filter((value, index, arr) => arr.indexOf(value) === index);
+
+        const fallback = (selectedBranch || 'main').trim() || 'main';
+        if (!uniqueBranches.length) {
+            uniqueBranches.push(fallback);
+        }
+
+        return uniqueBranches.map(branch => {
+            const escapedBranch = escapeHtml(branch);
+            const selected = branch === selectedBranch ? ' selected' : '';
+            return `<option value="${escapedBranch}"${selected}>${escapedBranch}</option>`;
+        }).join('');
+    }
+
+    async function loadBranchesForRepoRow(row) {
+        const repoId = row.dataset.id || '';
+        const branchSelect = row.querySelector('.repo-branch-select');
+        if (!repoId || !branchSelect) {
+            return;
+        }
+
+        const defaultBranch = (branchSelect.dataset.defaultBranch || 'main').trim() || 'main';
+        branchSelect.disabled = true;
+        branchSelect.innerHTML = `<option value="${escapeHtml(defaultBranch)}">Loading...</option>`;
+
+        try {
+            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/branches`);
+            if (!response.ok) {
+                throw new Error('Unable to fetch branches.');
+            }
+
+            const branches = await response.json();
+            branchSelect.innerHTML = branchOptions(branches, defaultBranch);
+        } catch (error) {
+            branchSelect.innerHTML = branchOptions([defaultBranch], defaultBranch);
+            setRepoActionStatus(`Branch load failed for ${row.dataset.name || 'repository'}: ${error.message}`, true);
+        } finally {
+            branchSelect.disabled = false;
+        }
+    }
+
+    function loadBranchesForVisibleRepositories() {
+        document.querySelectorAll('.repo-row').forEach((row) => {
+            loadBranchesForRepoRow(row);
+        });
+    }
+
+    function bindRepositoryActions() {
+        document.querySelectorAll('.repo-row').forEach((row) => {
+            row.querySelectorAll('[data-action]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const repoId = row.dataset.id || '';
+                    const branchSelect = row.querySelector('.repo-branch-select');
+                    const branch = branchSelect ? branchSelect.value : 'main';
+                    const action = button.dataset.action;
+
+                    if (!repoId) {
+                        setRepoActionStatus('Repository id is missing for this row.', true);
+                        return;
+                    }
+
+                    button.disabled = true;
+                    try {
+                        if (action === 'clone') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', branch || 'main');
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/clone`, { method: 'POST', body: payload });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || 'Clone command completed.');
+                                if (branchSelect) {
+                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
+                                }
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Clone failed.', true);
+                            }
+                            return;
+                        }
+
+                        if (action === 'pull') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', branch || 'main');
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/pull`, { method: 'POST', body: payload });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || 'Pull command completed.');
+                                if (branchSelect) {
+                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
+                                }
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Pull failed.', true);
+                            }
+                            return;
+                        }
+
+                        if (action === 'fetch') {
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/fetch`, { method: 'POST' });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || 'Fetch command completed.');
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Fetch failed.', true);
+                            }
+                            return;
+                        }
+
+                        if (action === 'checkout') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', branch || 'main');
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/checkout`, { method: 'POST', body: payload });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || 'Checkout command completed.');
+                                if (branchSelect) {
+                                    branchSelect.dataset.defaultBranch = branch || branchSelect.dataset.defaultBranch || 'main';
+                                }
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Checkout failed.', true);
+                            }
+                            return;
+                        }
+                    } catch (error) {
+                        setRepoActionStatus('Error: ' + error.message, true);
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
+        });
+    }
+
+    function getCurrentRepoIds() {
+        const ids = new Set();
+        document.querySelectorAll('.repo-row').forEach((row) => {
+            const id = row.dataset.id || '';
+            if (id) {
+                ids.add(id);
+            }
+        });
+        return ids;
+    }
+
+    const providerLabels = {
+        github: 'GitHub',
+        gitlab: 'GitLab',
+        azure: 'Azure DevOps',
+        bitbucket: 'Bitbucket',
+        other: 'Other'
+    };
+
+    const providerOrder = ['github', 'gitlab', 'azure', 'bitbucket', 'other'];
+    let gitProviderProfiles = [];
+    let selectedRepoProviderId = '';
+    let modalProviderProfiles = [];
+
+    function normalizeProviderType(value) {
+        const normalized = String(value || '').trim().toLowerCase();
+        return providerLabels[normalized] ? normalized : 'other';
+    }
+
+    function getProviderLabel(value) {
+        return providerLabels[normalizeProviderType(value)] || 'Other';
+    }
+
+    function getProviderIconMarkup(value) {
+        const providerType = normalizeProviderType(value);
+        const textByType = {
+            github: 'GH',
+            gitlab: 'GL',
+            azure: 'ADO',
+            bitbucket: 'BB',
+            other: 'OT'
+        };
+        return `<span class="provider-logo-icon ${providerType}">${textByType[providerType] || 'OT'}</span>`;
+    }
+
+    function getProviderUrlPlaceholder(providerType) {
+        switch (normalizeProviderType(providerType)) {
+            case 'github':
+                return 'https://github.com/org-or-user';
+            case 'gitlab':
+                return 'https://gitlab.com/group or https://gitlab.company.com/group';
+            case 'azure':
+                return 'https://dev.azure.com/org or https://devops.company.com/Collection/Project/_git/Repo';
+            case 'bitbucket':
+                return 'https://bitbucket.org/workspace';
+            default:
+                return 'https://git.company.com/team';
+        }
+    }
+
+    function setProviderCardStatus(index, message, isError = false) {
+        const card = document.querySelector(`.provider-settings-card[data-provider-index="${index}"]`);
+        if (!card) {
+            return;
+        }
+        const status = card.querySelector('.provider-card-status');
+        if (!status) {
+            return;
+        }
+        status.textContent = message;
+        status.classList.toggle('error', !!isError);
+    }
+
+    function createEmptyProviderProfile(providerType = 'github') {
+        const normalizedType = normalizeProviderType(providerType);
+        return {
+            id: `provider-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            name: '',
+            providerType: normalizedType,
+            providerUrl: '',
+            username: '',
+            password: '',
+            pat: '',
+            sshKey: ''
+        };
+    }
+
+    function addProviderProfile(providerType = 'github') {
+        gitProviderProfiles.push(createEmptyProviderProfile(providerType));
+        renderProviderProfiles();
+    }
+
+    function addSelectedProviderProfile() {
+        const input = document.getElementById('new-provider-type');
+        addProviderProfile(input ? input.value : 'github');
+    }
+
+    function removeProviderProfile(index) {
+        gitProviderProfiles.splice(index, 1);
+        renderProviderProfiles();
+    }
+
+    function renderProviderProfiles() {
+        const target = document.getElementById('provider-settings-list');
+        if (!target) {
+            return;
+        }
+
+        if (!gitProviderProfiles.length) {
+            target.innerHTML = '<div class="provider-settings-empty">Choose a provider type above, then enter URL and credentials. Nothing is prefilled.</div>';
+            return;
+        }
+
+        target.innerHTML = gitProviderProfiles.map((profile, index) => `
+            <div class="provider-settings-card" data-provider-index="${index}">
+                <div class="provider-settings-header">
+                    <div class="provider-settings-title">
+                        ${getProviderIconMarkup(profile.providerType)}
+                        <strong>${escapeHtml(getProviderLabel(profile.providerType))}</strong>
+                    </div>
+                    <div class="provider-settings-actions">
+                        <button type="button" class="provider-verify-btn" onclick="verifyProviderProfile(${index})">Verify</button>
+                        <button type="button" class="provider-remove-btn" onclick="removeProviderProfile(${index})">Remove</button>
+                    </div>
+                </div>
+                <div class="provider-settings-grid">
+                    <input type="hidden" data-field="name" value="${escapeHtml(profile.name || '')}">
+                    <input type="hidden" data-field="providerType" value="${escapeHtml(normalizeProviderType(profile.providerType))}">
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label>Provider URL</label>
+                        <input type="text" data-field="providerUrl" value="${escapeHtml(profile.providerUrl || '')}" placeholder="${escapeHtml(getProviderUrlPlaceholder(profile.providerType))}">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" data-field="username" value="${escapeHtml(profile.username || '')}" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" data-field="password" value="${escapeHtml(profile.password || '')}" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label>Personal Access Token (PAT)</label>
+                        <input type="password" data-field="pat" value="${escapeHtml(profile.pat || '')}" placeholder="Enter PAT or token">
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1;">
+                        <label>SSH Key</label>
+                        <textarea data-field="sshKey" placeholder="Enter SSH key">${escapeHtml(profile.sshKey || '')}</textarea>
+                    </div>
+                </div>
+                <div class="provider-card-status"></div>
+            </div>
+        `).join('');
+    }
+
+    function collectProviderProfileFromCard(index) {
+        const card = document.querySelector(`.provider-settings-card[data-provider-index="${index}"]`);
+        if (!card) {
+            return null;
+        }
+        const current = gitProviderProfiles[index] || createEmptyProviderProfile();
+        const read = (field) => {
+            const input = card.querySelector(`[data-field="${field}"]`);
+            return input ? input.value : '';
+        };
+
+        return {
+            id: current.id,
+            name: read('name'),
+            providerType: read('providerType'),
+            providerUrl: read('providerUrl'),
+            username: read('username'),
+            password: read('password'),
+            pat: read('pat'),
+            sshKey: read('sshKey')
+        };
+    }
+
+    async function verifyProviderProfile(index) {
+        const payload = collectProviderProfileFromCard(index);
+        if (!payload) {
+            return;
+        }
+
+        setProviderCardStatus(index, 'Verifying connection...');
+        try {
+            const response = await fetch('/api/git-settings/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            const statusText = result.statusCode ? ` (${result.statusCode})` : '';
+            setProviderCardStatus(index, `${result.success ? 'Verified' : 'Verification failed'}${statusText}: ${result.message || ''}`, !result.success);
+        } catch (error) {
+            setProviderCardStatus(index, 'Verification failed: ' + error.message, true);
+        }
+    }
+
+    function collectProviderProfiles() {
+        return Array.from(document.querySelectorAll('.provider-settings-card')).map((card, index) => {
+            const current = gitProviderProfiles[index] || createEmptyProviderProfile();
+            const read = (field) => {
+                const input = card.querySelector(`[data-field="${field}"]`);
+                return input ? input.value : '';
+            };
+
+            return {
+                id: current.id,
+                name: read('name'),
+                providerType: read('providerType'),
+                providerUrl: read('providerUrl'),
+                username: read('username'),
+                password: read('password'),
+                pat: read('pat'),
+                sshKey: read('sshKey')
+            };
+        });
+    }
+
+    function loadRepositories(options = {}) {
+        const existingRepoIds = options.existingRepoIds instanceof Set ? options.existingRepoIds : null;
+        const selectedBranchByRepoId = new Map();
+        document.querySelectorAll('.repo-row').forEach((row) => {
+            const id = row.dataset.id || '';
+            const branchSelect = row.querySelector('.repo-branch-select');
+            if (id && branchSelect && branchSelect.value) {
+                selectedBranchByRepoId.set(id, branchSelect.value);
+            }
+        });
+
         fetch('/api/repositories')
             .then(response => response.json())
             .then(repos => {
                 const reposList = document.getElementById('repos-list');
                 if (repos.length === 0) {
-                    reposList.innerHTML = '<div style="text-align:center;padding:28px;color:var(--muted);grid-column:1/-1;">No repositories yet. Click + to add one.</div>';
+                    reposList.innerHTML = '<div style="text-align:center;padding:28px;color:var(--muted);">No repositories yet. Click + to add one.</div>';
                 } else {
-                    reposList.innerHTML = repos.map(repo => `
-                        <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
-                            <h4 style="margin:0 0 6px;color:var(--text);font-size:0.95rem;font-weight:700;">${escapeHtml(repo.name)}</h4>
-                            <p style="margin:0 0 8px;color:var(--muted);font-size:0.82rem;word-break:break-all;">${escapeHtml(repo.url)}</p>
-                            <p style="margin:0;color:var(--muted);font-size:0.78rem;">Cloned: ${new Date(repo.clonedAt).toLocaleDateString()}</p>
-                        </div>
-                    `).join('');
+                    const groupedRepos = repos.reduce((groups, repo) => {
+                        const providerType = normalizeProviderType(repo.providerType);
+                        if (!groups[providerType]) {
+                            groups[providerType] = [];
+                        }
+                        groups[providerType].push(repo);
+                        return groups;
+                    }, {});
+
+                    reposList.innerHTML = providerOrder
+                        .filter(type => Array.isArray(groupedRepos[type]) && groupedRepos[type].length > 0)
+                        .map(type => `
+                            <div class="repo-provider-section">
+                                <div class="repo-provider-header">
+                                    ${getProviderIconMarkup(type)}
+                                    <h4>${escapeHtml(getProviderLabel(type))}</h4>
+                                    <span class="repo-provider-badge">${groupedRepos[type].length}</span>
+                                </div>
+                                ${groupedRepos[type].map(repo => `
+                                    <div class="repo-row" data-id="${escapeHtml(repo.id || '')}" data-name="${escapeHtml(repo.name || 'Repository')}">
+                                        <div class="repo-row-line">
+                                            <div class="repo-row-name" title="${escapeHtml(repo.name || 'Repository')}">${escapeHtml(repo.name || 'Repository')}</div>
+                                            <div class="repo-row-controls">
+                                                <label>Branch:</label>
+                                                <select class="repo-branch-select" data-default-branch="${escapeHtml(selectedBranchByRepoId.get(repo.id) || repo.defaultBranch || 'main')}" disabled>
+                                                    <option value="${escapeHtml(selectedBranchByRepoId.get(repo.id) || repo.defaultBranch || 'main')}">Loading...</option>
+                                                </select>
+                                            </div>
+                                            <div class="repo-actions">
+                                                <button class="repo-action-btn" type="button" data-action="clone" title="git clone">Clone</button>
+                                                <button class="repo-action-btn secondary" type="button" data-action="pull" title="git pull origin &lt;branch&gt;">Pull</button>
+                                                <button class="repo-action-btn secondary" type="button" data-action="fetch" title="git fetch --all --tags --prune">Fetch</button>
+                                                <button class="repo-action-btn secondary" type="button" data-action="checkout" title="git checkout &lt;branch&gt;">Checkout</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('');
+                    bindRepositoryActions();
+
+                    if (existingRepoIds && existingRepoIds.size > 0) {
+                        document.querySelectorAll('.repo-row').forEach((row) => {
+                            const repoId = row.dataset.id || '';
+                            const branchSelect = row.querySelector('.repo-branch-select');
+                            if (!branchSelect) {
+                                return;
+                            }
+
+                            if (existingRepoIds.has(repoId)) {
+                                const selectedBranch = (branchSelect.dataset.defaultBranch || 'main').trim() || 'main';
+                                branchSelect.innerHTML = branchOptions([selectedBranch], selectedBranch);
+                                branchSelect.disabled = false;
+                            } else {
+                                loadBranchesForRepoRow(row);
+                            }
+                        });
+                    } else {
+                        loadBranchesForVisibleRepositories();
+                    }
                 }
             })
             .catch(error => console.error('Error loading repositories:', error));
     }
 
     async function loadGitSettings() {
-        const form = document.getElementById('gitSettingsForm');
-        if (!form) {
+        if (!document.getElementById('gitSettingsForm')) {
             return;
         }
 
         try {
             const response = await fetch('/api/git-settings');
             if (!response.ok) {
+                renderProviderProfiles();
                 return;
             }
 
             const settings = await response.json();
-            form.providerUrl.value = settings.providerUrl || '';
-            form.username.value = settings.username || '';
-            form.password.value = settings.password || '';
-            form.pat.value = settings.pat || '';
-            form.sshKey.value = settings.sshKey || '';
+            gitProviderProfiles = Array.isArray(settings.providers) && settings.providers.length
+                ? settings.providers.map(profile => ({ ...createEmptyProviderProfile(profile.providerType), ...profile }))
+                : [];
+            renderProviderProfiles();
         } catch (error) {
             console.error('Error loading git settings:', error);
+            renderProviderProfiles();
         }
     }
 
     function openAddRepoModal() {
         document.getElementById('addRepoModal').classList.add('active');
-        loadAvailableGitRepos();
+        loadProviderFiltersAndRepos();
     }
 
     function closeAddRepoModal() {
         document.getElementById('addRepoModal').classList.remove('active');
         document.getElementById('addRepoForm').reset();
         setModalStatus('');
+        selectedRepoProviderId = '';
+        modalProviderProfiles = [];
+        updateProviderBrowsePanels('');
     }
 
-    async function loadAvailableGitRepos() {
+    function getProviderProfileById(providerId) {
+        const normalized = String(providerId || '');
+        return modalProviderProfiles.find((profile) => String(profile.id || '') === normalized) || null;
+    }
+
+    function updateProviderBrowsePanels(providerType) {
+        const normalized = normalizeProviderType(providerType);
+        const panels = {
+            azure: document.getElementById('azure-browse-panel'),
+            github: document.getElementById('github-browse-panel'),
+            gitlab: document.getElementById('gitlab-browse-panel')
+        };
+        Object.entries(panels).forEach(([type, panel]) => {
+            if (panel) {
+                panel.classList.toggle('hidden', normalized !== type);
+            }
+        });
+    }
+
+    function populateSelect(selectEl, items, placeholder) {
+        if (!selectEl) {
+            return;
+        }
+        const values = Array.isArray(items) ? items : [];
+        if (!values.length) {
+            selectEl.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>`;
+            selectEl.disabled = true;
+            return;
+        }
+        selectEl.innerHTML = values
+            .map((item, index) => `<option value="${escapeHtml(item)}"${index === 0 ? ' selected' : ''}>${escapeHtml(item)}</option>`)
+            .join('');
+        selectEl.disabled = false;
+    }
+
+    function renderReposInModal(repos) {
+        const target = document.getElementById('availableReposInModal');
+        if (!target) {
+            return;
+        }
+
+        if (!Array.isArray(repos) || repos.length === 0) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">No repositories found for current selection.</div>';
+            setModalStatus('No repositories found.');
+            return;
+        }
+
+        const groupedRepos = repos.reduce((groups, repo) => {
+            const providerType = normalizeProviderType(repo.providerType);
+            if (!groups[providerType]) {
+                groups[providerType] = [];
+            }
+            groups[providerType].push(repo);
+            return groups;
+        }, {});
+
+        target.innerHTML = providerOrder
+            .filter(type => Array.isArray(groupedRepos[type]) && groupedRepos[type].length > 0)
+            .map(type => `
+                <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:6px;">
+                    ${getProviderIconMarkup(type)}
+                    <h4 style="margin:0;font-size:0.95rem;color:var(--text);">${escapeHtml(getProviderLabel(type))}</h4>
+                    <span class="repo-provider-badge">${groupedRepos[type].length}</span>
+                </div>
+                ${groupedRepos[type].map(repo => `
+                    <div class="repo-picker-card">
+                        <h4>${escapeHtml(repo.fullName || repo.name)}</h4>
+                        <p>${escapeHtml(repo.url)}</p>
+                        <div class="mini-meta">${escapeHtml(repo.providerName || getProviderLabel(type))} | Branch: ${escapeHtml(repo.defaultBranch || 'main')} | ${repo.privateRepo ? 'Private' : 'Public'}</div>
+                        <button type="button" class="clone-available-repo-btn" data-url="${escapeHtml(repo.url)}" data-branch="${escapeHtml(repo.defaultBranch || 'main')}">Clone This Repo</button>
+                    </div>
+                `).join('')}
+            `).join('');
+
+        target.querySelectorAll('.clone-available-repo-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                cloneFromAvailableRepo(button.dataset.url || '', button.dataset.branch || 'main');
+            });
+        });
+        setModalStatus('Select any repository to clone.');
+    }
+
+    async function loadAzureCollections(providerId) {
+        const collectionSelect = document.getElementById('azure-collection-select');
+        const projectSelect = document.getElementById('azure-project-select');
+        const target = document.getElementById('availableReposInModal');
+        if (!collectionSelect || !projectSelect || !target) {
+            return;
+        }
+
+        collectionSelect.disabled = true;
+        projectSelect.disabled = true;
+        collectionSelect.innerHTML = '<option value="">Loading collections...</option>';
+        projectSelect.innerHTML = '<option value="">Select project</option>';
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Choose collection and project to load Azure repositories.</div>';
+
+        try {
+            const response = await fetch(`/api/azure/collections?providerId=${encodeURIComponent(providerId)}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load Azure collections.');
+            }
+
+            const collections = JSON.parse(text);
+            populateSelect(collectionSelect, collections, 'No collections found');
+            if (!collections.length) {
+                setModalStatus('No Azure collections found for this provider.', true);
+                return;
+            }
+
+            await loadAzureProjects(providerId, collectionSelect.value || '');
+        } catch (error) {
+            populateSelect(collectionSelect, [], 'No collections found');
+            populateSelect(projectSelect, [], 'Select project');
+            setModalStatus('Azure collection load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadGitHubOwners(providerId) {
+        const ownerSelect = document.getElementById('github-owner-select');
+        const target = document.getElementById('availableReposInModal');
+        if (!ownerSelect || !target) {
+            return;
+        }
+
+        ownerSelect.disabled = true;
+        ownerSelect.innerHTML = '<option value="">Loading owners...</option>';
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Choose organization or user to load repositories.</div>';
+
+        try {
+            const response = await fetch(`/api/github/owners?providerId=${encodeURIComponent(providerId)}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load GitHub owners.');
+            }
+            const owners = JSON.parse(text);
+            populateSelect(ownerSelect, owners, 'No organizations found');
+            if (owners.length) {
+                await loadGitHubRepositories(providerId, ownerSelect.value || '');
+            }
+        } catch (error) {
+            populateSelect(ownerSelect, [], 'No organizations found');
+            setModalStatus('GitHub owner load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadGitHubRepositories(providerId, owner) {
+        const target = document.getElementById('availableReposInModal');
+        if (!target) {
+            return;
+        }
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Loading GitHub repositories...</div>';
+        try {
+            const response = await fetch(`/api/github/repositories?providerId=${encodeURIComponent(providerId)}&owner=${encodeURIComponent(owner || '')}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load GitHub repositories.');
+            }
+            renderReposInModal(JSON.parse(text));
+        } catch (error) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Failed to load repositories.</div>';
+            setModalStatus('GitHub repository load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadGitLabGroups(providerId) {
+        const groupSelect = document.getElementById('gitlab-group-select');
+        const target = document.getElementById('availableReposInModal');
+        if (!groupSelect || !target) {
+            return;
+        }
+
+        groupSelect.disabled = true;
+        groupSelect.innerHTML = '<option value="">Loading groups...</option>';
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Choose group to load GitLab projects.</div>';
+        try {
+            const response = await fetch(`/api/gitlab/groups?providerId=${encodeURIComponent(providerId)}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load GitLab groups.');
+            }
+            const groups = JSON.parse(text);
+            populateSelect(groupSelect, groups, 'No groups found');
+            if (groups.length) {
+                await loadGitLabProjects(providerId, groupSelect.value || '');
+            }
+        } catch (error) {
+            populateSelect(groupSelect, [], 'No groups found');
+            setModalStatus('GitLab group load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadGitLabProjects(providerId, group) {
+        const target = document.getElementById('availableReposInModal');
+        if (!target) {
+            return;
+        }
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Loading GitLab projects...</div>';
+        try {
+            const response = await fetch(`/api/gitlab/projects?providerId=${encodeURIComponent(providerId)}&group=${encodeURIComponent(group || '')}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load GitLab projects.');
+            }
+            renderReposInModal(JSON.parse(text));
+        } catch (error) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Failed to load repositories.</div>';
+            setModalStatus('GitLab project load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadAzureProjects(providerId, collection) {
+        const projectSelect = document.getElementById('azure-project-select');
+        const target = document.getElementById('availableReposInModal');
+        if (!projectSelect || !target) {
+            return;
+        }
+
+        projectSelect.disabled = true;
+        projectSelect.innerHTML = '<option value="">Loading projects...</option>';
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Choose project to load repositories.</div>';
+
+        try {
+            const response = await fetch(`/api/azure/projects?providerId=${encodeURIComponent(providerId)}&collection=${encodeURIComponent(collection || '')}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load Azure projects.');
+            }
+
+            const projects = JSON.parse(text);
+            populateSelect(projectSelect, projects, 'No projects found');
+            if (!projects.length) {
+                setModalStatus('No projects found in selected collection.', true);
+                return;
+            }
+
+            await loadAzureRepositories(providerId, collection, projectSelect.value || '');
+        } catch (error) {
+            populateSelect(projectSelect, [], 'No projects found');
+            setModalStatus('Azure project load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadAzureRepositories(providerId, collection, project) {
+        const target = document.getElementById('availableReposInModal');
+        if (!target) {
+            return;
+        }
+
+        if (!project) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Choose a project to list repositories.</div>';
+            return;
+        }
+
+        target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Loading Azure repositories...</div>';
+        try {
+            const response = await fetch(`/api/azure/repositories?providerId=${encodeURIComponent(providerId)}&collection=${encodeURIComponent(collection || '')}&project=${encodeURIComponent(project)}`);
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || 'Unable to load Azure repositories.');
+            }
+            const repos = JSON.parse(text);
+            renderReposInModal(repos);
+        } catch (error) {
+            target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Failed to load repositories.</div>';
+            setModalStatus('Azure repository load failed: ' + error.message, true);
+        }
+    }
+
+    async function loadReposForSelectedProvider(providerId) {
+        const selectedProfile = getProviderProfileById(providerId);
+        const providerType = selectedProfile ? normalizeProviderType(selectedProfile.providerType) : '';
+        updateProviderBrowsePanels(providerType);
+
+        if (providerType === 'azure') {
+            const collectionSelect = document.getElementById('azure-collection-select');
+            const projectSelect = document.getElementById('azure-project-select');
+            if (collectionSelect) {
+                collectionSelect.onchange = async () => {
+                    await loadAzureProjects(providerId, collectionSelect.value || '');
+                };
+            }
+            if (projectSelect) {
+                projectSelect.onchange = async () => {
+                    const collection = collectionSelect ? (collectionSelect.value || '') : '';
+                    await loadAzureRepositories(providerId, collection, projectSelect.value || '');
+                };
+            }
+            await loadAzureCollections(providerId);
+            return;
+        }
+
+        if (providerType === 'github') {
+            const ownerSelect = document.getElementById('github-owner-select');
+            if (ownerSelect) {
+                ownerSelect.onchange = async () => {
+                    await loadGitHubRepositories(providerId, ownerSelect.value || '');
+                };
+            }
+            await loadGitHubOwners(providerId);
+            return;
+        }
+
+        if (providerType === 'gitlab') {
+            const groupSelect = document.getElementById('gitlab-group-select');
+            if (groupSelect) {
+                groupSelect.onchange = async () => {
+                    await loadGitLabProjects(providerId, groupSelect.value || '');
+                };
+            }
+            await loadGitLabGroups(providerId);
+            return;
+        }
+
+        await loadAvailableGitRepos(providerId);
+    }
+
+    async function reloadSelectedProviderRepos() {
+        const select = document.getElementById('repo-provider-select');
+        selectedRepoProviderId = select ? (select.value || '') : '';
+        await loadReposForSelectedProvider(selectedRepoProviderId);
+    }
+
+    async function loadProviderFiltersAndRepos() {
+        const providerSelect = document.getElementById('repo-provider-select');
+        if (!providerSelect) {
+            loadAvailableGitRepos('');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/git-settings');
+            if (!response.ok) {
+                providerSelect.innerHTML = '<option value="">Unable to load providers</option>';
+                loadAvailableGitRepos('');
+                return;
+            }
+
+            const settings = await response.json();
+            const providers = Array.isArray(settings.providers) ? settings.providers : [];
+            modalProviderProfiles = providers;
+            if (!providers.length) {
+                providerSelect.innerHTML = '<option value="">No saved providers</option>';
+                selectedRepoProviderId = '';
+                updateProviderBrowsePanels('');
+                loadAvailableGitRepos('');
+                return;
+            }
+
+            providerSelect.innerHTML = providers.map((profile, index) => {
+                const providerId = String(profile.id || '');
+                const providerName = String(profile.name || getProviderLabel(profile.providerType));
+                const selected = selectedRepoProviderId
+                    ? selectedRepoProviderId === providerId
+                    : index === 0;
+                return `<option value="${escapeHtml(providerId)}"${selected ? ' selected' : ''}>${escapeHtml(getProviderLabel(profile.providerType))} - ${escapeHtml(providerName)}</option>`;
+            }).join('');
+
+            providerSelect.onchange = async () => {
+                selectedRepoProviderId = providerSelect.value || '';
+                await loadReposForSelectedProvider(selectedRepoProviderId);
+            };
+
+            selectedRepoProviderId = providerSelect.value || '';
+
+            loadReposForSelectedProvider(selectedRepoProviderId);
+        } catch (error) {
+            providerSelect.innerHTML = '<option value="">Unable to load providers</option>';
+            updateProviderBrowsePanels('');
+            loadAvailableGitRepos('');
+        }
+    }
+
+    async function loadAvailableGitRepos(providerId = '') {
         const target = document.getElementById('availableReposInModal');
         if (!target) {
             return;
@@ -801,31 +1821,20 @@
 
         target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">Loading repositories...</div>';
         try {
-            const response = await fetch('/api/github-repos');
+            const url = providerId
+                ? `/api/remote-repositories?providerId=${encodeURIComponent(providerId)}`
+                : '/api/remote-repositories';
+            const response = await fetch(url);
             const text = await response.text();
 
             if (!response.ok) {
-                target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Unable to load repositories. Save valid Git settings in Settings tab first.</div>';
+                target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Unable to load repositories. Save valid provider settings in Settings tab first.</div>';
                 setModalStatus(text || 'Unable to load repositories.', true);
                 return;
             }
 
             const repos = JSON.parse(text);
-            if (!Array.isArray(repos) || repos.length === 0) {
-                target.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);">No repositories found for saved credentials.</div>';
-                setModalStatus('No repositories found.');
-                return;
-            }
-
-            target.innerHTML = repos.map(repo => `
-                <div class="repo-picker-card">
-                    <h4>${escapeHtml(repo.fullName || repo.name)}</h4>
-                    <p>${escapeHtml(repo.url)}</p>
-                    <div class="mini-meta">Branch: ${escapeHtml(repo.defaultBranch || 'main')} | ${repo.privateRepo ? 'Private' : 'Public'}</div>
-                    <button type="button" onclick="cloneFromAvailableRepo('${escapeHtml(repo.url)}', '${escapeHtml(repo.defaultBranch || 'main')}')">Clone This Repo</button>
-                </div>
-            `).join('');
-            setModalStatus('Select any repository to clone.');
+            renderReposInModal(repos);
         } catch (error) {
             target.innerHTML = '<div style="grid-column:1/-1;color:var(--red);">Failed to load repositories.</div>';
             setModalStatus('Error: ' + error.message, true);
@@ -835,6 +1844,7 @@
     async function cloneFromAvailableRepo(repoUrl, defaultBranch) {
         try {
             setModalStatus('Cloning ' + repoUrl + ' ...');
+            const existingRepoIds = getCurrentRepoIds();
             const payload = new URLSearchParams();
             payload.set('repoUrl', repoUrl);
             payload.set('defaultBranch', defaultBranch || 'main');
@@ -847,7 +1857,7 @@
             const text = await response.text();
             if (response.ok && !text.startsWith('Error:')) {
                 setModalStatus('Repository cloned successfully.');
-                loadRepositories();
+                loadRepositories({ existingRepoIds });
             } else {
                 setModalStatus(text || 'Clone failed.', true);
             }
@@ -872,6 +1882,7 @@
                 }
 
                 try {
+                    const existingRepoIds = getCurrentRepoIds();
                     const response = await fetch('/api/clone-repo', {
                         method: 'POST',
                         body: new URLSearchParams(formData)
@@ -880,7 +1891,7 @@
                     const text = await response.text();
                     if (response.ok && !text.startsWith('Error:')) {
                         setModalStatus('Repository cloned successfully.');
-                        loadRepositories();
+                        loadRepositories({ existingRepoIds });
                     } else {
                         setModalStatus(text || 'Error cloning repository.', true);
                     }
@@ -894,12 +1905,17 @@
         if (gitSettingsForm) {
             gitSettingsForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const payload = new URLSearchParams(new FormData(gitSettingsForm));
+                const payload = {
+                    providers: collectProviderProfiles()
+                };
 
                 try {
                     const response = await fetch('/api/git-settings', {
                         method: 'POST',
-                        body: payload
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
                     });
 
                     if (!response.ok) {
@@ -908,7 +1924,12 @@
                         return;
                     }
 
-                    setGitSettingsStatus('Git settings saved.');
+                    const settings = await response.json();
+                    gitProviderProfiles = Array.isArray(settings.providers) && settings.providers.length
+                        ? settings.providers.map(profile => ({ ...createEmptyProviderProfile(profile.providerType), ...profile }))
+                        : [];
+                    renderProviderProfiles();
+                    setGitSettingsStatus('Provider settings saved.');
                 } catch (error) {
                     setGitSettingsStatus('Error: ' + error.message, true);
                 }

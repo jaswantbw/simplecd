@@ -1,8 +1,0 @@
-SimpleCD Build Started
-Job ID: 80563b29-6919-4e1a-bcc6-3e9fb8388ef9
-Repository: https://github.com/jaswantbw/k8s_env_deploy
-Branch: main
-
-Cloning into 'C:\SimpleCD\workspaces\80563b29-6919-4e1a-bcc6-3e9fb8388ef9'...
-
-BUILD FAILED: Cannot run program "mvn" (in directory "C:\SimpleCD\workspaces\80563b29-6919-4e1a-bcc6-3e9fb8388ef9"): CreateProcess error=2, The system cannot find the file specified

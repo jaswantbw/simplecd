@@ -8,14 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f0f7f3;
+            --bg: #dee6eb;
             --panel: #ffffff;
-            --text: #0f2f29;
-            --muted: #4f6660;
-            --accent: #1b8a6b;
-            --accent-dark: #14674f;
-            --border: #cee1d9;
-            --ink: #0b1814;
+            --panel-strong: #ffffff;
+            --text: #111827;
+            --muted: #6D7F8B;
+            --disabled: #CCD6DD;
+            --accent: #0DADEA;
+            --accent-dark: #103d66;
+            --border: #E5E7EB;
+            --ink: #111827;
         }
 
         * { box-sizing: border-box; }
@@ -27,10 +29,7 @@
             margin: 0;
             font-family: "Heebo", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text);
-            background:
-                radial-gradient(circle at 15% 10%, #d7f0e6 0%, #d7f0e6 22%, transparent 23%),
-                radial-gradient(circle at 80% 35%, #e6f7ef 0%, #e6f7ef 22%, transparent 23%),
-                linear-gradient(180deg, #f4faf7 0%, #ecf5f1 100%);
+            background: var(--bg);
         }
 
         .container {
@@ -43,9 +42,8 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            backdrop-filter: blur(6px);
-            background: rgba(240, 247, 243, 0.88);
-            border-bottom: 1px solid rgba(206, 225, 217, 0.7);
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
         }
 
         .topnav-inner {
@@ -86,17 +84,17 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--accent-dark);
+            color: var(--muted);
             border: 1px solid transparent;
-            border-radius: 999px;
-            padding: 8px 12px;
-            font-weight: 700;
-            font-size: 0.94rem;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-weight: 600;
+            font-size: 0.82rem;
         }
 
         .nav-links a:hover {
             border-color: var(--border);
-            background: #ebf6f1;
+            background: rgba(13, 173, 234, 0.08);
         }
 
         .nav-links .cta {
@@ -110,10 +108,10 @@
         }
 
         .hero {
-            margin-top: 22px;
+            margin-top: 18px;
             display: grid;
             grid-template-columns: 1.2fr 0.9fr;
-            gap: 20px;
+            gap: 16px;
             align-items: stretch;
         }
 
@@ -122,64 +120,63 @@
         .feature-card,
         .section-card {
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 4px;
             background: var(--panel);
-            box-shadow: 0 14px 32px rgba(15, 47, 41, 0.08);
+            box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
         }
 
         .hero-panel {
-            padding: 30px;
-            background:
-                linear-gradient(165deg, #e8f7f1 0%, #d8eee6 45%, #f4fbf8 100%);
+            padding: 22px;
+            background: #ffffff;
         }
 
         .hero-badge {
             display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: #f8fffc;
-            border: 1px solid #b8d8cd;
-            color: #196750;
-            font-weight: 700;
-            font-size: 0.82rem;
-            margin-bottom: 14px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            background: rgba(13, 173, 234, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.72rem;
+            margin-bottom: 10px;
         }
 
         .hero h1 {
             margin: 0;
-            font-size: clamp(1.8rem, 4vw, 2.9rem);
+            font-size: clamp(1.4rem, 3vw, 2rem);
             line-height: 1.15;
             color: var(--ink);
             max-width: 35ch;
         }
 
         .hero p {
-            margin: 16px 0 0;
+            margin: 12px 0 0;
             color: var(--muted);
             max-width: 52ch;
-            font-size: 1.02rem;
+            font-size: 0.9rem;
         }
 
         .hero-logo {
-            margin-top: 22px;
+            margin-top: 14px;
             width: min(100%, 340px);
             max-height: 180px;
             object-fit: contain;
         }
 
         .signin-card {
-            padding: 24px;
+            padding: 20px;
         }
 
         .signin-card h2 {
             margin: 0 0 6px;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
 
         .signin-sub {
             margin: 0 0 16px;
             color: var(--muted);
-            font-size: 0.95rem;
+            font-size: 0.82rem;
         }
 
         .error {
@@ -191,36 +188,36 @@
         label {
             display: block;
             margin-bottom: 6px;
-            font-size: 0.92rem;
-            font-weight: 700;
+            font-size: 0.8rem;
+            font-weight: 600;
             color: var(--ink);
         }
 
         input {
             width: 100%;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 11px;
-            margin-bottom: 14px;
-            font-size: 0.98rem;
-            background: #fcfffd;
+            border-radius: 4px;
+            padding: 9px 10px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            background: #ffffff;
         }
 
         input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(27, 138, 107, 0.14);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
         .login-btn {
             width: 100%;
             border: 0;
-            border-radius: 11px;
+            border-radius: 4px;
             background: var(--accent);
             color: #fff;
-            padding: 11px;
-            font-weight: 800;
-            font-size: 1rem;
+            padding: 9px;
+            font-weight: 700;
+            font-size: 0.88rem;
             cursor: pointer;
         }
 
@@ -229,41 +226,41 @@
         }
 
         .grid-features {
-            margin-top: 20px;
+            margin-top: 16px;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
+            gap: 12px;
         }
 
         .feature-card {
-            padding: 16px;
+            padding: 14px;
         }
 
         .feature-card h3 {
             margin: 0 0 6px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--ink);
         }
 
         .feature-card p {
             margin: 0;
             color: var(--muted);
-            font-size: 0.92rem;
+            font-size: 0.8rem;
         }
 
         .section-stack {
-            margin-top: 14px;
+            margin-top: 12px;
             display: grid;
-            gap: 14px;
+            gap: 12px;
         }
 
         .section-card {
-            padding: 18px;
+            padding: 16px;
         }
 
         .section-card h2 {
             margin: 0 0 8px;
-            font-size: 1.15rem;
+            font-size: 1rem;
         }
 
         .section-card p {
