@@ -753,3 +753,255 @@
   "message": "Event 'testCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
 }}).
 2026-04-30T10:55:26.428Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:57:29.319Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:57:29.320Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "details": {
+    "commitId": "2c2c4fa",
+    "stepNumber": 4,
+    "stepTitle": "Final Validation — Full build and test with Java 25"
+  },
+  "event": "upgradeValidationCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:57:29.320Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:57:29.321Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:57:29.321Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:57:29.353Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:57:29.354Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "details": {
+    "commitId": "2c2c4fa",
+    "stepNumber": 4,
+    "stepTitle": "Final Validation — Full build and test with Java 25"
+  },
+  "event": "upgradeValidationCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:57:29.355Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:57:29.355Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'upgradeValidationCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:57:29.356Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:57:33.251Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:57:33.252Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planExecutionCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:57:33.252Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:57:33.253Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:57:33.253Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:57:33.275Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:57:33.276Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "planExecutionCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:57:33.276Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:57:33.280Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planExecutionCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:57:33.280Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:58:03.100Z [INFO] ---------------------prepare appmod-validate-cves-for-java----------------------
+2026-04-30T10:58:03.101Z [INFO] [Tool.prepareInvocation]({name: appmod-validate-cves-for-java, input: {
+  "dependencies": [
+    "org.springframework.boot:spring-boot-starter-web:3.3.5",
+    "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5",
+    "org.springframework.boot:spring-boot-starter-test:3.3.5"
+  ],
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:58:03.101Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:58:03.102Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Validate CVEs"
+}}).
+2026-04-30T10:58:03.102Z [INFO] ----------------------prepared appmod-validate-cves-for-java----------------------
+2026-04-30T10:58:03.123Z [INFO] ----------------------invoke appmod-validate-cves-for-java----------------------
+2026-04-30T10:58:03.124Z [INFO] [Tool.invoke]({name: appmod-validate-cves-for-java, modelId: claude-sonnet-4.6, input: {
+  "dependencies": [
+    "org.springframework.boot:spring-boot-starter-web:3.3.5",
+    "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5",
+    "org.springframework.boot:spring-boot-starter-test:3.3.5"
+  ],
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:58:03.124Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:58:03.127Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:58:03.127Z [INFO] Getting CVEs for dependencies: org.springframework.boot:spring-boot-starter-web:3.3.5,org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5,org.springframework.boot:spring-boot-starter-test:3.3.5
+2026-04-30T10:58:03.128Z [INFO] getting CVEs for dependencies:
+ - org.springframework.boot:spring-boot-starter-web:3.3.5
+  - org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5
+  - org.springframework.boot:spring-boot-starter-test:3.3.5...
+2026-04-30T10:58:03.129Z [INFO] getting gitHub access token...
+2026-04-30T10:58:03.130Z [INFO] Project java version: 25
+2026-04-30T10:58:03.131Z [INFO] Maven project detected.
+2026-04-30T10:58:03.131Z [INFO] Build tool type: mvn
+2026-04-30T10:58:03.233Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+  "version": "25"
+}
+2026-04-30T10:58:03.248Z [INFO] Build tool: {
+  "name": "mvn",
+  "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "version": "",
+  "source": "install"
+}
+2026-04-30T10:58:03.249Z [INFO] Project config: {
+  "buildTool": {
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "name": "mvn",
+    "version": "",
+    "source": "install"
+  },
+  "jdk": {
+    "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "name": "java",
+    "version": "25"
+  },
+  "name": "simplecd",
+  "dir": "c:\\simplecd"
+}
+2026-04-30T10:58:03.250Z [INFO] [Environment] Running command (Java undefined): mvn dependency:tree -B
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.simplecd:simplecd >------------------------
+[INFO] Building simplecd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.6.1:tree (default-cli) @ simplecd ---
+[INFO] com.simplecd:simplecd:jar:0.0.1-SNAPSHOT
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:3.3.5:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:3.3.5:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.5.11:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.5.11:compile
+[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.23.1:compile
+[INFO] |  |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.23.1:compile
+[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:2.0.16:compile
+[INFO] |  |  +- jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:2.2:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:3.3.5:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.17.2:compile
+[INFO] |  |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.17.2:compile
+[INFO] |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.17.2:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.17.2:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.17.2:compile
+[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.17.2:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:3.3.5:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.31:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.31:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:10.1.31:compile
+[INFO] |  +- org.springframework:spring-web:jar:6.1.14:compile
+[INFO] |  |  +- org.springframework:spring-beans:jar:6.1.14:compile
+[INFO] |  |  \- io.micrometer:micrometer-observation:jar:1.13.6:compile
+[INFO] |  |     \- io.micrometer:micrometer-commons:jar:1.13.6:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:6.1.14:compile
+[INFO] |     +- org.springframework:spring-aop:jar:6.1.14:compile
+[INFO] |     +- org.springframework:spring-context:jar:6.1.14:compile
+[INFO] |     \- org.springframework:spring-expression:jar:6.1.14:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-thymeleaf:jar:3.3.5:compile
+[INFO] |  \- org.thymeleaf:thymeleaf-spring6:jar:3.1.2.RELEASE:compile
+[INFO] |     +- org.thymeleaf:thymeleaf:jar:3.1.2.RELEASE:compile
+[INFO] |     |  +- org.attoparser:attoparser:jar:2.0.7.RELEASE:compile
+[INFO] |     |  \- org.unbescape:unbescape:jar:1.1.6.RELEASE:compile
+[INFO] |     \- org.slf4j:slf4j-api:jar:2.0.16:compile
+[INFO] \- org.springframework.boot:spring-boot-starter-test:jar:3.3.5:test
+[INFO]    +- org.springframework.boot:spring-boot-test:jar:3.3.5:test
+[INFO]    +- org.springframework.boot:spring-boot-test-autoconfigure:jar:3.3.5:test
+[INFO]    +- com.jayway.jsonpath:json-path:jar:2.9.0:test
+[INFO]    +- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.2:test
+[INFO]    |  \- jakarta.activation:jakarta.activation-api:jar:2.1.3:test
+[INFO]    +- net.minidev:json-smart:jar:2.5.1:test
+[INFO]    |  \- net.minidev:accessors-smart:jar:2.5.1:test
+[INFO]    |     \- org.ow2.asm:asm:jar:9.6:test
+[INFO]    +- org.assertj:assertj-core:jar:3.25.3:test
+[INFO]    |  \- net.bytebuddy:byte-buddy:jar:1.14.19:test
+[INFO]    +- org.awaitility:awaitility:jar:4.2.2:test
+[INFO]    +- org.hamcrest:hamcrest:jar:2.2:test
+[INFO]    +- org.junit.jupiter:junit-jupiter:jar:5.10.5:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-api:jar:5.10.5:test
+[INFO]    |  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO]    |  |  +- org.junit.platform:junit-platform-commons:jar:1.10.5:test
+[INFO]    |  |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-params:jar:5.10.5:test
+[INFO]    |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.10.5:test
+[INFO]    |     \- org.junit.platform:junit-platform-engine:jar:1.10.5:test
+[INFO]    +- org.mockito:mockito-core:jar:5.11.0:test
+[INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.14.19:test
+[INFO]    |  \- org.objenesis:objenesis:jar:3.3:test
+[INFO]    +- org.mockito:mockito-junit-jupiter:jar:5.11.0:test
+[INFO]    +- org.skyscreamer:jsonassert:jar:1.5.3:test
+[INFO]    |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO]    +- org.springframework:spring-core:jar:6.1.14:compile
+[INFO]    |  \- org.springframework:spring-jcl:jar:6.1.14:compile
+[INFO]    +- org.springframework:spring-test:jar:6.1.14:test
+[INFO]    \- org.xmlunit:xmlunit-core:jar:2.9.1:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.574 s
+[INFO] Finished at: 2026-04-30T16:28:08+05:30
+[INFO] ------------------------------------------------------------------------
+2026-04-30T10:58:08.457Z [INFO] [MavenBuildTool] Successfully got dependency tree of c:\simplecd
+2026-04-30T10:58:08.458Z [INFO] [MavenBuildTool] Getting Java version of c:\simplecd from pom.xml
+2026-04-30T10:58:08.459Z [INFO] [MavenBuildTool] Searching for pom.xml files in c:\simplecd
+2026-04-30T10:58:08.460Z [INFO] [MavenBuildTool] Getting all module coordinates of c:\simplecd
+2026-04-30T10:58:08.461Z [INFO] [MavenBuildTool] Getting effective POMs of c:\simplecd
+2026-04-30T10:58:08.462Z [INFO] [Environment] Running command (Java undefined): mvn help:effective-pom -Doutput=effective-pom-d87e62d1-c811-4ba7-9e43-fb348bbd84fe.log
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.simplecd:simplecd >------------------------
+[INFO] Building simplecd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- help:3.4.1:effective-pom (default-cli) @ simplecd ---
+[INFO] Effective-POM written to: c:\simplecd\effective-pom-d87e62d1-c811-4ba7-9e43-fb348bbd84fe.log
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.082 s
+[INFO] Finished at: 2026-04-30T16:28:11+05:30
+[INFO] ------------------------------------------------------------------------
+2026-04-30T10:58:11.389Z [INFO] [MavenBuildTool] Found pom.xml files: c:\simplecd\pom.xml
+2026-04-30T10:58:11.400Z [INFO] [MavenBuildTool] Java version found in c:\simplecd\pom.xml: 25
+2026-04-30T10:58:14.726Z [INFO] Processing batch 1/1, size: 3
+2026-04-30T10:58:14.727Z [INFO] Proxy configuration: HTTPS_PROXY=(not set), HTTP_PROXY=(not set), NO_PROXY=(not set), NODE_EXTRA_CA_CERTS=(not set), vscode http.proxy=(not set), hasProxy=false
+2026-04-30T10:58:14.727Z [INFO] No proxy detected, using direct connection.
+2026-04-30T10:58:14.729Z [INFO] listing CVEs from GitHub for dependencies [
+  "org.springframework.boot:spring-boot-starter-web:3.3.5",
+  "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5",
+  "org.springframework.boot:spring-boot-starter-test:3.3.5"
+]
+2026-04-30T10:58:14.729Z [INFO] GitHub Advisory API affects parameter: ["org.springframework.boot:spring-boot-starter-web@3.3.5","org.springframework.boot:spring-boot-starter-thymeleaf@3.3.5","org.springframework.boot:spring-boot-starter-test@3.3.5"]
+2026-04-30T10:58:15.311Z [INFO] Fetched 0 total advisories across all pages
+2026-04-30T10:58:15.311Z [INFO] Advisory IDs returned: 
+2026-04-30T10:58:15.312Z [INFO] grouping CVEs and finding max patched version by dep...
+2026-04-30T10:58:15.312Z [INFO] done getting 0 CVEs for 3 dependencies
+2026-04-30T10:58:15.313Z [INFO] calculating patched version by dep...
+2026-04-30T10:58:15.313Z [INFO] finished getting CVEs for dependencies.
+2026-04-30T10:58:15.313Z [INFO] Found 0 dependencies with known CVEs
+2026-04-30T10:58:15.314Z [INFO] No known CVEs that need to be fixed are found for dependencies: org.springframework.boot:spring-boot-starter-web:3.3.5,org.springframework.boot:spring-boot-starter-thymeleaf:3.3.5,org.springframework.boot:spring-boot-starter-test:3.3.5
+2026-04-30T10:58:15.314Z [INFO] [Tool.invoke]({result: {
+  "message": "No known CVEs that need to be fixed are found for the given dependencies."
+}}).
+2026-04-30T10:58:15.316Z [INFO] ----------------------invoked appmod-validate-cves-for-java----------------------
