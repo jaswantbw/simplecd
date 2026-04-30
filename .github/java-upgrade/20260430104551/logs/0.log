@@ -1,0 +1,755 @@
+2026-04-30T10:45:51.089Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:45:51.091Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "projectPath": "c:\\simplecd",
+  "event": "precheckCompleted",
+  "phase": "precheck",
+  "status": "succeeded",
+  "details": {
+    "baseJdkVersion": "21",
+    "targetVersion": "Java 25"
+  }
+}}).
+2026-04-30T10:45:51.091Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:45:51.093Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:45:51.094Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'precheckCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:45:51.099Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:45:51.101Z [INFO] Project java version: 21
+2026-04-30T10:45:51.102Z [INFO] Maven project detected.
+2026-04-30T10:45:51.103Z [INFO] Build tool type: mvn
+2026-04-30T10:45:51.146Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.10.7-hotspot\\bin",
+  "version": "21"
+}
+2026-04-30T10:45:51.149Z [INFO] Build tool: undefined
+2026-04-30T10:45:51.150Z [ERROR] Failed to detect or resolve build tool for the project at c:\simplecd.
+2026-04-30T10:45:51.150Z [WARN] [ReportEventTool] Full project info unavailable, attempting lightweight fallback: UserError: Failed to detect or resolve build tool for the project at c:\simplecd. Please ensure the build tool Maven is installed and properly configured on the machine.
+2026-04-30T10:45:51.152Z [INFO] Maven project detected.
+2026-04-30T10:45:51.153Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:45:59.504Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:45:59.504Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "sessionId": "20260430104551",
+  "event": "planGenerationStarted",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "status": "succeeded"
+}}).
+2026-04-30T10:45:59.505Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:45:59.505Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:45:59.506Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:45:59.531Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:45:59.532Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551",
+  "event": "planGenerationStarted",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "status": "succeeded"
+}}).
+2026-04-30T10:45:59.533Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:45:59.534Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planGenerationStarted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:45:59.535Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:46:10.730Z [INFO] ---------------------prepare appmod-list-jdks----------------------
+2026-04-30T10:46:10.731Z [INFO] [Tool.prepareInvocation]({name: appmod-list-jdks, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:46:10.731Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:46:10.732Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List jdks"
+}}).
+2026-04-30T10:46:10.733Z [INFO] ----------------------prepared appmod-list-jdks----------------------
+2026-04-30T10:46:10.780Z [INFO] ----------------------invoke appmod-list-jdks----------------------
+2026-04-30T10:46:10.781Z [INFO] [Tool.invoke]({name: appmod-list-jdks, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:46:10.783Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:46:10.799Z [INFO] [Tool.invoke]({result: {
+  "message": "We found following jdks in your system:\n\n1. Java 21.0.10\n   📁 Path: C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.10.7-hotspot\\bin\n   🏷️ Source: PATH,JAVA_HOME\n\nTotal: 1 JDK installation(s) found"
+}}).
+2026-04-30T10:46:10.800Z [INFO] ----------------------invoked appmod-list-jdks----------------------
+2026-04-30T10:46:10.817Z [INFO] ---------------------prepare appmod-list-mavens----------------------
+2026-04-30T10:46:10.819Z [INFO] [Tool.prepareInvocation]({name: appmod-list-mavens, input: {
+  "includeVersion": true,
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:46:10.820Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:46:10.821Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List mavens"
+}}).
+2026-04-30T10:46:10.822Z [INFO] ----------------------prepared appmod-list-mavens----------------------
+2026-04-30T10:46:10.850Z [INFO] ----------------------invoke appmod-list-mavens----------------------
+2026-04-30T10:46:10.851Z [INFO] [Tool.invoke]({name: appmod-list-mavens, modelId: claude-sonnet-4.6, input: {
+  "includeVersion": true,
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:46:10.852Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:46:10.856Z [INFO] [Tool.invoke]({result: {
+  "message": "No Maven installations found."
+}}).
+2026-04-30T10:46:10.857Z [INFO] ----------------------invoked appmod-list-mavens----------------------
+2026-04-30T10:49:36.935Z [INFO] ---------------------prepare appmod-install-maven----------------------
+2026-04-30T10:49:36.936Z [INFO] [Tool.prepareInvocation]({name: appmod-install-maven, input: {
+  "sessionId": "20260430104551",
+  "version": "latest"
+}}).
+2026-04-30T10:49:36.936Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:49:38.781Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Download and install Maven"
+}}).
+2026-04-30T10:49:38.782Z [INFO] ----------------------prepared appmod-install-maven----------------------
+2026-04-30T10:49:38.814Z [INFO] ----------------------invoke appmod-install-maven----------------------
+2026-04-30T10:49:38.816Z [INFO] [Tool.invoke]({name: appmod-install-maven, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551",
+  "version": "latest"
+}}).
+2026-04-30T10:49:38.816Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:49:43.344Z [INFO] [Tool.invoke]({result: {
+  "result": {
+    "name": "mvn",
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "version": "3.9.15"
+  },
+  "message": "Maven latest is installed at C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "telemetry": {
+    "tool": "Maven",
+    "version": "latest"
+  }
+}}).
+2026-04-30T10:49:43.344Z [INFO] ----------------------invoked appmod-install-maven----------------------
+2026-04-30T10:50:41.735Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:50:41.736Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planReviewed",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:50:41.736Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:50:41.737Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:50:41.738Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:50:41.759Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:50:41.760Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "planReviewed",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:50:41.761Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:50:41.763Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planReviewed' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:50:41.763Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:50:49.570Z [INFO] ---------------------prepare appmod-confirm-upgrade-plan----------------------
+2026-04-30T10:50:49.571Z [INFO] [Tool.prepareInvocation]({name: appmod-confirm-upgrade-plan, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:50:49.571Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:50:49.572Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Review [upgrade plan](file:///c:/simplecd/.github/java-upgrade/20260430104551/plan.md)",
+  "confirmationMessages": {
+    "title": "Plan generated",
+    "message": "Please review the generated plan and make any necessary adjustments before proceeding. You can modify the generated [`plan.md`](file:///c:/simplecd/.github/java-upgrade/20260430104551/plan.md) directly."
+  }
+}}).
+2026-04-30T10:50:49.573Z [INFO] ----------------------prepared appmod-confirm-upgrade-plan----------------------
+2026-04-30T10:50:53.511Z [INFO] ----------------------invoke appmod-confirm-upgrade-plan----------------------
+2026-04-30T10:50:53.513Z [INFO] [Tool.invoke]({name: appmod-confirm-upgrade-plan, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:50:53.514Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:50:53.514Z [INFO] Upgrade plan confirmed successfully.
+2026-04-30T10:50:53.518Z [INFO] [Tool.invoke]({result: {
+  "message": "Generated plan is reviewed and confirmed by the user! the upgrade process will start now and be tracked in markdown file: c:\\simplecd\\.github\\java-upgrade\\20260430104551\\progress.md."
+}}).
+2026-04-30T10:50:53.519Z [INFO] ----------------------invoked appmod-confirm-upgrade-plan----------------------
+2026-04-30T10:50:56.695Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:50:56.696Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planConfirmed",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:50:56.697Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:50:56.697Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:50:56.698Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:50:56.728Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:50:56.729Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "planConfirmed",
+  "phase": "plan",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:50:56.730Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:50:56.730Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planConfirmed' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:50:56.731Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:51:19.683Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:51:19.685Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "planExecutionStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:51:19.686Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:51:19.687Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:51:19.687Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:51:19.717Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:51:19.718Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "planExecutionStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:51:19.719Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:51:19.861Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'planExecutionStarted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:51:19.862Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:51:23.196Z [INFO] ---------------------prepare appmod-install-jdk----------------------
+2026-04-30T10:51:23.197Z [INFO] [Tool.prepareInvocation]({name: appmod-install-jdk, input: {
+  "sessionId": "20260430104551",
+  "version": "25"
+}}).
+2026-04-30T10:51:23.198Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:51:25.057Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Download and install JDK"
+}}).
+2026-04-30T10:51:25.058Z [INFO] ----------------------prepared appmod-install-jdk----------------------
+2026-04-30T10:51:25.092Z [INFO] ----------------------invoke appmod-install-jdk----------------------
+2026-04-30T10:51:25.093Z [INFO] [Tool.invoke]({name: appmod-install-jdk, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551",
+  "version": "25"
+}}).
+2026-04-30T10:51:25.094Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:52:20.634Z [INFO] [Tool.invoke]({result: {
+  "result": {
+    "name": "java",
+    "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "version": "25.0.2"
+  },
+  "message": "JDK 25 is installed at C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+  "telemetry": {
+    "tool": "JDK",
+    "version": "25"
+  }
+}}).
+2026-04-30T10:52:20.636Z [INFO] ----------------------invoked appmod-install-jdk----------------------
+2026-04-30T10:52:23.837Z [INFO] ---------------------prepare appmod-list-jdks----------------------
+2026-04-30T10:52:23.839Z [INFO] [Tool.prepareInvocation]({name: appmod-list-jdks, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:52:23.840Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:52:23.842Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "List jdks"
+}}).
+2026-04-30T10:52:23.843Z [INFO] ----------------------prepared appmod-list-jdks----------------------
+2026-04-30T10:52:23.900Z [INFO] ----------------------invoke appmod-list-jdks----------------------
+2026-04-30T10:52:23.901Z [INFO] [Tool.invoke]({name: appmod-list-jdks, modelId: claude-sonnet-4.6, input: {
+  "sessionId": "20260430104551"
+}}).
+2026-04-30T10:52:23.903Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:52:23.981Z [INFO] [Tool.invoke]({result: {
+  "message": "We found following jdks in your system:\n\n1. Java 21.0.10\n   📁 Path: C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.10.7-hotspot\\bin\n   🏷️ Source: PATH,JAVA_HOME\n\n2. Java 25.0.2\n   📁 Path: C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin\n   🏷️ Source: install\n\nTotal: 2 JDK installation(s) found"
+}}).
+2026-04-30T10:52:23.983Z [INFO] ----------------------invoked appmod-list-jdks----------------------
+2026-04-30T10:52:38.619Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:52:38.620Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "details": {
+    "jdkPath": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "buildToolPath": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin"
+  },
+  "event": "environmentSetup",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:52:38.622Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:52:38.624Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:52:38.625Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:52:38.654Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:52:38.655Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "details": {
+    "jdkPath": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "buildToolPath": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin"
+  },
+  "event": "environmentSetup",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:52:38.657Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:52:38.660Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:52:38.662Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'environmentSetup' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:52:38.663Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:52:38.665Z [INFO] Project java version: 21
+2026-04-30T10:52:38.667Z [INFO] Build tool type detected from path: mvn
+2026-04-30T10:52:38.669Z [INFO] Build tool type: mvn
+2026-04-30T10:52:38.671Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+  "version": "21"
+}
+2026-04-30T10:52:38.672Z [INFO] Build tool: {
+  "name": "mvn",
+  "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "version": ""
+}
+2026-04-30T10:52:38.674Z [INFO] Project config: {
+  "buildTool": {
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "name": "mvn",
+    "version": ""
+  },
+  "jdk": {
+    "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "name": "java",
+    "version": "21"
+  },
+  "name": "simplecd",
+  "dir": "c:\\simplecd"
+}
+2026-04-30T10:54:09.883Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:54:09.884Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:09.885Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:54:09.886Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:54:09.887Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:54:09.917Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:54:09.919Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:09.920Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:54:09.921Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:54:09.922Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'buildCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:54:09.924Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:54:09.926Z [INFO] Project java version: 21
+2026-04-30T10:54:09.928Z [INFO] Maven project detected.
+2026-04-30T10:54:09.930Z [INFO] Build tool type: mvn
+2026-04-30T10:54:10.033Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.10.7-hotspot\\bin",
+  "version": "21"
+}
+2026-04-30T10:54:10.044Z [INFO] Build tool: {
+  "name": "mvn",
+  "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "version": "",
+  "source": "install"
+}
+2026-04-30T10:54:10.045Z [INFO] Project config: {
+  "buildTool": {
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "name": "mvn",
+    "version": "",
+    "source": "install"
+  },
+  "jdk": {
+    "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.10.7-hotspot\\bin",
+    "name": "java",
+    "version": "21"
+  },
+  "name": "simplecd",
+  "dir": "c:\\simplecd"
+}
+2026-04-30T10:54:10.046Z [INFO] [MavenBuildTool] Getting all module coordinates of c:\simplecd
+2026-04-30T10:54:10.047Z [INFO] [MavenBuildTool] Getting effective POMs of c:\simplecd
+2026-04-30T10:54:10.048Z [INFO] [Environment] Running command (Java undefined): mvn help:effective-pom -Doutput=effective-pom-b320cb77-0622-4640-934e-99d6a95689ee.log
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.simplecd:simplecd >------------------------
+[INFO] Building simplecd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- help:3.4.1:effective-pom (default-cli) @ simplecd ---
+[INFO] Effective-POM written to: c:\simplecd\effective-pom-b320cb77-0622-4640-934e-99d6a95689ee.log
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.789 s
+[INFO] Finished at: 2026-04-30T16:24:12+05:30
+[INFO] ------------------------------------------------------------------------
+2026-04-30T10:54:12.369Z [INFO] [BaseBuildTool] Found 1 modules: .
+2026-04-30T10:54:12.381Z [INFO] [BaseBuildTool] Finish counting Java and class files
+2026-04-30T10:54:12.382Z [INFO] [MavenBuildTool] Cleaning c:\simplecd using Maven
+2026-04-30T10:54:12.383Z [INFO] [Environment] Running command (Java undefined): mvn clean -q -B -fn
+2026-04-30T10:54:13.187Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:54:13.190Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "testCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded",
+  "message": "0 tests in project, BUILD SUCCESS"
+}}).
+2026-04-30T10:54:13.194Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:54:13.196Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:54:13.199Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:54:13.269Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:54:13.274Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "testCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded",
+  "message": "0 tests in project, BUILD SUCCESS"
+}}).
+2026-04-30T10:54:13.278Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:54:13.280Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'testCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:54:13.283Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:54:23.417Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:54:23.418Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "baselineSetup",
+  "message": "Baseline: JDK 21, compile SUCCESS, 0 tests. Fixed pre-existing duplicate method before baseline.",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:23.419Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:54:23.420Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:54:23.421Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:54:23.452Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:54:23.454Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "baselineSetup",
+  "message": "Baseline: JDK 21, compile SUCCESS, 0 tests. Fixed pre-existing duplicate method before baseline.",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:23.455Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:54:23.456Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'baselineSetup' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:54:23.457Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:54:27.963Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:54:27.965Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "details": {
+    "stepNumber": 3,
+    "stepTitle": "Upgrade Java version and compiler plugin in pom.xml"
+  },
+  "event": "upgradeStepStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:27.965Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:54:27.966Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:54:27.967Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:54:27.993Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:54:27.995Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "details": {
+    "stepNumber": 3,
+    "stepTitle": "Upgrade Java version and compiler plugin in pom.xml"
+  },
+  "event": "upgradeStepStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:27.996Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:54:27.998Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'upgradeStepStarted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:54:27.999Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:54:50.549Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:54:50.551Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:50.552Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:54:50.553Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:54:50.554Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:54:50.588Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:54:50.590Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:54:50.591Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:54:50.592Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:54:50.593Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'buildCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:54:50.595Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:54:50.597Z [INFO] Project java version: 25
+2026-04-30T10:54:50.598Z [INFO] Maven project detected.
+2026-04-30T10:54:50.600Z [INFO] Build tool type: mvn
+2026-04-30T10:54:50.703Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+  "version": "25"
+}
+2026-04-30T10:54:50.715Z [INFO] Build tool: {
+  "name": "mvn",
+  "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "version": "",
+  "source": "install"
+}
+2026-04-30T10:54:50.716Z [INFO] Project config: {
+  "buildTool": {
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "name": "mvn",
+    "version": "",
+    "source": "install"
+  },
+  "jdk": {
+    "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "name": "java",
+    "version": "25"
+  },
+  "name": "simplecd",
+  "dir": "c:\\simplecd"
+}
+2026-04-30T10:54:50.718Z [INFO] [MavenBuildTool] Getting all module coordinates of c:\simplecd
+2026-04-30T10:54:50.719Z [INFO] [MavenBuildTool] Getting effective POMs of c:\simplecd
+2026-04-30T10:54:50.720Z [INFO] [Environment] Running command (Java undefined): mvn help:effective-pom -Doutput=effective-pom-f6f766fc-ff1e-409e-8ebe-9b56c012d80a.log
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.simplecd:simplecd >------------------------
+[INFO] Building simplecd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- help:3.4.1:effective-pom (default-cli) @ simplecd ---
+[INFO] Effective-POM written to: c:\simplecd\effective-pom-f6f766fc-ff1e-409e-8ebe-9b56c012d80a.log
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.380 s
+[INFO] Finished at: 2026-04-30T16:24:54+05:30
+[INFO] ------------------------------------------------------------------------
+2026-04-30T10:54:54.893Z [INFO] [BaseBuildTool] Found 1 modules: .
+2026-04-30T10:54:54.953Z [INFO] [BaseBuildTool] Finish counting Java and class files
+2026-04-30T10:54:54.955Z [INFO] [MavenBuildTool] Cleaning c:\simplecd using Maven
+2026-04-30T10:54:54.958Z [INFO] [Environment] Running command (Java undefined): mvn clean -q -B -fn
+2026-04-30T10:55:02.372Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:55:02.374Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "details": {
+    "commitId": "a40e508df7801415822c0f676d3873cfebd9cde4",
+    "stepNumber": 3,
+    "stepTitle": "Upgrade Java version and compiler plugin in pom.xml"
+  },
+  "event": "upgradeStepCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:02.375Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:55:02.376Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:55:02.377Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:55:02.415Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:55:02.417Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "details": {
+    "commitId": "a40e508df7801415822c0f676d3873cfebd9cde4",
+    "stepNumber": 3,
+    "stepTitle": "Upgrade Java version and compiler plugin in pom.xml"
+  },
+  "event": "upgradeStepCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:02.419Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:55:02.422Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'upgradeStepCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:55:02.424Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:55:06.630Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:55:06.633Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "details": {
+    "stepNumber": 4,
+    "stepTitle": "Final Validation — Full build and test with Java 25"
+  },
+  "event": "upgradeStepStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:06.634Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:55:06.635Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:55:06.636Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:55:06.666Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:55:06.668Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "details": {
+    "stepNumber": 4,
+    "stepTitle": "Final Validation — Full build and test with Java 25"
+  },
+  "event": "upgradeStepStarted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:06.668Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:55:06.669Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'upgradeStepStarted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:55:06.669Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:55:21.536Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:55:21.536Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:21.537Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:55:21.537Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:55:21.537Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:55:21.571Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:55:21.572Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "buildCompleted",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:21.572Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:55:21.572Z [INFO] Project c:\simplecd is a maven project, try to get java version from pom.xml
+2026-04-30T10:55:21.573Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'buildCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:55:21.573Z [INFO] ----------------------invoked appmod-report-event----------------------
+2026-04-30T10:55:21.574Z [INFO] Project java version: 25
+2026-04-30T10:55:21.575Z [INFO] Maven project detected.
+2026-04-30T10:55:21.575Z [INFO] Build tool type: mvn
+2026-04-30T10:55:21.670Z [INFO] JDK: {
+  "name": "java",
+  "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+  "version": "25"
+}
+2026-04-30T10:55:21.679Z [INFO] Build tool: {
+  "name": "mvn",
+  "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+  "version": "",
+  "source": "install"
+}
+2026-04-30T10:55:21.680Z [INFO] Project config: {
+  "buildTool": {
+    "path": "C:\\Users\\jaswant.sharma\\.maven\\maven-3.9.15\\bin",
+    "name": "mvn",
+    "version": "",
+    "source": "install"
+  },
+  "jdk": {
+    "path": "C:\\Users\\jaswant.sharma\\.jdk\\jdk-25.0.2\\bin",
+    "name": "java",
+    "version": "25"
+  },
+  "name": "simplecd",
+  "dir": "c:\\simplecd"
+}
+2026-04-30T10:55:21.680Z [INFO] [MavenBuildTool] Getting all module coordinates of c:\simplecd
+2026-04-30T10:55:21.681Z [INFO] [MavenBuildTool] Getting effective POMs of c:\simplecd
+2026-04-30T10:55:21.681Z [INFO] [Environment] Running command (Java undefined): mvn help:effective-pom -Doutput=effective-pom-8745df74-3884-470d-be32-3aea7362ed98.log
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.simplecd:simplecd >------------------------
+[INFO] Building simplecd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- help:3.4.1:effective-pom (default-cli) @ simplecd ---
+[INFO] Effective-POM written to: c:\simplecd\effective-pom-8745df74-3884-470d-be32-3aea7362ed98.log
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.495 s
+[INFO] Finished at: 2026-04-30T16:25:24+05:30
+[INFO] ------------------------------------------------------------------------
+2026-04-30T10:55:24.687Z [INFO] [BaseBuildTool] Found 1 modules: .
+2026-04-30T10:55:24.709Z [INFO] [BaseBuildTool] Finish counting Java and class files
+2026-04-30T10:55:24.710Z [INFO] [MavenBuildTool] Cleaning c:\simplecd using Maven
+2026-04-30T10:55:24.711Z [INFO] [Environment] Running command (Java undefined): mvn clean -q -B -fn
+2026-04-30T10:55:26.372Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T10:55:26.373Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "testCompleted",
+  "message": "0 tests, BUILD SUCCESS with Java 25",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:26.374Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T10:55:26.374Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T10:55:26.375Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T10:55:26.424Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T10:55:26.425Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "testCompleted",
+  "message": "0 tests, BUILD SUCCESS with Java 25",
+  "phase": "execute",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430104551",
+  "status": "succeeded"
+}}).
+2026-04-30T10:55:26.426Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T10:55:26.427Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'testCompleted' reported!\nSession ID: 20260430104551,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430104551"
+}}).
+2026-04-30T10:55:26.428Z [INFO] ----------------------invoked appmod-report-event----------------------
