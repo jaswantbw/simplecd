@@ -111,7 +111,21 @@ public class BuildService {
             branchName = "main";
         }
 
-        runCommand(Arrays.asList("git", "-C", repoPath.toString(), "checkout", branchName));
+        String remoteRef = "refs/remotes/origin/" + branchName;
+        String refSpec = "+refs/heads/" + branchName + ":" + remoteRef;
+        runCommand(withRemoteAuth(
+            Arrays.asList("git", "-C", repoPath.toString(), "fetch", "origin", refSpec),
+            repo.getUrl(),
+            gitProviderSettingsService.resolveProfileForRepoUrl(repo.getUrl()),
+            resolvePat(repo.getUrl(), "")
+        ));
+        try {
+            runCommand(Arrays.asList("git", "-C", repoPath.toString(), "checkout", branchName));
+        } catch (Exception checkoutError) {
+            // Create local branch from origin/<branch> when branch exists remotely but not locally.
+            runCommand(Arrays.asList("git", "-C", repoPath.toString(), "checkout", "-B", branchName, remoteRef));
+        }
+
         String output = runCommand(withRemoteAuth(
             Arrays.asList("git", "-C", repoPath.toString(), "pull", "origin", branchName),
             repo.getUrl(),
@@ -183,24 +197,41 @@ public class BuildService {
             throw new IllegalArgumentException("Repository not found.");
         }
 
-        String resolvedPat = resolvePat(repo.getUrl(), "");
-        ResolvedGitProfile resolvedProfile = gitProviderSettingsService.resolveProfileForRepoUrl(repo.getUrl());
-        String output = runCommand(withRemoteAuth(
-            Arrays.asList("git", "ls-remote", "--heads", repo.getUrl()),
-            repo.getUrl(),
-            resolvedProfile,
-            resolvedPat
-        ));
         LinkedHashSet<String> branches = new LinkedHashSet<>();
-        for (String line : output.split("\\R")) {
-            int refIndex = line.indexOf("refs/heads/");
-            if (refIndex < 0) {
-                continue;
+
+        Path repoPath = Paths.get(repo.getLocalPath());
+        if (Files.exists(repoPath)) {
+            try {
+                String localOutput = runCommand(Arrays.asList(
+                        "git", "-C", repoPath.toString(), "branch", "--format=%(refname:short)"
+                ));
+                collectBranchesFromGitOutput(branches, localOutput);
+            } catch (Exception ignored) {
+                // Keep going; remote lookup may still work.
             }
-            String branch = line.substring(refIndex + "refs/heads/".length()).trim();
-            if (!branch.isBlank()) {
-                branches.add(branch);
+
+            try {
+                String remoteTrackingOutput = runCommand(Arrays.asList(
+                        "git", "-C", repoPath.toString(), "branch", "-r", "--format=%(refname:short)"
+                ));
+                collectBranchesFromGitOutput(branches, remoteTrackingOutput);
+            } catch (Exception ignored) {
+                // Keep going; remote lookup may still work.
             }
+        }
+
+        try {
+            String resolvedPat = resolvePat(repo.getUrl(), "");
+            ResolvedGitProfile resolvedProfile = gitProviderSettingsService.resolveProfileForRepoUrl(repo.getUrl());
+            String output = runCommand(withRemoteAuth(
+                    Arrays.asList("git", "ls-remote", "--heads", repo.getUrl()),
+                    repo.getUrl(),
+                    resolvedProfile,
+                    resolvedPat
+            ));
+            collectBranchesFromLsRemote(branches, output);
+        } catch (Exception ignored) {
+            // Local branches may still be available even when remote listing fails.
         }
 
         String defaultBranch = (repo.getDefaultBranch() == null || repo.getDefaultBranch().isBlank())
@@ -217,6 +248,51 @@ public class BuildService {
         }
         ordered.addAll(branches);
         return ordered;
+    }
+
+    private void collectBranchesFromLsRemote(Set<String> branches, String output) {
+        if (output == null || output.isBlank()) {
+            return;
+        }
+        for (String line : output.split("\\R")) {
+            int refIndex = line.indexOf("refs/heads/");
+            if (refIndex < 0) {
+                continue;
+            }
+            String branch = line.substring(refIndex + "refs/heads/".length()).trim();
+            addNormalizedBranch(branches, branch);
+        }
+    }
+
+    private void collectBranchesFromGitOutput(Set<String> branches, String output) {
+        if (output == null || output.isBlank()) {
+            return;
+        }
+        for (String line : output.split("\\R")) {
+            addNormalizedBranch(branches, line);
+        }
+    }
+
+    private void addNormalizedBranch(Set<String> branches, String branchValue) {
+        String branch = branchValue == null ? "" : branchValue.trim();
+        if (branch.isBlank()) {
+            return;
+        }
+
+        if (branch.startsWith("remotes/")) {
+            branch = branch.substring("remotes/".length());
+        }
+        if (branch.startsWith("origin/")) {
+            branch = branch.substring("origin/".length());
+        }
+        if (branch.startsWith("refs/heads/")) {
+            branch = branch.substring("refs/heads/".length());
+        }
+        if (branch.equals("HEAD") || branch.startsWith("HEAD ->")) {
+            return;
+        }
+
+        branches.add(branch);
     }
 
     public void cloneRepository(String repoUrl, String pat) throws Exception {

@@ -234,7 +234,7 @@
         .provider-logo-icon.other { background: #f3f4f6; border-color: #d1d5db; color: #374151; }
         .provider-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .repo-row { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; padding: 10px 12px; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
-        .repo-row-line { display: grid; grid-template-columns: minmax(220px, 1fr) auto; gap: 10px; align-items: center; }
+        .repo-row-line { display: grid; grid-template-columns: minmax(220px, 1fr) auto auto; gap: 10px; align-items: center; }
         .repo-row-name { font-size: 0.9rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .repo-row-controls { display: flex; align-items: center; gap: 8px; }
         .repo-row-controls label { margin: 0; font-size: 0.76rem; color: var(--muted); }
@@ -1025,6 +1025,8 @@
                 button.addEventListener('click', async () => {
                     const repoId = row.dataset.id || '';
                     const action = button.dataset.action;
+                    const branchSelect = row.querySelector('.repo-branch-select');
+                    const selectedBranch = branchSelect ? (branchSelect.value || branchSelect.dataset.defaultBranch || 'main') : 'main';
 
                     if (!repoId) {
                         setRepoActionStatus('Repository id is missing for this row.', true);
@@ -1033,13 +1035,36 @@
 
                     button.disabled = true;
                     try {
-                        if (action === 'pull') {
-                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/pull`, { method: 'POST' });
+                        if (action === 'clone') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', selectedBranch);
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/clone`, {
+                                method: 'POST',
+                                body: payload
+                            });
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
-                                setRepoActionStatus(text || 'Sync completed.');
+                                setRepoActionStatus(text || `Clone completed for ${row.dataset.name || 'repository'}.`);
+                                await loadBranchesForRepoRow(row);
                             } else {
-                                setRepoActionStatus(text || 'Sync failed.', true);
+                                setRepoActionStatus(text || 'Clone failed.', true);
+                            }
+                            return;
+                        }
+
+                        if (action === 'pull') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', selectedBranch);
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/pull`, {
+                                method: 'POST',
+                                body: payload
+                            });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || `Pull completed on ${selectedBranch}.`);
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Pull failed.', true);
                             }
                             return;
                         }
@@ -1049,8 +1074,26 @@
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
                                 setRepoActionStatus(text || 'Fetch command completed.');
+                                await loadBranchesForRepoRow(row);
                             } else {
                                 setRepoActionStatus(text || 'Fetch failed.', true);
+                            }
+                            return;
+                        }
+
+                        if (action === 'checkout') {
+                            const payload = new URLSearchParams();
+                            payload.set('branch', selectedBranch);
+                            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/checkout`, {
+                                method: 'POST',
+                                body: payload
+                            });
+                            const text = await response.text();
+                            if (response.ok && !text.startsWith('Error:')) {
+                                setRepoActionStatus(text || `Checkout completed on ${selectedBranch}.`);
+                                await loadBranchesForRepoRow(row);
+                            } else {
+                                setRepoActionStatus(text || 'Checkout failed.', true);
                             }
                             return;
                         }
@@ -1325,9 +1368,17 @@
                                     <div class="repo-row" data-id="${escapeHtml(repo.id || '')}" data-name="${escapeHtml(repo.name || 'Repository')}">
                                         <div class="repo-row-line">
                                             <div class="repo-row-name" title="${escapeHtml(repo.name || 'Repository')}">${escapeHtml(repo.name || 'Repository')}</div>
+                                            <div class="repo-row-controls">
+                                                <label for="repo-branch-${escapeHtml(repo.id || '')}">Branch</label>
+                                                <select id="repo-branch-${escapeHtml(repo.id || '')}" class="repo-branch-select" data-default-branch="${escapeHtml(repo.defaultBranch || 'main')}">
+                                                    <option value="${escapeHtml(repo.defaultBranch || 'main')}">${escapeHtml(repo.defaultBranch || 'main')}</option>
+                                                </select>
+                                            </div>
                                             <div class="repo-actions">
-                                                <button class="repo-action-btn" type="button" data-action="pull" title="git pull">Sync</button>
+                                                <button class="repo-action-btn secondary" type="button" data-action="clone" title="git clone">Clone</button>
+                                                <button class="repo-action-btn" type="button" data-action="pull" title="git pull">Pull</button>
                                                 <button class="repo-action-btn secondary" type="button" data-action="fetch" title="git fetch --all --tags --prune">Fetch</button>
+                                                <button class="repo-action-btn secondary" type="button" data-action="checkout" title="git checkout">Checkout</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1335,6 +1386,7 @@
                             </div>
                         `).join('');
                     bindRepositoryActions();
+                    loadBranchesForVisibleRepositories();
                 }
             })
             .catch(error => console.error('Error loading repositories:', error));
