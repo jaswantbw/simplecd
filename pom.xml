@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.5.14</version>
         <relativePath/>
     </parent>
 
@@ -17,12 +17,7 @@
     <description>Simple continuous delivery dashboard</description>
 
     <properties>
-        <java.version>21</java.version>
-        <!-- CVE fixes: override Spring Boot BOM managed versions -->
-        <tomcat.version>10.1.54</tomcat.version>
-        <thymeleaf.version>3.1.4.RELEASE</thymeleaf.version>
-        <json-smart.version>2.5.2</json-smart.version>
-        <assertj.version>3.27.7</assertj.version>
+        <java.version>25</java.version>
     </properties>
 
     <dependencies>
