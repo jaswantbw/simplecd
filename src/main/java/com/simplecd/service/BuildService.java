@@ -47,6 +47,19 @@ public class BuildService {
         }
     }
 
+    private void ensureGitConfigForRepository(Path repoPath) {
+        try {
+            if (Files.exists(repoPath)) {
+                runCommand(Arrays.asList(
+                    "git", "-C", repoPath.toString(), "config", "--replace-all",
+                    "remote.origin.fetch", "+refs/heads/*:refs/remotes/origin/*"
+                ));
+            }
+        } catch (Exception ignored) {
+            // Non-critical; continue if git config fails
+        }
+    }
+
     public void cloneRepository(String repoUrl, String pat, String defaultBranch) throws Exception {
         ResolvedGitProfile resolvedProfile = gitProviderSettingsService.resolveProfileForRepoUrl(repoUrl);
         String resolvedPat = resolvePat(repoUrl, pat);
