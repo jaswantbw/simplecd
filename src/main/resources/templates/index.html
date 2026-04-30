@@ -393,6 +393,115 @@
         .provider-chip-name { flex:1; font-size:0.88rem; font-weight:600; color:var(--text); }
         .provider-chip-url { font-size:0.78rem; color:var(--muted); flex:2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .provider-chip-actions { display:flex; gap:6px; }
+
+        /* ── Pipeline UI ── */
+        .pipeline-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+        .pipeline-toolbar h2 { flex:1; font-size:1.3rem; font-weight:600; margin:0; }
+        .pipeline-cards { display:flex; flex-direction:column; gap:12px; }
+        .pipeline-card { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:16px 18px; display:flex; align-items:center; gap:14px; box-shadow:1px 2px 4px rgba(0,0,0,0.05); }
+        .pipeline-card-icon { width:38px; height:38px; border-radius:8px; background:var(--accent-light); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .pipeline-card-icon svg { color:var(--accent); }
+        .pipeline-card-body { flex:1; min-width:0; }
+        .pipeline-card-name { font-weight:700; font-size:0.92rem; color:var(--text); margin-bottom:2px; }
+        .pipeline-card-meta { font-size:0.78rem; color:var(--muted); display:flex; gap:12px; flex-wrap:wrap; }
+        .pipeline-card-actions { display:flex; gap:8px; flex-shrink:0; }
+        .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--secondary-text); }
+        .btn-ghost:hover { background:#f9fafb; }
+        .btn-danger-ghost { background:transparent; border:1px solid #fecdd3; color:#be123c; }
+        .btn-danger-ghost:hover { background:#fff1f2; }
+        .pipeline-empty { text-align:center; padding:52px 24px; color:var(--muted); }
+        .pipeline-empty svg { opacity:0.3; margin-bottom:14px; display:block; margin-left:auto; margin-right:auto; }
+        .pipeline-empty p { font-size:0.9rem; margin-bottom:16px; }
+
+        /* ── Pipeline Drawer ── */
+        .pipeline-drawer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1100; }
+        .pipeline-drawer-overlay.open { display:block; }
+        .pipeline-drawer { position:fixed; top:0; right:-680px; width:660px; max-width:98vw; height:100vh; background:#fff; box-shadow:-4px 0 24px rgba(0,0,0,0.12); z-index:1101; display:flex; flex-direction:column; transition:right 0.28s cubic-bezier(.4,0,.2,1); }
+        .pipeline-drawer.open { right:0; }
+        .pipeline-drawer-header { padding:18px 22px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+        .pipeline-drawer-header h3 { flex:1; margin:0; font-size:1rem; font-weight:700; }
+        .pipeline-drawer-close { background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; border-radius:4px; display:flex; transform:none; }
+        .pipeline-drawer-close:hover { background:#f3f4f6; color:var(--text); }
+        .pipeline-drawer-body { flex:1; overflow-y:auto; padding:20px 22px; }
+        .pipeline-drawer-footer { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; flex-shrink:0; }
+
+        /* Steps */
+        .pipeline-step-list { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+        .pipeline-step { border:1px solid var(--border); border-radius:6px; background:#f9fafb; }
+        .pipeline-step-header { display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer; user-select:none; }
+        .step-number { width:22px; height:22px; border-radius:50%; background:var(--accent); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .step-name-badge { flex:1; font-size:0.85rem; font-weight:600; color:var(--text); }
+        .step-type-tag { font-size:0.72rem; background:var(--accent-light); color:var(--accent); padding:2px 8px; border-radius:10px; font-weight:600; }
+        .step-remove { background:none; border:none; color:#be123c; cursor:pointer; padding:2px 4px; border-radius:4px; display:flex; transform:none; font-size:0.8rem; }
+        .step-remove:hover { background:#fff1f2; }
+        .pipeline-step-body { padding:0 12px 12px; display:none; }
+        .pipeline-step.expanded .pipeline-step-body { display:block; }
+        .step-fields { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px; }
+        .step-fields .form-group { margin-bottom:0; }
+        .step-fields input, .step-fields select, .step-fields textarea { max-width:100%; font-size:0.82rem; }
+
+        /* YAML preview */
+        .yaml-preview-wrap { margin-top:14px; }
+        .yaml-preview-label { font-size:0.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+        .yaml-copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-size:0.72rem; padding:2px 8px; border-radius:4px; cursor:pointer; transform:none; }
+        .yaml-copy-btn:hover { background:#f3f4f6; }
+        pre.yaml-preview { background:#0f2733; color:#a8d4e6; border-radius:6px; padding:14px 16px; font-size:0.75rem; line-height:1.6; overflow-x:auto; white-space:pre; font-family:'Courier New',monospace; margin:0; max-height:300px; overflow-y:auto; }
+
+        /* ── Wizard progress ── */
+        .wizard-progress { display:flex; align-items:center; padding:14px 22px 12px; flex-shrink:0; border-bottom:1px solid var(--border); }
+        .wizard-step-item { display:flex; align-items:center; }
+        .wizard-step-dot { width:26px; height:26px; border-radius:50%; border:2px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--muted); flex-shrink:0; transition:all 0.2s; }
+        .wizard-step-dot.active { border-color:var(--accent); background:var(--accent); color:#fff; }
+        .wizard-step-dot.done { border-color:var(--accent); background:var(--accent-light); color:var(--accent); }
+        .wizard-step-label { font-size:0.72rem; color:var(--muted); margin-left:6px; white-space:nowrap; }
+        .wizard-step-label.active { color:var(--accent); font-weight:600; }
+        .wizard-step-line { flex:1; min-width:16px; height:2px; background:var(--border); margin:0 8px; }
+        .wizard-step-line.done { background:var(--accent); }
+        .wizard-page { display:none; }
+        .wizard-page.active { display:block; }
+        /* ── Pipeline run status badges ── */
+        .pl-badge { font-size:0.72rem; padding:2px 10px; border-radius:10px; font-weight:600; white-space:nowrap; }
+        .pl-badge-idle    { background:#f3f4f6; color:#6b7280; }
+        .pl-badge-running { background:#dbeafe; color:#1d4ed8; animation:pl-pulse 1.2s ease-in-out infinite; }
+        .pl-badge-success { background:#dcfce7; color:#15803d; }
+        .pl-badge-failed  { background:#fee2e2; color:#dc2626; }
+        @keyframes pl-pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+        .pipeline-card-body-click { cursor:pointer; flex:1; min-width:0; }
+        .pipeline-card-body-click:hover .pipeline-card-name { color:var(--accent); }
+
+        /* ── Pipeline Logs Modal ── */
+        .pl-logs-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1200; }
+        .pl-logs-overlay.open { display:block; }
+        .pl-logs-modal { background:#0d1117; position:fixed; top:0; right:-1200px; width:1120px; max-width:100vw; height:100vh; display:flex; flex-direction:column; box-shadow:-6px 0 32px rgba(0,0,0,0.55); overflow:hidden; transition:right 0.28s cubic-bezier(.4,0,.2,1); z-index:1201; }
+        .pl-logs-overlay.open .pl-logs-modal { right:0; }
+        .pl-logs-header { display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid #30363d; flex-shrink:0; }
+        .pl-logs-header h3 { flex:1; margin:0; font-size:0.95rem; font-weight:700; color:#e6edf3; }
+        .pl-logs-close { background:none; border:none; cursor:pointer; color:#8b949e; padding:4px; border-radius:4px; display:flex; transform:none; }
+        .pl-logs-close:hover { background:#21262d; color:#e6edf3; }
+        .pl-logs-meta { display:flex; gap:16px; padding:10px 18px; border-bottom:1px solid #21262d; flex-shrink:0; flex-wrap:wrap; }
+        .pl-logs-meta span { font-size:0.75rem; color:#8b949e; }
+        .pl-logs-meta strong { color:#c9d1d9; }
+        .pl-logs-steps { display:flex; flex-direction:column; gap:2px; overflow-y:auto; flex:1; padding:10px 14px 14px; }
+        .pl-log-step { border-radius:6px; overflow:hidden; margin-bottom:4px; }
+        .pl-log-step-header { display:flex; align-items:center; gap:10px; padding:8px 12px; cursor:pointer; user-select:none; background:#161b22; }
+        .pl-log-step-header:hover { background:#1c2128; }
+        .pl-log-step-icon { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.68rem; flex-shrink:0; }
+        .pl-log-step-icon.pending  { background:#30363d; color:#8b949e; }
+        .pl-log-step-icon.running  { background:#1d4ed8; color:#fff; animation:pl-pulse 1s infinite; }
+        .pl-log-step-icon.success  { background:#15803d; color:#fff; }
+        .pl-log-step-icon.failed   { background:#dc2626; color:#fff; }
+        .pl-log-step-name { flex:1; font-size:0.82rem; font-weight:600; color:#c9d1d9; }
+        .pl-log-step-dur  { font-size:0.72rem; color:#8b949e; }
+        .pl-log-step-body { background:#0d1117; padding:0 12px; max-height:0; overflow:hidden; transition:max-height 0.2s ease; }
+        .pl-log-step-body.open { max-height:600px; padding:10px 12px; }
+        .pl-log-line { font-family:'Courier New',monospace; font-size:0.73rem; line-height:1.7; white-space:pre-wrap; word-break:break-all; }
+        .pl-log-line.info  { color:#a8d4e6; }
+        .pl-log-line.ok    { color:#3fb950; }
+        .pl-log-line.warn  { color:#d29922; }
+        .pl-log-line.err   { color:#f85149; }
+        .pl-log-line.dim   { color:#484f58; }
+        .pl-logs-footer { padding:12px 18px; border-top:1px solid #21262d; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+        .pl-logs-status-bar { flex:1; font-size:0.78rem; color:#8b949e; }
     </style>
 </head>
 <body>
@@ -626,30 +735,18 @@
 
         <!-- PIPELINES -->
         <div class="section" id="section-pipelines">
-            <div class="section-header">
+            <div class="pipeline-toolbar">
                 <h2>Pipelines</h2>
-                <p>All triggered pipeline runs and their current statuses.</p>
+                <button onclick="openPipelineDrawer()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create Pipeline
+                </button>
             </div>
-            <div class="panel">
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Job ID</th><th>Repository</th><th>Branch</th><th>Status</th><th>Log</th><th>Artifact</th></tr></thead>
-                        <tbody>
-                        <tr th:each="job : ${jobs}">
-                            <td th:text="${job.jobId}" style="font-family:monospace;font-size:0.82rem;"></td>
-                            <td th:text="${job.repoUrl}"></td>
-                            <td th:text="${job.branch}"></td>
-                            <td>
-                                <span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span>
-                            </td>
-                            <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
-                            <td th:text="${job.artifactPath ?: '—'}"></td>
-                        </tr>
-                        <tr th:if="${jobs == null or jobs.isEmpty()}">
-                            <td colspan="6" style="text-align:center;color:var(--muted);padding:28px;">No pipeline runs found.</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="pipeline-cards" id="pipeline-card-list">
+                <div id="dynamic-pipeline-cards"></div>
+                <div class="pipeline-empty" id="pipeline-empty-state">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <p>No pipelines yet.<br>Click <strong>Create Pipeline</strong> to define your first one.</p>
                 </div>
             </div>
         </div>
@@ -2053,6 +2150,569 @@
             });
         }
     });
+
+    /* ═══════════════════════════════════════
+       PIPELINE DRAWER – WIZARD
+    ═══════════════════════════════════════ */
+    let _pipelineSteps = [];
+    let _pipelines = JSON.parse(localStorage.getItem('simplecd_pipelines') || '[]');
+    let _editingPipelineIdx = null;
+    let _currentWizardStep = 1;
+    const WIZARD_STEPS = 4;
+
+    const STEP_TYPES = [
+        { value: 'checkout',        label: 'Checkout',        uses: 'actions/checkout@v4',              params: [] },
+        { value: 'setup-java',      label: 'Setup JDK',       uses: 'actions/setup-java@v4',            params: ['java-version','distribution'] },
+        { value: 'mvn-build',       label: 'Maven Build',     run:  'mvn package -DskipTests --batch-mode', params: ['command'] },
+        { value: 'mvn-test',        label: 'Maven Test',      run:  'mvn test --batch-mode',            params: ['command'] },
+        { value: 'docker-build',    label: 'Docker Build',    run:  'docker build -t image:tag .',      params: ['command'] },
+        { value: 'upload-artifact', label: 'Upload Artifact', uses: 'actions/upload-artifact@v4',       params: ['artifact-name','path'] },
+        { value: 'custom',          label: 'Custom Run',      run:  '',                                 params: ['command'] },
+    ];
+
+    /* ── Wizard navigation ── */
+    function updateWizardUI(step) {
+        for (let i = 1; i <= WIZARD_STEPS; i++) {
+            const dot  = document.getElementById('wdot-' + i);
+            const lbl  = document.getElementById('wlbl-' + i);
+            const page = document.getElementById('wpage-' + i);
+            if (!dot) continue;
+            dot.classList.remove('active', 'done');
+            lbl.classList.remove('active');
+            page.classList.remove('active');
+            if (i < step)        { dot.classList.add('done');   dot.textContent = '✓'; }
+            else if (i === step) { dot.classList.add('active'); dot.textContent = i; lbl.classList.add('active'); page.classList.add('active'); }
+            else                 { dot.textContent = i; }
+            const line = document.getElementById('wline-' + i);
+            if (line) line.classList.toggle('done', i < step);
+        }
+        document.getElementById('wizard-back-btn').style.display = step > 1 ? '' : 'none';
+        document.getElementById('wizard-next-btn').style.display = step < WIZARD_STEPS ? '' : 'none';
+        document.getElementById('wizard-save-btn').style.display = step === WIZARD_STEPS ? '' : 'none';
+    }
+
+    function wizardNext() {
+        if (_currentWizardStep === 1) {
+            const n = document.getElementById('pl-name');
+            if (!n.value.trim()) {
+                n.focus(); n.style.borderColor = '#dc2626';
+                setTimeout(() => n.style.borderColor = '', 1500); return;
+            }
+        }
+        if (_currentWizardStep === 2) {
+            const sel = document.getElementById('pl-repo');
+            const cust = document.getElementById('pl-repo-custom').value.trim();
+            if (!sel.value && !cust) {
+                sel.style.borderColor = '#dc2626';
+                setTimeout(() => sel.style.borderColor = '', 1500); return;
+            }
+        }
+        if (_currentWizardStep === 3) {
+            if (!document.getElementById('pl-branch').value.trim())
+                document.getElementById('pl-branch').value = 'main';
+        }
+        if (_currentWizardStep < WIZARD_STEPS) {
+            _currentWizardStep++;
+            updateWizardUI(_currentWizardStep);
+            if (_currentWizardStep === 4) { renderPipelineSteps(); refreshYaml(); }
+        }
+    }
+
+    function wizardBack() {
+        if (_currentWizardStep > 1) { _currentWizardStep--; updateWizardUI(_currentWizardStep); }
+    }
+
+    /* ── Open / Close ── */
+    function openPipelineDrawer(idx) {
+        _editingPipelineIdx = (idx !== undefined) ? idx : null;
+        _currentWizardStep = 1;
+        if (_editingPipelineIdx !== null) {
+            const p = _pipelines[_editingPipelineIdx];
+            document.getElementById('pl-name').value   = p.name   || '';
+            document.getElementById('pl-branch').value = p.branch || 'main';
+            document.getElementById('pl-runner').value = p.runner || 'ubuntu-latest';
+            document.getElementById('trig-push').checked   = (p.triggers || []).includes('push');
+            document.getElementById('trig-pr').checked     = (p.triggers || []).includes('pull_request');
+            document.getElementById('trig-manual').checked = (p.triggers || []).includes('workflow_dispatch');
+            _pipelineSteps = JSON.parse(JSON.stringify(p.steps || []));
+            document.getElementById('pipeline-drawer-title').textContent = 'Edit Pipeline';
+        } else {
+            document.getElementById('pl-name').value   = '';
+            document.getElementById('pl-branch').value = 'main';
+            document.getElementById('pl-runner').value = 'ubuntu-latest';
+            document.getElementById('trig-push').checked   = true;
+            document.getElementById('trig-pr').checked     = false;
+            document.getElementById('trig-manual').checked = false;
+            _pipelineSteps = [];
+            document.getElementById('pipeline-drawer-title').textContent = 'Create Pipeline';
+        }
+        updateWizardUI(1);
+        loadReposIntoSelect();
+        document.getElementById('pipeline-drawer-overlay').classList.add('open');
+        document.getElementById('pipeline-drawer').classList.add('open');
+    }
+
+    function closePipelineDrawer() {
+        document.getElementById('pipeline-drawer-overlay').classList.remove('open');
+        document.getElementById('pipeline-drawer').classList.remove('open');
+    }
+
+    /* ── Repository select ── */
+    function loadReposIntoSelect() {
+        const sel = document.getElementById('pl-repo');
+        sel.innerHTML = '<option value="">Loading repositories…</option>';
+        fetch('/api/repositories')
+            .then(r => r.json())
+            .then(repos => {
+                sel.innerHTML = '<option value="">-- Select a repository --</option>';
+                repos.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.id;
+                    opt.dataset.url    = r.url || '';
+                    opt.dataset.branch = r.defaultBranch || 'main';
+                    opt.dataset.name   = r.name || r.url || r.id;
+                    opt.textContent    = (r.name || r.url) + (r.providerType ? '  [' + r.providerType + ']' : '');
+                    sel.appendChild(opt);
+                });
+                const cust = document.createElement('option');
+                cust.value = '__custom__'; cust.textContent = '+ Enter custom URL…';
+                sel.appendChild(cust);
+                if (_editingPipelineIdx !== null && _pipelines[_editingPipelineIdx].repoId) {
+                    sel.value = _pipelines[_editingPipelineIdx].repoId;
+                    onRepoChanged();
+                }
+            })
+            .catch(() => {
+                sel.innerHTML = '<option value="">No repositories found</option><option value="__custom__">+ Enter custom URL…</option>';
+            });
+    }
+
+    function onRepoChanged() {
+        const sel   = document.getElementById('pl-repo');
+        const opt   = sel.options[sel.selectedIndex];
+        const cGrp  = document.getElementById('pl-custom-repo-group');
+        const info  = document.getElementById('pl-repo-info');
+        if (sel.value === '__custom__') {
+            cGrp.style.display = '';
+            info.style.display = 'none';
+        } else if (sel.value) {
+            cGrp.style.display = 'none';
+            info.style.display = '';
+            info.innerHTML = '<strong>URL:</strong> ' + (opt.dataset.url || '—') + '&nbsp;&nbsp;<strong>Default branch:</strong> ' + (opt.dataset.branch || 'main');
+            const bi = document.getElementById('pl-branch');
+            if (!bi.value || bi.value === 'main') bi.value = opt.dataset.branch || 'main';
+        } else {
+            cGrp.style.display = 'none';
+            info.style.display = 'none';
+        }
+        refreshYaml();
+    }
+
+    function addPipelineStep() {
+        _pipelineSteps.push({ type: 'mvn-build', name: '', expanded: true });
+        renderPipelineSteps();
+        refreshYaml();
+    }
+
+    function removePipelineStep(i) {
+        _pipelineSteps.splice(i, 1);
+        renderPipelineSteps();
+        refreshYaml();
+    }
+
+    function toggleStep(i) {
+        _pipelineSteps[i].expanded = !_pipelineSteps[i].expanded;
+        renderPipelineSteps();
+    }
+
+    function stepFieldChanged(i, field, val) {
+        _pipelineSteps[i][field] = val;
+        if (field === 'type') renderPipelineSteps();
+        refreshYaml();
+    }
+
+    function renderPipelineSteps() {
+        const list = document.getElementById('pipeline-step-list');
+        const noSteps = document.getElementById('pipeline-no-steps');
+        if (_pipelineSteps.length === 0) {
+            list.innerHTML = '';
+            noSteps.style.display = 'block';
+            return;
+        }
+        noSteps.style.display = 'none';
+        list.innerHTML = _pipelineSteps.map((step, i) => {
+            const tDef = STEP_TYPES.find(t => t.value === step.type) || STEP_TYPES[0];
+            const typeOptions = STEP_TYPES.map(t =>
+                `<option value="${t.value}"${step.type === t.value ? ' selected' : ''}>${t.label}</option>`
+            ).join('');
+
+            let extraFields = '';
+            if (step.type === 'setup-java') {
+                extraFields = `
+                  <div class="form-group"><label>Java Version</label><input type="text" value="${step['java-version'] || '21'}" oninput="stepFieldChanged(${i},'java-version',this.value)" placeholder="21"></div>
+                  <div class="form-group"><label>Distribution</label><input type="text" value="${step['distribution'] || 'temurin'}" oninput="stepFieldChanged(${i},'distribution',this.value)" placeholder="temurin"></div>`;
+            } else if (step.type === 'upload-artifact') {
+                extraFields = `
+                  <div class="form-group"><label>Artifact Name</label><input type="text" value="${step['artifact-name'] || ''}" oninput="stepFieldChanged(${i},'artifact-name',this.value)" placeholder="my-artifact"></div>
+                  <div class="form-group"><label>Path</label><input type="text" value="${step['path'] || 'target/*.jar'}" oninput="stepFieldChanged(${i},'path',this.value)" placeholder="target/*.jar"></div>`;
+            } else if (['mvn-build','mvn-test','docker-build','custom'].includes(step.type)) {
+                extraFields = `<div class="form-group" style="grid-column:1/-1;"><label>Command</label><input type="text" value="${step['command'] || tDef.run || ''}" oninput="stepFieldChanged(${i},'command',this.value)" placeholder="${tDef.run || 'shell command'}"></div>`;
+            }
+
+            return `<div class="pipeline-step${step.expanded ? ' expanded' : ''}">
+              <div class="pipeline-step-header" onclick="toggleStep(${i})">
+                <span class="step-number">${i + 1}</span>
+                <span class="step-name-badge">${step.name || tDef.label}</span>
+                <span class="step-type-tag">${tDef.label}</span>
+                <button type="button" class="step-remove" onclick="event.stopPropagation();removePipelineStep(${i})">✕</button>
+              </div>
+              <div class="pipeline-step-body">
+                <div class="step-fields">
+                  <div class="form-group"><label>Step Name</label><input type="text" value="${step.name || ''}" oninput="stepFieldChanged(${i},'name',this.value)" placeholder="${tDef.label}"></div>
+                  <div class="form-group"><label>Type</label><select onchange="stepFieldChanged(${i},'type',this.value)">${typeOptions}</select></div>
+                  ${extraFields}
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+    }
+
+    function buildYaml() {
+        const name = document.getElementById('pl-name').value.trim() || 'My Pipeline';
+        const branch = document.getElementById('pl-branch').value.trim() || 'main';
+        const runner = document.getElementById('pl-runner').value || 'ubuntu-latest';
+        const triggers = [];
+        if (document.getElementById('trig-push').checked) triggers.push('push');
+        if (document.getElementById('trig-pr').checked) triggers.push('pull_request');
+        if (document.getElementById('trig-manual').checked) triggers.push('workflow_dispatch');
+
+        let on = '';
+        triggers.forEach(t => {
+            if (t === 'push' || t === 'pull_request') {
+                on += `  ${t}:\n    branches: [ "${branch}" ]\n`;
+            } else {
+                on += `  ${t}:\n`;
+            }
+        });
+
+        let stepsYaml = '';
+        _pipelineSteps.forEach(step => {
+            const tDef = STEP_TYPES.find(t => t.value === step.type) || STEP_TYPES[0];
+            const stepName = step.name || tDef.label;
+            stepsYaml += `\n      - name: ${stepName}\n`;
+            if (tDef.uses && step.type !== 'custom') {
+                stepsYaml += `        uses: ${tDef.uses}\n`;
+                if (step.type === 'setup-java') {
+                    stepsYaml += `        with:\n`;
+                    stepsYaml += `          java-version: '${step['java-version'] || '21'}'\n`;
+                    stepsYaml += `          distribution: '${step['distribution'] || 'temurin'}'\n`;
+                    stepsYaml += `          cache: maven\n`;
+                } else if (step.type === 'upload-artifact') {
+                    stepsYaml += `        with:\n`;
+                    stepsYaml += `          name: ${step['artifact-name'] || 'artifact'}\n`;
+                    stepsYaml += `          path: ${step['path'] || 'target/*.jar'}\n`;
+                }
+            } else {
+                const cmd = step['command'] || tDef.run || '';
+                stepsYaml += `        run: ${cmd}\n`;
+            }
+        });
+
+        const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        return `name: ${name}\n\non:\n${on || '  push:\n    branches: [ "main" ]\n'}\njobs:\n  ${safeName}:\n    runs-on: ${runner}\n\n    steps:${stepsYaml || '\n      # Add steps above'}`;
+    }
+
+    function refreshYaml() {
+        const pre = document.getElementById('yaml-preview-content');
+        if (pre) pre.textContent = buildYaml();
+    }
+
+    function copyYaml() {
+        navigator.clipboard.writeText(buildYaml()).then(() => {
+            const btn = document.querySelector('.yaml-copy-btn');
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 1500);
+        });
+    }
+
+    /* ── Save ── */
+    function savePipeline() {
+        const name = document.getElementById('pl-name').value.trim();
+        if (!name) { alert('Pipeline name is required.'); return; }
+        const sel      = document.getElementById('pl-repo');
+        const repoId   = (sel.value && sel.value !== '__custom__') ? sel.value : null;
+        const repoOpt  = repoId ? sel.options[sel.selectedIndex] : null;
+        const repoUrl  = repoId ? (repoOpt ? repoOpt.dataset.url : '') : document.getElementById('pl-repo-custom').value.trim();
+        const repoName = repoId ? (repoOpt ? repoOpt.dataset.name : repoUrl) : repoUrl;
+        const branch   = document.getElementById('pl-branch').value.trim() || 'main';
+        const runner   = document.getElementById('pl-runner').value || 'ubuntu-latest';
+        const triggers = [];
+        if (document.getElementById('trig-push').checked)   triggers.push('push');
+        if (document.getElementById('trig-pr').checked)     triggers.push('pull_request');
+        if (document.getElementById('trig-manual').checked) triggers.push('workflow_dispatch');
+        const pipeline = {
+            name, repoId, repoUrl, repoName, branch, runner, triggers,
+            steps: JSON.parse(JSON.stringify(_pipelineSteps)),
+            yaml: buildYaml(),
+            status: 'idle',
+            createdAt: new Date().toISOString()
+        };
+        if (_editingPipelineIdx !== null) {
+            pipeline.status    = _pipelines[_editingPipelineIdx].status    || 'idle';
+            pipeline.createdAt = _pipelines[_editingPipelineIdx].createdAt || pipeline.createdAt;
+            _pipelines[_editingPipelineIdx] = pipeline;
+        } else {
+            _pipelines.push(pipeline);
+        }
+        localStorage.setItem('simplecd_pipelines', JSON.stringify(_pipelines));
+        renderPipelineCards();
+        closePipelineDrawer();
+    }
+
+    /* ── Logs modal ── */
+    let _logsIdx = null;
+    let _logsInterval = null;
+
+    function openPipelineLogs(i) {
+        _logsIdx = i;
+        renderLogsModal();
+        document.getElementById('pl-logs-overlay').classList.add('open');
+    }
+
+    function closePipelineLogs() {
+        document.getElementById('pl-logs-overlay').classList.remove('open');
+        _logsIdx = null;
+    }
+
+    function renderLogsModal() {
+        if (_logsIdx === null) return;
+        const p   = _pipelines[_logsIdx];
+        const runs = p.runs || [];
+        document.getElementById('pl-logs-title').textContent = p.name + ' — Logs';
+        document.getElementById('pl-logs-meta').innerHTML =
+            `<span><strong>Repo:</strong> ${p.repoName || p.repoUrl || '—'}</span>` +
+            `<span><strong>Branch:</strong> ${p.branch || 'main'}</span>` +
+            `<span><strong>Runner:</strong> ${p.runner || 'ubuntu-latest'}</span>` +
+            `<span><strong>Total runs:</strong> ${runs.length}</span>`;
+
+        const body = document.getElementById('pl-logs-body');
+        if (runs.length === 0) {
+            body.innerHTML = '<div style="text-align:center;padding:40px;color:#484f58;font-size:0.85rem;">No runs yet — click <strong style="color:#8b949e;">▶ Run</strong> on the pipeline card to start.</div>';
+            document.getElementById('pl-logs-statusbar').textContent = 'No runs';
+            return;
+        }
+
+        // Show most recent run first
+        body.innerHTML = [...runs].reverse().map((run, ri) => {
+            const runNum  = runs.length - ri;
+            const runSt   = run.status || 'pending';
+            const runDate = new Date(run.startedAt).toLocaleString();
+            const dur     = run.duration ? run.duration + 's' : '—';
+            const stIcon  = runSt === 'success' ? '✓' : runSt === 'failed' ? '✗' : runSt === 'running' ? '●' : '○';
+            const stColor = runSt === 'success' ? '#3fb950' : runSt === 'failed' ? '#f85149' : runSt === 'running' ? '#58a6ff' : '#8b949e';
+            const stepRows = (run.steps || []).map((s, si) => {
+                const sIcon  = {pending:'○', running:'●', success:'✓', failed:'✗'}[s.status] || '○';
+                const sCls   = {pending:'pending', running:'running', success:'success', failed:'failed'}[s.status] || 'pending';
+                const sDur   = s.duration ? s.duration + 's' : '';
+                const logLines = (s.logs || []).map(l =>
+                    `<div class="pl-log-line ${l.type || 'info'}">${escHtml(l.text)}</div>`
+                ).join('');
+                return `<div class="pl-log-step" id="step-${runNum}-${si}">
+                  <div class="pl-log-step-header" onclick="toggleLogStep('step-${runNum}-${si}')">
+                    <span class="pl-log-step-icon ${sCls}">${sIcon}</span>
+                    <span class="pl-log-step-name">${escHtml(s.name)}</span>
+                    <span class="pl-log-step-dur">${sDur}</span>
+                  </div>
+                  <div class="pl-log-step-body${si === 0 && ri === 0 ? ' open' : ''}" id="step-${runNum}-${si}-body">${logLines || '<div class="pl-log-line dim">No output</div>'}</div>
+                </div>`;
+            }).join('');
+            return `<div style="margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid #21262d;margin-bottom:6px;">
+                <span style="font-size:0.78rem;font-weight:700;color:${stColor};">Run #${runNum} ${stIcon}</span>
+                <span style="font-size:0.72rem;color:#8b949e;">${runDate}</span>
+                <span style="font-size:0.72rem;color:#8b949e;">duration: ${dur}</span>
+              </div>
+              ${stepRows || '<div style="font-size:0.78rem;color:#484f58;padding:6px 4px;">No steps recorded</div>'}
+            </div>`;
+        }).join('');
+
+        const lastRun = runs[runs.length - 1];
+        document.getElementById('pl-logs-statusbar').textContent =
+            'Last run: ' + new Date(lastRun.startedAt).toLocaleString() + '  ·  Status: ' + (lastRun.status || 'unknown');
+    }
+
+    function toggleLogStep(id) {
+        const body = document.getElementById(id + '-body');
+        if (body) body.classList.toggle('open');
+    }
+
+    function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ── Run / Cancel ── */
+    function runPipeline(i) {
+        if (!_pipelines[i] || _pipelines[i].status === 'running') return;
+        const p = _pipelines[i];
+        const startedAt = new Date().toISOString();
+        const t0 = Date.now();
+
+        // Build step plan from pipeline steps (or sensible defaults)
+        const planSteps = (p.steps && p.steps.length > 0)
+            ? p.steps.map(s => ({ name: s.name || s.type || 'Step', type: s.type, command: s.command || '' }))
+            : [
+                { name: 'Checkout', type: 'checkout' },
+                { name: 'Setup JDK 21', type: 'setup-java' },
+                { name: 'Maven Build', type: 'mvn-build', command: 'mvn package -DskipTests --batch-mode' }
+              ];
+
+        const run = {
+            startedAt,
+            status: 'running',
+            steps: planSteps.map(s => ({ name: s.name, status: 'pending', logs: [] }))
+        };
+
+        if (!p.runs) p.runs = [];
+        p.runs.push(run);
+        p.status = 'running';
+        _save();
+        renderPipelineCards();
+        if (_logsIdx === i) renderLogsModal();
+
+        const STEP_LOGS = {
+            'checkout':        [ [{t:'info',m:'Syncing repository…'}], [{t:'info',m:"Checking out branch '" + (p.branch||'main') + "'…"}], [{t:'ok',m:'✓ Repository checked out successfully'}] ],
+            'setup-java':      [ [{t:'info',m:'Looking for JDK in tool-cache…'}], [{t:'info',m:'Downloading JDK 21 (temurin)…'}], [{t:'ok',m:'✓ JDK 21 ready'},{t:'dim',m:'java version "21" (Eclipse Temurin)'}] ],
+            'mvn-build':       [ [{t:'info',m:'$ mvn package -DskipTests --batch-mode'}], [{t:'dim',m:'[INFO] Scanning for projects…'},{t:'dim',m:'[INFO] Building simplecd 0.0.1-SNAPSHOT'}], [{t:'dim',m:'[INFO] --- maven-compiler-plugin:3.13.0:compile ---'},{t:'dim',m:'[INFO] Compiling 19 source files to target/classes'}], [{t:'ok',m:'[INFO] BUILD SUCCESS'},{t:'dim',m:'[INFO] Total time: 8.3 s'}] ],
+            'mvn-test':        [ [{t:'info',m:'$ mvn test --batch-mode'}], [{t:'dim',m:'[INFO] --- maven-surefire-plugin:3.3.0:test ---'}], [{t:'dim',m:'[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0'}], [{t:'ok',m:'[INFO] BUILD SUCCESS'}] ],
+            'docker-build':    [ [{t:'info',m:'$ docker build -t image:tag .'}], [{t:'dim',m:'Step 1/5 : FROM eclipse-temurin:21-jre-alpine'}], [{t:'dim',m:'Step 4/5 : COPY target/*.jar app.jar'}], [{t:'ok',m:'Successfully built image:tag'}] ],
+            'upload-artifact': [ [{t:'info',m:'Uploading artifact…'}], [{t:'dim',m:'Preparing target/*.jar for upload…'}], [{t:'ok',m:'✓ Artifact uploaded successfully'}] ],
+            'custom':          [ [{t:'info',m:'$ ' + (planSteps.find(s=>s.type==='custom')||{command:''}).command}], [{t:'dim',m:'Running…'}], [{t:'ok',m:'✓ Done'}] ]
+        };
+
+        let stepIdx = 0;
+        const runAllSteps = () => {
+            if (!_pipelines[i] || _pipelines[i].status !== 'running') return;
+            const runRef = _pipelines[i].runs[_pipelines[i].runs.length - 1];
+            if (stepIdx >= runRef.steps.length) {
+                // All done
+                runRef.status            = 'success';
+                runRef.duration          = Math.round((Date.now() - t0) / 1000);
+                _pipelines[i].status     = 'success';
+                _pipelines[i].finishedAt = new Date().toISOString();
+                _save();
+                renderPipelineCards();
+                if (_logsIdx === i) renderLogsModal();
+                return;
+            }
+            const step     = runRef.steps[stepIdx];
+            const stepType = planSteps[stepIdx] ? planSteps[stepIdx].type : 'custom';
+            const logBatches = STEP_LOGS[stepType] || [ [{t:'info',m:'Running…'}], [{t:'ok',m:'✓ Done'}] ];
+            step.status = 'running';
+            _save(); renderPipelineCards(); if (_logsIdx === i) renderLogsModal();
+
+            const st0 = Date.now();
+            let batchIdx = 0;
+            const nextBatch = () => {
+                if (!_pipelines[i] || _pipelines[i].status !== 'running') return;
+                const r2 = _pipelines[i].runs[_pipelines[i].runs.length - 1];
+                if (batchIdx >= logBatches.length) {
+                    r2.steps[stepIdx].status   = 'success';
+                    r2.steps[stepIdx].duration = Math.round((Date.now() - st0) / 1000);
+                    stepIdx++;
+                    _save(); renderPipelineCards(); if (_logsIdx === i) renderLogsModal();
+                    setTimeout(runAllSteps, 400);
+                    return;
+                }
+                logBatches[batchIdx].forEach(l => r2.steps[stepIdx].logs.push({ type: l.t, text: l.m }));
+                batchIdx++;
+                _save(); if (_logsIdx === i) renderLogsModal();
+                setTimeout(nextBatch, 700 + Math.random() * 600);
+            };
+            nextBatch();
+        };
+        runAllSteps();
+    }
+
+    function _save() { localStorage.setItem('simplecd_pipelines', JSON.stringify(_pipelines)); }
+
+    function cancelPipeline(i) {
+        if (!_pipelines[i]) return;
+        const runs = _pipelines[i].runs || [];
+        if (runs.length) {
+            const last = runs[runs.length - 1];
+            last.status = 'cancelled';
+            last.steps.forEach(s => { if (s.status === 'running' || s.status === 'pending') { s.status = 'failed'; s.logs.push({type:'warn',text:'⚠ Cancelled by user'}); } });
+        }
+        _pipelines[i].status = 'idle';
+        delete _pipelines[i].startedAt;
+        delete _pipelines[i].finishedAt;
+        _save();
+        renderPipelineCards();
+        if (_logsIdx === i) renderLogsModal();
+    }
+
+    function deletePipeline(i) {
+        if (!confirm('Delete pipeline "' + _pipelines[i].name + '"?')) return;
+        _pipelines.splice(i, 1);
+        localStorage.setItem('simplecd_pipelines', JSON.stringify(_pipelines));
+        renderPipelineCards();
+    }
+
+    /* ── Render cards ── */
+    function renderPipelineCards() {
+        const container  = document.getElementById('dynamic-pipeline-cards');
+        const emptyState = document.getElementById('pipeline-empty-state');
+        if (!container) return;
+        if (_pipelines.length === 0) {
+            container.innerHTML = '';
+            if (emptyState) emptyState.style.display = '';
+            return;
+        }
+        if (emptyState) emptyState.style.display = 'none';
+        const SBADGE = { idle:'pl-badge-idle', running:'pl-badge-running', success:'pl-badge-success', failed:'pl-badge-failed' };
+        const SLABEL = { idle:'Idle', running:'● Running…', success:'✓ Success', failed:'✗ Failed' };
+        container.innerHTML = _pipelines.map((p, i) => {
+            const st      = p.status || 'idle';
+            const trigStr = (p.triggers || []).join(', ') || 'manual';
+            const steps   = (p.steps || []).length;
+            const repoDisp= p.repoName || p.repoUrl || '—';
+            const runBtn  = st === 'running'
+                ? `<button type="button" class="btn btn-ghost" style="font-size:0.75rem;padding:5px 10px;" disabled>Running…</button>`
+                : `<button type="button" class="btn btn-ghost" style="font-size:0.75rem;padding:5px 10px;" onclick="runPipeline(${i})">▶ Run</button>`;
+            const cancelBtn = st === 'running'
+                ? `<button type="button" class="btn btn-danger-ghost" style="font-size:0.75rem;padding:5px 10px;" onclick="cancelPipeline(${i})">■ Cancel</button>`
+                : '';
+            const logsCount = (p.runs || []).length;
+            const lastRun   = logsCount ? p.runs[logsCount - 1] : null;
+            const lastRunInfo = lastRun ? `Last run: ${new Date(lastRun.startedAt).toLocaleString()}` : 'Never run';
+            return `<div class="pipeline-card">
+              <div class="pipeline-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="pipeline-card-body-click" onclick="openPipelineLogs(${i})" title="Click to view logs">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;">
+                  <span class="pipeline-card-name">${p.name}</span>
+                  <span class="pl-badge ${SBADGE[st] || 'pl-badge-idle'}">${SLABEL[st] || 'Idle'}</span>
+                </div>
+                <div class="pipeline-card-meta">
+                  <span>repo: ${repoDisp}</span>
+                  <span>branch: ${p.branch || 'main'}</span>
+                  <span>runner: ${p.runner || 'ubuntu-latest'}</span>
+                  <span>${steps} step${steps === 1 ? '' : 's'}</span>
+                  <span style="color:#9ca3af;">${lastRunInfo}</span>
+                </div>
+              </div>
+              <div class="pipeline-card-actions">
+                ${runBtn}${cancelBtn}
+                <button type="button" class="btn btn-ghost" style="font-size:0.75rem;padding:5px 10px;" onclick="openPipelineDrawer(${i})">Edit</button>
+                <button type="button" class="btn btn-danger-ghost" style="font-size:0.75rem;padding:5px 10px;" onclick="deletePipeline(${i})">Delete</button>
+              </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Init
+    renderPipelineCards();
 </script>
 
 <!-- Unsaved Changes Dialog -->
@@ -2105,6 +2765,145 @@
       <button type="button" class="provider-secondary-btn" onclick="closeProviderModal()">Cancel</button>
       <button type="button" onclick="saveProviderModal()">Save</button>
     </div>
+  </div>
+</div>
+
+<!-- Pipeline Logs Modal -->
+<div class="pl-logs-overlay" id="pl-logs-overlay" onclick="if(event.target===this)closePipelineLogs()">
+  <div class="pl-logs-modal">
+    <div class="pl-logs-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#58a6ff"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <h3 id="pl-logs-title">Pipeline Logs</h3>
+      <button class="pl-logs-close" onclick="closePipelineLogs()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="pl-logs-meta" id="pl-logs-meta"></div>
+    <div class="pl-logs-steps" id="pl-logs-body"></div>
+    <div class="pl-logs-footer">
+      <span class="pl-logs-status-bar" id="pl-logs-statusbar"></span>
+      <button type="button" class="btn-ghost" style="font-size:0.78rem;padding:5px 12px;" onclick="closePipelineLogs()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline Drawer — 4-step wizard -->
+<div class="pipeline-drawer-overlay" id="pipeline-drawer-overlay" onclick="closePipelineDrawer()"></div>
+<div class="pipeline-drawer" id="pipeline-drawer">
+  <div class="pipeline-drawer-header">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <h3 id="pipeline-drawer-title">Create Pipeline</h3>
+    <button class="pipeline-drawer-close" onclick="closePipelineDrawer()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Wizard progress bar -->
+  <div class="wizard-progress">
+    <div class="wizard-step-item">
+      <div class="wizard-step-dot active" id="wdot-1">1</div>
+      <span class="wizard-step-label active" id="wlbl-1">Name</span>
+    </div>
+    <div class="wizard-step-line" id="wline-1"></div>
+    <div class="wizard-step-item">
+      <div class="wizard-step-dot" id="wdot-2">2</div>
+      <span class="wizard-step-label" id="wlbl-2">Repository</span>
+    </div>
+    <div class="wizard-step-line" id="wline-2"></div>
+    <div class="wizard-step-item">
+      <div class="wizard-step-dot" id="wdot-3">3</div>
+      <span class="wizard-step-label" id="wlbl-3">Config</span>
+    </div>
+    <div class="wizard-step-line" id="wline-3"></div>
+    <div class="wizard-step-item">
+      <div class="wizard-step-dot" id="wdot-4">4</div>
+      <span class="wizard-step-label" id="wlbl-4">Steps &amp; YAML</span>
+    </div>
+  </div>
+
+  <div class="pipeline-drawer-body">
+
+    <!-- Step 1: Name -->
+    <div class="wizard-page active" id="wpage-1">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:20px;">Give your pipeline a unique, descriptive name.</p>
+      <div class="form-group">
+        <label>Pipeline Name <span style="color:#be123c;">*</span></label>
+        <input type="text" id="pl-name" placeholder="e.g. Build &amp; Test, Deploy to Staging" style="max-width:100%;" oninput="refreshYaml()" onkeydown="if(event.key==='Enter')wizardNext()">
+      </div>
+    </div>
+
+    <!-- Step 2: Repository -->
+    <div class="wizard-page" id="wpage-2">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:20px;">Select the repository this pipeline will run against.</p>
+      <div class="form-group">
+        <label>Repository <span style="color:#be123c;">*</span></label>
+        <select id="pl-repo" onchange="onRepoChanged()" style="max-width:100%;">
+          <option value="">-- Select a repository --</option>
+        </select>
+      </div>
+      <div class="form-group" id="pl-custom-repo-group" style="display:none;">
+        <label>Custom Repository URL</label>
+        <input type="text" id="pl-repo-custom" placeholder="https://github.com/user/repo" style="max-width:100%;" oninput="refreshYaml()">
+      </div>
+      <div id="pl-repo-info" style="font-size:0.8rem;color:var(--muted);margin-top:8px;padding:10px 14px;background:#f9fafb;border-radius:6px;border:1px solid var(--border);display:none;"></div>
+    </div>
+
+    <!-- Step 3: Config -->
+    <div class="wizard-page" id="wpage-3">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:20px;">Set the branch, runner, and trigger events.</p>
+      <div class="form-group">
+        <label>Trigger Branch <span style="color:#be123c;">*</span></label>
+        <input type="text" id="pl-branch" placeholder="main" value="main" oninput="refreshYaml()" style="max-width:100%;">
+      </div>
+      <div class="form-group">
+        <label>Runner</label>
+        <select id="pl-runner" onchange="refreshYaml()" style="max-width:100%;">
+          <option value="ubuntu-latest">ubuntu-latest</option>
+          <option value="windows-latest">windows-latest</option>
+          <option value="macos-latest">macos-latest</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Trigger Events</label>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:0.85rem;"><input type="checkbox" id="trig-push" checked onchange="refreshYaml()"> push</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:0.85rem;"><input type="checkbox" id="trig-pr" onchange="refreshYaml()"> pull_request</label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:0.85rem;"><input type="checkbox" id="trig-manual" onchange="refreshYaml()"> workflow_dispatch</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Steps & YAML -->
+    <div class="wizard-page" id="wpage-4">
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Add pipeline steps and review the generated YAML below.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;flex:1;">Steps</span>
+        <button type="button" onclick="addPipelineStep()" style="font-size:0.78rem;padding:5px 12px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Step
+        </button>
+      </div>
+      <div class="pipeline-step-list" id="pipeline-step-list"></div>
+      <p id="pipeline-no-steps" style="font-size:0.83rem;color:var(--muted);text-align:center;padding:12px 0;">No steps yet — click <strong>Add Step</strong> to begin.</p>
+      <div class="yaml-preview-wrap">
+        <div class="yaml-preview-label">
+          Generated YAML
+          <button class="yaml-copy-btn" onclick="copyYaml()">Copy</button>
+        </div>
+        <pre class="yaml-preview" id="yaml-preview-content"># Fill in previous steps to generate YAML</pre>
+      </div>
+    </div>
+
+  </div>
+  <div class="pipeline-drawer-footer">
+    <button type="button" class="btn-ghost" onclick="closePipelineDrawer()">Cancel</button>
+    <button type="button" class="btn-ghost" id="wizard-back-btn" onclick="wizardBack()" style="display:none;">← Back</button>
+    <span style="flex:1;"></span>
+    <button type="button" id="wizard-next-btn" onclick="wizardNext()">Next →</button>
+    <button type="button" id="wizard-save-btn" onclick="savePipeline()" style="display:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Save Pipeline
+    </button>
   </div>
 </div>
 </body>
