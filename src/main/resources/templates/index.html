@@ -993,12 +993,24 @@
             return;
         }
 
+        if (branchSelect.dataset.loading === 'true') {
+            return;
+        }
+
         const defaultBranch = (branchSelect.dataset.defaultBranch || 'main').trim() || 'main';
-        branchSelect.disabled = true;
-        branchSelect.innerHTML = `<option value="${escapeHtml(defaultBranch)}">Loading...</option>`;
+        const previousMarkup = branchSelect.innerHTML;
+        if (!previousMarkup || !previousMarkup.trim()) {
+            branchSelect.innerHTML = branchOptions([defaultBranch], defaultBranch);
+        }
+        branchSelect.dataset.loading = 'true';
 
         try {
-            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/branches`);
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            const response = await fetch(`/api/repositories/${encodeURIComponent(repoId)}/branches`, {
+                signal: controller.signal
+            });
+            clearTimeout(timer);
             if (!response.ok) {
                 throw new Error('Unable to fetch branches.');
             }
@@ -1006,10 +1018,15 @@
             const branches = await response.json();
             branchSelect.innerHTML = branchOptions(branches, defaultBranch);
         } catch (error) {
-            branchSelect.innerHTML = branchOptions([defaultBranch], defaultBranch);
-            setRepoActionStatus(`Branch load failed for ${row.dataset.name || 'repository'}: ${error.message}`, true);
+            if (!branchSelect.innerHTML || !branchSelect.innerHTML.trim()) {
+                branchSelect.innerHTML = branchOptions([defaultBranch], defaultBranch);
+            }
+            const reason = error && error.name === 'AbortError'
+                ? 'Branch load timed out. Showing default branch.'
+                : `Branch load failed for ${row.dataset.name || 'repository'}: ${error.message}`;
+            setRepoActionStatus(reason, true);
         } finally {
-            branchSelect.disabled = false;
+            branchSelect.dataset.loading = 'false';
         }
     }
 
@@ -1021,11 +1038,12 @@
 
     function bindRepositoryActions() {
         document.querySelectorAll('.repo-row').forEach((row) => {
+            const branchSelect = row.querySelector('.repo-branch-select');
+
             row.querySelectorAll('[data-action]').forEach((button) => {
                 button.addEventListener('click', async () => {
                     const repoId = row.dataset.id || '';
                     const action = button.dataset.action;
-                    const branchSelect = row.querySelector('.repo-branch-select');
                     const selectedBranch = branchSelect ? (branchSelect.value || branchSelect.dataset.defaultBranch || 'main') : 'main';
 
                     if (!repoId) {
