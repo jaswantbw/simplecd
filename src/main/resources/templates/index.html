@@ -261,7 +261,9 @@
         .provider-settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
         .provider-settings-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .provider-add-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-        .provider-create-row { display: grid; grid-template-columns: minmax(220px, 280px) auto; gap: 10px; align-items: end; margin-bottom: 14px; }
+        .provider-create-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 14px; }
+        .provider-create-row select { width: 200px; flex-shrink: 0; }
+        .provider-create-row .provider-secondary-btn { width: auto; flex-shrink: 0; }
         .provider-secondary-btn { background: #ffffff; color: var(--secondary-text); border: 1px solid var(--secondary-border); }
         .provider-secondary-btn:hover { background: #f9fafb; }
         .provider-remove-btn { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
@@ -355,6 +357,29 @@
             .app-body { margin-left: 52px; }
             .content-area { padding: 16px; }
         }
+        /* Provider modal */
+        .provider-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; }
+        .provider-modal-overlay.open { display:flex; }
+        /* Unsaved-changes dialog */
+        .unsaved-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:2000; align-items:center; justify-content:center; }
+        .unsaved-overlay.open { display:flex; }
+        .unsaved-dialog { background:#fff; border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,0.22); width:440px; max-width:95vw; padding:28px 28px 22px; }
+        .unsaved-dialog-icon { font-size:2rem; margin-bottom:10px; }
+        .unsaved-dialog h3 { margin:0 0 8px; font-size:1.05rem; color:#111; }
+        .unsaved-dialog p { margin:0 0 20px; font-size:0.88rem; color:#555; line-height:1.5; }
+        .unsaved-dialog-footer { display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+        .btn-save-now { background:var(--accent); color:#fff; border:1px solid var(--accent); }
+        .btn-leave { background:#fff1f2; color:#be123c; border:1px solid #fecdd3; }
+        .btn-stay { background:#fff; color:var(--secondary-text); border:1px solid var(--secondary-border); }
+        .provider-modal { background:#fff; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.18); width:480px; max-width:95vw; padding:24px 28px 20px; position:relative; }
+        .provider-modal h3 { margin:0 0 18px; font-size:1rem; color:var(--text); }
+        .provider-modal .provider-settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+        .provider-modal .form-group { margin-bottom:0; }
+        .provider-modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:4px; }
+        .provider-chip { display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--border); border-radius:6px; background:#fff; }
+        .provider-chip-name { flex:1; font-size:0.88rem; font-weight:600; color:var(--text); }
+        .provider-chip-url { font-size:0.78rem; color:var(--muted); flex:2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .provider-chip-actions { display:flex; gap:6px; }
     </style>
 </head>
 <body>
@@ -832,20 +857,50 @@
     };
 
     function navigate(el) {
+        const currentSection = document.querySelector('.nav-item.active');
+        const leavingSettings = currentSection && currentSection.dataset.section === 'settings';
+        if (leavingSettings && _providersDirty && el.dataset.section !== 'settings') {
+            _pendingNavEl = el;
+            document.getElementById('unsaved-overlay').classList.add('open');
+            return;
+        }
+        _doNavigate(el);
+    }
+
+    function _doNavigate(el) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         const target = el.dataset.section;
         el.classList.add('active');
         document.getElementById('section-' + target).classList.add('active');
         document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
+        if (target === 'code-repository') loadRepositories();
+        if (target === 'settings') loadGitSettings();
+    }
 
-        if (target === 'code-repository') {
-            loadRepositories();
-        }
+    function unsavedStay() {
+        document.getElementById('unsaved-overlay').classList.remove('open');
+        _pendingNavEl = null;
+    }
 
-        if (target === 'settings') {
-            loadGitSettings();
-        }
+    function unsavedLeave() {
+        document.getElementById('unsaved-overlay').classList.remove('open');
+        _providersDirty = false;
+        const el = _pendingNavEl;
+        _pendingNavEl = null;
+        if (el) _doNavigate(el);
+    }
+
+    async function unsavedSaveAndLeave() {
+        const form = document.getElementById('gitSettingsForm');
+        if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        // wait briefly for async save then navigate
+        setTimeout(() => {
+            document.getElementById('unsaved-overlay').classList.remove('open');
+            const el = _pendingNavEl;
+            _pendingNavEl = null;
+            if (el) _doNavigate(el);
+        }, 600);
     }
 
     function escapeHtml(value) {
@@ -1233,87 +1288,114 @@
 
     function addSelectedProviderProfile() {
         const input = document.getElementById('new-provider-type');
-        addProviderProfile(input ? input.value : 'github');
+        openProviderModal(null, input ? input.value : 'github');
     }
 
     function removeProviderProfile(index) {
         gitProviderProfiles.splice(index, 1);
+        _providersDirty = true;
         renderProviderProfiles();
     }
 
     function renderProviderProfiles() {
         const target = document.getElementById('provider-settings-list');
-        if (!target) {
-            return;
-        }
-
+        if (!target) return;
         if (!gitProviderProfiles.length) {
-            target.innerHTML = '<div class="provider-settings-empty">Choose a provider type above, then enter URL and credentials. Nothing is prefilled.</div>';
+            target.innerHTML = '<div class="provider-settings-empty">No providers added yet. Choose a type above and click Add Provider.</div>';
             return;
         }
-
         target.innerHTML = gitProviderProfiles.map((profile, index) => `
-            <div class="provider-settings-card" data-provider-index="${index}">
-                <div class="provider-settings-header">
-                    <div class="provider-settings-title">
-                        ${getProviderIconMarkup(profile.providerType)}
-                        <strong>${escapeHtml(getProviderLabel(profile.providerType))}</strong>
-                    </div>
-                    <div class="provider-settings-actions">
-                        <button type="button" class="provider-verify-btn" onclick="verifyProviderProfile(${index})">Verify</button>
-                        <button type="button" class="provider-remove-btn" onclick="removeProviderProfile(${index})">Remove</button>
-                    </div>
+            <div class="provider-chip" data-provider-index="${index}">
+                ${getProviderIconMarkup(profile.providerType)}
+                <span class="provider-chip-name">${escapeHtml(getProviderLabel(profile.providerType))}</span>
+                <span class="provider-chip-url">${escapeHtml(profile.providerUrl || '—')}</span>
+                <div class="provider-chip-actions">
+                    <button type="button" class="provider-secondary-btn" onclick="openProviderModal(${index})">Edit</button>
+                    <button type="button" class="provider-remove-btn" onclick="removeProviderProfile(${index})">Remove</button>
                 </div>
-                <div class="provider-settings-grid">
-                    <input type="hidden" data-field="name" value="${escapeHtml(profile.name || '')}">
-                    <input type="hidden" data-field="providerType" value="${escapeHtml(normalizeProviderType(profile.providerType))}">
-                    <div class="form-group" style="grid-column:1/-1;">
-                        <label>Provider URL</label>
-                        <input type="text" data-field="providerUrl" value="${escapeHtml(profile.providerUrl || '')}" placeholder="${escapeHtml(getProviderUrlPlaceholder(profile.providerType))}">
-                    </div>
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" data-field="username" value="${escapeHtml(profile.username || '')}" placeholder="Enter username">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" data-field="password" value="${escapeHtml(profile.password || '')}" placeholder="Enter password">
-                    </div>
-                    <div class="form-group">
-                        <label>Personal Access Token (PAT)</label>
-                        <input type="password" data-field="pat" value="${escapeHtml(profile.pat || '')}" placeholder="Enter PAT or token">
-                    </div>
-                    <div class="form-group" style="grid-column:1/-1;">
-                        <label>SSH Key</label>
-                        <textarea data-field="sshKey" placeholder="Enter SSH key">${escapeHtml(profile.sshKey || '')}</textarea>
-                    </div>
-                </div>
-                <div class="provider-card-status"></div>
             </div>
         `).join('');
     }
 
-    function collectProviderProfileFromCard(index) {
-        const card = document.querySelector(`.provider-settings-card[data-provider-index="${index}"]`);
-        if (!card) {
-            return null;
-        }
-        const current = gitProviderProfiles[index] || createEmptyProviderProfile();
-        const read = (field) => {
-            const input = card.querySelector(`[data-field="${field}"]`);
-            return input ? input.value : '';
-        };
+    let _modalEditIndex = null;
+    let _providersDirty = false;
+    let _pendingNavEl = null;
 
-        return {
-            id: current.id,
-            name: read('name'),
-            providerType: read('providerType'),
-            providerUrl: read('providerUrl'),
-            username: read('username'),
-            password: read('password'),
-            pat: read('pat'),
-            sshKey: read('sshKey')
-        };
+    function openProviderModal(editIndex, providerType) {
+        _modalEditIndex = editIndex != null ? editIndex : null;
+        const profile = editIndex != null ? gitProviderProfiles[editIndex] : createEmptyProviderProfile(providerType || 'github');
+        document.getElementById('provider-modal-title').textContent = editIndex != null ? 'Edit Provider' : 'Add Provider';
+        document.getElementById('pm-providerUrl').value = profile.providerUrl || '';
+        document.getElementById('pm-providerUrl').placeholder = getProviderUrlPlaceholder(profile.providerType);
+        document.getElementById('pm-username').value = profile.username || '';
+        document.getElementById('pm-pat').value = profile.pat || '';
+        document.getElementById('pm-password').value = profile.password || '';
+        document.getElementById('pm-sshKey').value = profile.sshKey || '';
+        document.getElementById('pm-status').textContent = '';
+        document.getElementById('pm-status').className = 'inline-status';
+        // store type for save
+        document.getElementById('provider-modal-overlay').dataset.providerType = profile.providerType || providerType || 'github';
+        document.getElementById('provider-modal-overlay').classList.add('open');
+    }
+
+    function closeProviderModal() {
+        document.getElementById('provider-modal-overlay').classList.remove('open');
+        _modalEditIndex = null;
+    }
+
+    function saveProviderModal() {
+        const overlay = document.getElementById('provider-modal-overlay');
+        const providerType = overlay.dataset.providerType || 'github';
+        const base = _modalEditIndex != null ? gitProviderProfiles[_modalEditIndex] : createEmptyProviderProfile(providerType);
+        const updated = Object.assign({}, base, {
+            providerUrl: document.getElementById('pm-providerUrl').value.trim(),
+            username:    document.getElementById('pm-username').value.trim(),
+            pat:         document.getElementById('pm-pat').value,
+            password:    document.getElementById('pm-password').value,
+            sshKey:      document.getElementById('pm-sshKey').value.trim(),
+        });
+        if (_modalEditIndex != null) {
+            gitProviderProfiles[_modalEditIndex] = updated;
+        } else {
+            gitProviderProfiles.push(updated);
+        }
+        _providersDirty = true;
+        renderProviderProfiles();
+        closeProviderModal();
+    }
+
+    async function verifyProviderModal() {
+        const overlay = document.getElementById('provider-modal-overlay');
+        const providerType = overlay.dataset.providerType || 'github';
+        const base = _modalEditIndex != null ? gitProviderProfiles[_modalEditIndex] : createEmptyProviderProfile(providerType);
+        const payload = Object.assign({}, base, {
+            providerUrl: document.getElementById('pm-providerUrl').value.trim(),
+            username:    document.getElementById('pm-username').value.trim(),
+            pat:         document.getElementById('pm-pat').value,
+            password:    document.getElementById('pm-password').value,
+            sshKey:      document.getElementById('pm-sshKey').value.trim(),
+        });
+        const statusEl = document.getElementById('pm-status');
+        statusEl.textContent = 'Verifying...';
+        statusEl.className = 'inline-status';
+        try {
+            const response = await fetch('/api/git-settings/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            const statusText = result.statusCode ? ` (${result.statusCode})` : '';
+            statusEl.textContent = `${result.success ? '✓ Verified' : '✗ Failed'}${statusText}: ${result.message || ''}`;
+            statusEl.className = 'inline-status' + (result.success ? '' : ' error');
+        } catch (err) {
+            statusEl.textContent = 'Error: ' + err.message;
+            statusEl.className = 'inline-status error';
+        }
+    }
+
+    function collectProviderProfileFromCard(index) {
+        return gitProviderProfiles[index] || null;
     }
 
     async function verifyProviderProfile(index) {
@@ -1338,24 +1420,16 @@
     }
 
     function collectProviderProfiles() {
-        return Array.from(document.querySelectorAll('.provider-settings-card')).map((card, index) => {
-            const current = gitProviderProfiles[index] || createEmptyProviderProfile();
-            const read = (field) => {
-                const input = card.querySelector(`[data-field="${field}"]`);
-                return input ? input.value : '';
-            };
-
-            return {
-                id: current.id,
-                name: read('name'),
-                providerType: read('providerType'),
-                providerUrl: read('providerUrl'),
-                username: read('username'),
-                password: read('password'),
-                pat: read('pat'),
-                sshKey: read('sshKey')
-            };
-        });
+        return gitProviderProfiles.map(p => ({
+            id: p.id,
+            name: p.name || '',
+            providerType: normalizeProviderType(p.providerType),
+            providerUrl: p.providerUrl || '',
+            username: p.username || '',
+            password: p.password || '',
+            pat: p.pat || '',
+            sshKey: p.sshKey || ''
+        }));
     }
 
     function loadRepositories(options = {}) {
@@ -1915,8 +1989,9 @@
                     gitProviderProfiles = Array.isArray(settings.providers) && settings.providers.length
                         ? settings.providers.map(profile => ({ ...createEmptyProviderProfile(profile.providerType), ...profile }))
                         : [];
+                    _providersDirty = false;
                     renderProviderProfiles();
-                    setGitSettingsStatus('Provider settings saved.');
+                    setGitSettingsStatus('Provider settings saved successfully.');
                 } catch (error) {
                     setGitSettingsStatus('Error: ' + error.message, true);
                 }
@@ -1924,6 +1999,55 @@
         }
     });
 </script>
+
+<!-- Unsaved Changes Dialog -->
+<div class="unsaved-overlay" id="unsaved-overlay">
+  <div class="unsaved-dialog">
+    <div class="unsaved-dialog-icon">&#9888;&#65039;</div>
+    <h3>You have unsaved provider changes</h3>
+    <p>Your Git Provider Settings have been modified but not saved. If you leave now, all changes will be lost and your provider connections may not work correctly.<br><br>Would you like to save your changes before leaving?</p>
+    <div class="unsaved-dialog-footer">
+      <button type="button" class="btn-stay" onclick="unsavedStay()">Stay on Page</button>
+      <button type="button" class="btn-leave" onclick="unsavedLeave()">Leave Without Saving</button>
+      <button type="button" class="btn-save-now" onclick="unsavedSaveAndLeave()">Save &amp; Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Provider Modal -->
+<div class="provider-modal-overlay" id="provider-modal-overlay" onclick="if(event.target===this)closeProviderModal()">
+  <div class="provider-modal">
+    <h3 id="provider-modal-title">Add Provider</h3>
+    <div class="provider-settings-grid">
+      <div class="form-group" style="grid-column:1/-1;">
+        <label>Provider URL</label>
+        <input type="text" id="pm-providerUrl" placeholder="">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="pm-username" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label>Personal Access Token (PAT)</label>
+        <input type="password" id="pm-pat" placeholder="Enter PAT or token">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="pm-password" placeholder="Enter password">
+      </div>
+      <div class="form-group">
+        <label>SSH Key</label>
+        <textarea id="pm-sshKey" placeholder="Enter SSH key" style="height:60px;"></textarea>
+      </div>
+    </div>
+    <div id="pm-status" class="inline-status" style="margin-bottom:10px;"></div>
+    <div class="provider-modal-footer">
+      <button type="button" class="provider-verify-btn" onclick="verifyProviderModal()">Verify</button>
+      <button type="button" class="provider-secondary-btn" onclick="closeProviderModal()">Cancel</button>
+      <button type="button" onclick="saveProviderModal()">Save</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
