@@ -335,19 +335,6 @@ public class BuildService {
         return "";
     }
 
-    private void ensureGitConfigForRepository(Path repoPath) {
-        try {
-            if (Files.exists(repoPath)) {
-                runCommand(Arrays.asList(
-                    "git", "-C", repoPath.toString(), "config", "--replace-all",
-                    "remote.origin.fetch", "+refs/heads/*:refs/remotes/origin/*"
-                ));
-            }
-        } catch (Exception ignored) {
-            // Non-critical; continue if git config fails
-        }
-    }
-
     private String withCredentials(String repoUrl, ResolvedGitProfile profile, String secret) {
         if (repoUrl == null || repoUrl.isBlank() || !repoUrl.startsWith("https://") || secret == null || secret.isBlank()) {
             return repoUrl;
