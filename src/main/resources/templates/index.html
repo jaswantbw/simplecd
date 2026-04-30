@@ -1079,6 +1079,7 @@
                             });
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
+                                branchSelect.dataset.defaultBranch = selectedBranch;
                                 setRepoActionStatus(text || `Pull completed on ${selectedBranch}.`);
                                 await loadBranchesForRepoRow(row);
                             } else {
@@ -1108,6 +1109,7 @@
                             });
                             const text = await response.text();
                             if (response.ok && !text.startsWith('Error:')) {
+                                branchSelect.dataset.defaultBranch = selectedBranch;
                                 setRepoActionStatus(text || `Checkout completed on ${selectedBranch}.`);
                                 await loadBranchesForRepoRow(row);
                             } else {

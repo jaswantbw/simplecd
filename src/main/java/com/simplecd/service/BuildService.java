@@ -92,6 +92,10 @@ public class BuildService {
 
         String output = runCommand(withRemoteAuth(command, repo.getUrl(), resolvedProfile, resolvedPat));
         
+        // Ensure the git config is set correctly to fetch all branches
+        ensureGitConfigForRepository(repoPath);
+        
+        // Fetch all branches and tags
         runCommand(withRemoteAuth(
             Arrays.asList("git", "-C", repoPath.toString(), "fetch", "--all", "--tags"),
             repo.getUrl(),
@@ -209,6 +213,9 @@ public class BuildService {
 
         Path repoPath = Paths.get(repo.getLocalPath());
         if (Files.exists(repoPath)) {
+            // Ensure git config is correct (fixes old repos that were cloned with wrong config)
+            ensureGitConfigForRepository(repoPath);
+            
             try {
                 String resolvedPat = resolvePat(repo.getUrl(), "");
                 ResolvedGitProfile resolvedProfile = gitProviderSettingsService.resolveProfileForRepoUrl(repo.getUrl());
@@ -313,6 +320,19 @@ public class BuildService {
             return profile.getPassword().trim();
         }
         return "";
+    }
+
+    private void ensureGitConfigForRepository(Path repoPath) {
+        try {
+            if (Files.exists(repoPath)) {
+                runCommand(Arrays.asList(
+                    "git", "-C", repoPath.toString(), "config", "--replace-all",
+                    "remote.origin.fetch", "+refs/heads/*:refs/remotes/origin/*"
+                ));
+            }
+        } catch (Exception ignored) {
+            // Non-critical; continue if git config fails
+        }
     }
 
     private String withCredentials(String repoUrl, ResolvedGitProfile profile, String secret) {
