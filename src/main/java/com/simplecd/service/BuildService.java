@@ -69,22 +69,11 @@ public class BuildService {
         Path repoPath = Paths.get(REPOS_FOLDER, repoName);
         String branchToSave = (defaultBranch == null || defaultBranch.isBlank()) ? "main" : defaultBranch;
 
+        // Always wipe and re-clone for a clean, error-free workspace
         if (Files.exists(repoPath)) {
-            // Folder already exists — update it instead of failing
-            ensureGitConfigForRepository(repoPath);
-            runCommand(withRemoteAuth(
-                Arrays.asList("git", "-C", repoPath.toString(), "fetch", "--all", "--tags"),
-                repoUrl, resolvedProfile, resolvedPat
-            ));
-            runCommand(withRemoteAuth(
-                Arrays.asList("git", "-C", repoPath.toString(), "pull", "--rebase", "origin", branchToSave),
-                repoUrl, resolvedProfile, resolvedPat
-            ));
-            // Register in service if not already tracked
-            if (repositoryService.findByUrl(repoUrl) == null) {
-                repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), branchToSave, gitProviderSettingsService.inferProviderType(repoUrl));
-            }
-            return;
+            Files.walk(repoPath)
+                 .sorted(Comparator.reverseOrder())
+                 .forEach(p -> p.toFile().delete());
         }
 
         runCommand(withRemoteAuth(Arrays.asList(
