@@ -602,7 +602,7 @@
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                             <td th:text="${job.artifactPath ?: '—'}"></td>
                         </tr>
-                        <tr th:if="${jobs.isEmpty()}">
+                        <tr th:if="${jobs == null or jobs.isEmpty()}">
                             <td colspan="6" style="text-align:center;color:var(--muted);padding:28px;">No pipeline runs found.</td>
                         </tr>
                         </tbody>
@@ -659,7 +659,7 @@
                             </td>
                             <td><a class="link" th:href="@{'/logs/' + ${job.jobId}}">Open Log</a></td>
                         </tr>
-                        <tr th:if="${jobs.isEmpty()}">
+                        <tr th:if="${jobs == null or jobs.isEmpty()}">
                             <td colspan="5" style="text-align:center;color:var(--muted);padding:28px;">No log entries yet.</td>
                         </tr>
                         </tbody>
@@ -703,7 +703,7 @@
                             <td th:text="${job.branch}"></td>
                             <td><span th:classappend="${job.status.name() == 'SUCCESS' ? 'badge-success' : (job.status.name() == 'FAILED' ? 'badge-failed' : ((job.status.name() == 'RUNNING' or job.status.name() == 'IN_PROGRESS') ? 'badge-running' : (job.status.name() == 'ABORTED' ? 'badge-aborted' : (job.status.name() == 'UNSTABLE' ? 'badge-unstable' : (job.status.name() == 'BLOCKED' ? 'badge-blocked' : (job.status.name() == 'CANCELLED' ? 'badge-cancelled' : (job.status.name() == 'DRAFT' ? 'badge-draft' : 'badge-pending')))))))}" class="badge" th:text="${job.status}"></span></td>
                         </tr>
-                        <tr th:if="${jobs.isEmpty()}">
+                        <tr th:if="${jobs == null or jobs.isEmpty()}">
                             <td colspan="4" style="text-align:center;color:var(--muted);padding:28px;">No data yet.</td>
                         </tr>
                         </tbody>

@@ -67,18 +67,36 @@ public class BuildService {
         // Extract repo name from URL
         String repoName = repoUrl.substring(repoUrl.lastIndexOf("/") + 1).replace(".git", "");
         Path repoPath = Paths.get(REPOS_FOLDER, repoName);
+        String branchToSave = (defaultBranch == null || defaultBranch.isBlank()) ? "main" : defaultBranch;
 
-        if (repositoryService.findByUrl(repoUrl) != null || Files.exists(repoPath)) {
-            throw new IllegalArgumentException("Repository already exists: " + repoName);
+        if (Files.exists(repoPath)) {
+            // Folder already exists — update it instead of failing
+            ensureGitConfigForRepository(repoPath);
+            runCommand(withRemoteAuth(
+                Arrays.asList("git", "-C", repoPath.toString(), "fetch", "--all", "--tags"),
+                repoUrl, resolvedProfile, resolvedPat
+            ));
+            runCommand(withRemoteAuth(
+                Arrays.asList("git", "-C", repoPath.toString(), "pull", "--rebase", "origin", branchToSave),
+                repoUrl, resolvedProfile, resolvedPat
+            ));
+            // Register in service if not already tracked
+            if (repositoryService.findByUrl(repoUrl) == null) {
+                repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), branchToSave, gitProviderSettingsService.inferProviderType(repoUrl));
+            }
+            return;
         }
 
-        String output = runCommand(withRemoteAuth(Arrays.asList(
+        runCommand(withRemoteAuth(Arrays.asList(
                 "git", "clone", "--depth", "1", repoUrl, repoPath.toString()
         ), repoUrl, resolvedProfile, resolvedPat));
 
+        ensureGitConfigForRepository(repoPath);
+
         // Save repository to service after successful clone
-        String branchToSave = (defaultBranch == null || defaultBranch.isBlank()) ? "main" : defaultBranch;
-        repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), branchToSave, gitProviderSettingsService.inferProviderType(repoUrl));
+        if (repositoryService.findByUrl(repoUrl) == null) {
+            repositoryService.addRepository(repoName, repoUrl, repoPath.toString(), branchToSave, gitProviderSettingsService.inferProviderType(repoUrl));
+        }
     }
 
     public String cloneRepositoryById(String repositoryId, String branch) throws Exception {
