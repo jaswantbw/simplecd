@@ -218,13 +218,15 @@
         .modal-footer button { margin: 0; }
         .repo-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 8px; max-height: 300px; overflow-y: auto; }
         .repo-picker-card { border: 1px solid var(--border); border-radius: 4px; padding: 10px; background: #ffffff; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
-        .repo-picker-card h4 { margin: 0 0 5px; font-size: 0.9rem; color: var(--text); }
+        .repo-picker-card h4 { margin: 0 0 5px; font-size: 0.8rem; color: var(--text); }
         .repo-picker-card p { margin: 0 0 7px; color: var(--muted); font-size: 0.8rem; word-break: break-all; }
         .repo-picker-card .mini-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 8px; }
+        .repo-section-header h2 { font-size: 14px; }
+        .repo-list-title { font-size: 12px; }
         .repo-list { display: flex; flex-direction: column; gap: 10px; }
         .repo-provider-section { display: flex; flex-direction: column; gap: 10px; }
         .repo-provider-header { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
-        .repo-provider-header h4 { margin: 0; font-size: 0.92rem; color: var(--text); }
+        .repo-provider-header h4 { margin: 0; font-size: 10px; color: var(--text); }
         .repo-provider-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--border); background: #f3f4f6; color: var(--secondary-text); }
         .provider-logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.02em; border: 1px solid transparent; overflow: hidden; }
         .provider-logo-icon.github { background: #eef2ff; border-color: #c7d2fe; color: #3730a3; }
@@ -235,12 +237,12 @@
         .provider-logo-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .repo-row { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; padding: 10px 12px; box-shadow: 1px 1px 2px rgba(0,0,0,0.04); }
         .repo-row-line { display: grid; grid-template-columns: minmax(220px, 1fr) auto auto; gap: 10px; align-items: center; }
-        .repo-row-name { font-size: 0.9rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .repo-row-name { font-size: 8px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .repo-row-controls { display: flex; align-items: center; gap: 8px; }
-        .repo-row-controls label { margin: 0; font-size: 0.76rem; color: var(--muted); }
-        .repo-branch-select { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; color: var(--text); font-size: 0.76rem; padding: 5px 8px; min-width: 108px; }
+        .repo-row-controls label { margin: 0; font-size: 6px; color: var(--muted); }
+        .repo-branch-select { border: 1px solid var(--border); border-radius: 4px; background: #ffffff; color: var(--text); font-size: 6px; padding: 5px 8px; min-width: 108px; }
         .repo-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
-        .repo-action-btn { border: 1px solid var(--accent); background: var(--accent); color: #ffffff; font-size: 0.74rem; font-weight: 600; border-radius: 4px; padding: 6px 10px; cursor: pointer; min-width: 66px; text-align: center; }
+        .repo-action-btn { border: 1px solid var(--accent); background: var(--accent); color: #ffffff; font-size: 6px; font-weight: 600; border-radius: 4px; padding: 6px 10px; cursor: pointer; min-width: 66px; text-align: center; }
         .repo-action-btn:hover { background: var(--accent-dark); }
         .repo-action-btn.secondary { background: #ffffff; color: var(--secondary-text); border-color: var(--secondary-border); }
         .repo-action-btn.secondary:hover { background: #f9fafb; }
@@ -501,13 +503,13 @@
 
         <!-- CODE REPOSITORY -->
         <div class="section" id="section-code-repository">
-            <div class="section-header">
+            <div class="section-header repo-section-header">
                 <h2>Code Repository</h2>
                 <p>Add and Manage Repositories.</p>
             </div>
             <div class="panel">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                    <h3 style="margin:0;flex:1;">Your Repositories</h3>
+                    <h3 class="repo-list-title" style="margin:0;flex:1;">Your Repositories</h3>
                     <button class="add-repo-btn" onclick="openAddRepoModal()">+</button>
                 </div>
                 <div id="repos-list" class="repo-list">
