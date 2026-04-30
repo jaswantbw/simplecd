@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Jaswant Sharma. All rights reserved.
+// SimpleCD - https://github.com/jaswantbw/simplecd
 package com.simplecd.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
