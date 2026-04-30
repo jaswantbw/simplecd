@@ -744,7 +744,7 @@
                 <p>Application and system configuration.</p>
             </div>
             <div class="panel">
-                <h3>Git Provider Settings</h3>
+                <h3>Provider Settings</h3>
                 <p style="color:var(--muted);font-size:0.88rem;margin-bottom:14px;">Add a provider connection, verify the URL and credentials, then Add Repo will browse GitHub, GitLab, Azure DevOps, Bitbucket, or other supported providers.</p>
                 <form id="gitSettingsForm">
                     <div class="provider-create-row">
@@ -1307,7 +1307,7 @@
         target.innerHTML = gitProviderProfiles.map((profile, index) => `
             <div class="provider-chip" data-provider-index="${index}">
                 ${getProviderIconMarkup(profile.providerType)}
-                <span class="provider-chip-name">${escapeHtml(getProviderLabel(profile.providerType))}</span>
+                <span class="provider-chip-name">${escapeHtml(profile.name || getProviderLabel(profile.providerType))}</span>
                 <span class="provider-chip-url">${escapeHtml(profile.providerUrl || '—')}</span>
                 <div class="provider-chip-actions">
                     <button type="button" class="provider-secondary-btn" onclick="openProviderModal(${index})">Edit</button>
@@ -1325,6 +1325,7 @@
         _modalEditIndex = editIndex != null ? editIndex : null;
         const profile = editIndex != null ? gitProviderProfiles[editIndex] : createEmptyProviderProfile(providerType || 'github');
         document.getElementById('provider-modal-title').textContent = editIndex != null ? 'Edit Provider' : 'Add Provider';
+        document.getElementById('pm-name').value = profile.name || '';
         document.getElementById('pm-providerUrl').value = profile.providerUrl || '';
         document.getElementById('pm-providerUrl').placeholder = getProviderUrlPlaceholder(profile.providerType);
         document.getElementById('pm-username').value = profile.username || '';
@@ -1346,8 +1347,17 @@
     function saveProviderModal() {
         const overlay = document.getElementById('provider-modal-overlay');
         const providerType = overlay.dataset.providerType || 'github';
+        const nameVal = document.getElementById('pm-name').value.trim();
+        if (!nameVal) {
+            const statusEl = document.getElementById('pm-status');
+            statusEl.textContent = 'Provider Name is required.';
+            statusEl.className = 'inline-status error';
+            document.getElementById('pm-name').focus();
+            return;
+        }
         const base = _modalEditIndex != null ? gitProviderProfiles[_modalEditIndex] : createEmptyProviderProfile(providerType);
         const updated = Object.assign({}, base, {
+            name:        nameVal,
             providerUrl: document.getElementById('pm-providerUrl').value.trim(),
             username:    document.getElementById('pm-username').value.trim(),
             pat:         document.getElementById('pm-pat').value,
@@ -1369,6 +1379,7 @@
         const providerType = overlay.dataset.providerType || 'github';
         const base = _modalEditIndex != null ? gitProviderProfiles[_modalEditIndex] : createEmptyProviderProfile(providerType);
         const payload = Object.assign({}, base, {
+            name:        document.getElementById('pm-name').value.trim(),
             providerUrl: document.getElementById('pm-providerUrl').value.trim(),
             username:    document.getElementById('pm-username').value.trim(),
             pat:         document.getElementById('pm-pat').value,
@@ -2019,6 +2030,10 @@
   <div class="provider-modal">
     <h3 id="provider-modal-title">Add Provider</h3>
     <div class="provider-settings-grid">
+      <div class="form-group" style="grid-column:1/-1;">
+        <label>Provider Name <span style="color:#be123c;">*</span></label>
+        <input type="text" id="pm-name" placeholder="e.g. GitHub Personal, Work ADO, Bitbucket Team" required>
+      </div>
       <div class="form-group" style="grid-column:1/-1;">
         <label>Provider URL</label>
         <input type="text" id="pm-providerUrl" placeholder="">
