@@ -2732,3 +2732,29 @@
 [INFO] ------------------------------------------------------------------------
 2026-04-30T11:08:33.380Z [INFO] [MavenBuildTool] Found pom.xml files: c:\simplecd\pom.xml
 2026-04-30T11:08:33.384Z [INFO] [MavenBuildTool] Java version found in c:\simplecd\pom.xml: 25
+2026-04-30T11:09:22.700Z [INFO] ---------------------prepare appmod-report-event----------------------
+2026-04-30T11:09:22.701Z [INFO] [Tool.prepareInvocation]({name: appmod-report-event, input: {
+  "event": "securityFixCompleted",
+  "phase": "summarize",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430110314",
+  "status": "succeeded"
+}}).
+2026-04-30T11:09:22.701Z [INFO] [Tool.prepareInvocation] do prepare invocation.
+2026-04-30T11:09:22.702Z [INFO] [Tool.prepareInvocation]({result: {
+  "invocationMessage": "Report upgrade event"
+}}).
+2026-04-30T11:09:22.702Z [INFO] ----------------------prepared appmod-report-event----------------------
+2026-04-30T11:09:22.726Z [INFO] ----------------------invoke appmod-report-event----------------------
+2026-04-30T11:09:22.727Z [INFO] [Tool.invoke]({name: appmod-report-event, modelId: claude-sonnet-4.6, input: {
+  "event": "securityFixCompleted",
+  "phase": "summarize",
+  "projectPath": "c:\\simplecd",
+  "sessionId": "20260430110314",
+  "status": "succeeded"
+}}).
+2026-04-30T11:09:22.727Z [INFO] [Tool.invoke] do invoke.
+2026-04-30T11:09:22.728Z [INFO] [Tool.invoke]({result: {
+  "message": "Event 'securityFixCompleted' reported!\nSession ID: 20260430110314,\nSession Dir: c:\\simplecd\\.github\\java-upgrade\\20260430110314"
+}}).
+2026-04-30T11:09:22.728Z [INFO] ----------------------invoked appmod-report-event----------------------
