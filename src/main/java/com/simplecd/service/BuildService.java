@@ -71,9 +71,8 @@ public class BuildService {
 
         // Always wipe and re-clone for a clean, error-free workspace
         if (Files.exists(repoPath)) {
-            Files.walk(repoPath)
-                 .sorted(Comparator.reverseOrder())
-                 .forEach(p -> p.toFile().delete());
+            // Use cmd /c rd /s /q — most reliable recursive delete on Windows
+            runCommand(Arrays.asList("cmd", "/c", "rd", "/s", "/q", repoPath.toString()));
         }
 
         runCommand(withRemoteAuth(Arrays.asList(
