@@ -29,6 +29,7 @@ public class AuthController {
 
         if (ADMIN_USERNAME.equals(username) && ADMIN_PASSWORD.equals(password)) {
             session.setAttribute(AUTH_SESSION_KEY, true);
+            session.setAttribute("username", username);
             return "redirect:/";
         }
 

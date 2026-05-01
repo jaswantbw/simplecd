@@ -220,7 +220,7 @@
         .add-repo-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: var(--accent); color: white; border: 0; border-radius: 4px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
         .add-repo-btn:hover { background: var(--accent-dark); }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(3,7,13,0.74); z-index: 1000; }
-        .modal-overlay.active { display: flex; align-items: center; justify-content: center; }
+        .modal-overlay.active, .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
         .modal-content { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 22px; box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1); max-width: 760px; width: 92%; }
         .modal-header { margin-bottom: 18px; }
         .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--text); }
@@ -394,6 +394,18 @@
         .provider-chip-url { font-size:0.78rem; color:var(--muted); flex:2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .provider-chip-actions { display:flex; gap:6px; }
 
+        /* ── Runner Cards ── */
+        .runner-card { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+        .runner-type-badge { font-size:0.72rem; padding:2px 8px; border-radius:10px; font-weight:600; }
+        .runner-type-local { background:#dbeafe; color:#1d4ed8; }
+        .runner-type-ssh { background:#fce7f3; color:#9d174d; }
+        .runner-type-docker { background:#d1fae5; color:#065f46; }
+        .runner-type-kubernetes { background:#ede9fe; color:#6d28d9; }
+        .runner-status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; display:inline-block; }
+        .runner-status-online { background:#22c55e; }
+        .runner-status-offline { background:#ef4444; }
+        .runner-status-busy { background:#f59e0b; }
+
         /* ── Pipeline UI ── */
         .pipeline-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
         .pipeline-toolbar h2 { flex:1; font-size:1.3rem; font-weight:600; margin:0; }
@@ -524,10 +536,6 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span>Pipelines</span>
     </a>
-    <a class="nav-item" data-section="runners" onclick="navigate(this)">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-        <span>Runners</span>
-    </a>
     <a class="nav-item" data-section="artifacts" onclick="navigate(this)">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         <span>Artifacts</span>
@@ -557,7 +565,7 @@
     <div class="sidebar-bottom">
         <a class="nav-item" data-section="user-info" onclick="navigate(this)">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>User Info</span>
+            <span>User Settings</span>
         </a>
     </div>
     <div class="sidebar-copyright">© 2026 Jaswant Sharma<br>All rights reserved.</div>
@@ -567,7 +575,7 @@
     <header class="topbar">
         <span class="topbar-page-title" id="topbar-title">Dashboard</span>
         <div class="topbar-spacer"></div>
-        <span class="topbar-badge">admin</span>
+        <span class="topbar-badge" onclick="navigateToUserInfo()" style="cursor:pointer;" title="User Settings">admin ▾</span>
         <a href="/logout" class="topbar-logout">Logout</a>
     </header>
 
@@ -755,27 +763,6 @@
             </div>
         </div>
 
-        <!-- RUNNERS -->
-        <div class="section" id="section-runners">
-            <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-                <div>
-                    <h2>Runners</h2>
-                    <p>Self-hosted agents that execute pipeline steps — local machine, SSH server, Docker container, or Kubernetes pod.</p>
-                </div>
-                <button onclick="openRunnerModal()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Add Runner
-                </button>
-            </div>
-
-            <!-- Runner cards injected by JS -->
-            <div id="runner-card-list" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;"></div>
-            <div class="empty-state" id="runner-empty-state">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-                <p>No runners registered yet.<br>Click <strong>Add Runner</strong> to connect your first agent.</p>
-            </div>
-        </div>
-
         <!-- ARTIFACTS -->
         <div class="section" id="section-artifacts">
             <div class="section-header">
@@ -797,7 +784,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="empty-state" th:if="${!hasArtifacts}">
+                <div class="empty-state" th:if="${hasArtifacts == null or !hasArtifacts}">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                     <p>No artifacts available yet. Successful builds will appear here.</p>
                 </div>
@@ -905,6 +892,19 @@
                     <div id="git-settings-status" class="inline-status"></div>
                 </form>
             </div>
+
+            <!-- ── Build Platform Panel ── -->
+            <div class="panel">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+                    <h3 style="margin:0;flex:1;">Build Platform</h3>
+                    <button type="button" class="btn" style="font-size:0.82rem;padding:6px 14px;" onclick="openGroupModal()">+ Add Group</button>
+                </div>
+                <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">Organize build servers into groups. Pipelines can target a group (any available server) or a specific server. Run the registration command on any machine to connect it.</p>
+                <div id="bp-group-list">
+                    <p style="color:var(--muted);font-size:0.88rem;">No groups yet. Create a group to get started.</p>
+                </div>
+            </div>
+
             <div class="panel">
                 <h3>General</h3>
                 <div class="user-info-row"><span class="user-info-key">Application</span><span>SimpleCD</span></div>
@@ -962,10 +962,10 @@
         <!-- USER INFO -->
         <div class="section" id="section-user-info">
             <div class="section-header">
-                <h2>User Info</h2>
-                <p>Currently authenticated session details.</p>
+                <h2>User Settings</h2>
+                <p>Profile, session details, and access tokens.</p>
             </div>
-            <div class="panel" style="max-width:500px;">
+            <div class="panel" style="max-width:560px;">
                 <div class="user-avatar">A</div>
                 <div class="user-info-row"><span class="user-info-key">Username</span><span>admin</span></div>
                 <div class="user-info-row"><span class="user-info-key">Role</span><span><span class="badge badge-success">Administrator</span></span></div>
@@ -977,6 +977,16 @@
                         Sign Out
                     </a>
                 </div>
+            </div>
+            <div class="panel" style="max-width:560px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <div>
+                        <h3 style="margin:0 0 4px;">Personal Access Tokens</h3>
+                        <p style="color:var(--muted);font-size:0.85rem;margin:0;">Use tokens as <code>Authorization: Bearer &lt;token&gt;</code> to authenticate API calls and build server registration without a browser session.</p>
+                    </div>
+                    <button class="btn" onclick="openPATModal()" style="white-space:nowrap;margin-left:16px;">+ New Token</button>
+                </div>
+                <div id="pat-list" style="margin-top:12px;"><div style="color:var(--muted);font-size:0.88rem;">Loading&hellip;</div></div>
             </div>
         </div>
 
@@ -1013,15 +1023,19 @@
         'dashboard': 'Dashboard',
         'code-repository': 'Code Repository',
         'pipelines': 'Pipelines',
-        'runners': 'Runners',
         'artifacts': 'Artifacts',
         'logs': 'Logs',
         'reports': 'Reports',
         'settings': 'Settings',
         'documents': 'Documents',
-        'user-info': 'User Info',
+        'user-info': 'User Settings',
         'about': 'About'
     };
+
+    function navigateToUserInfo() {
+        const el = document.querySelector('[data-section="user-info"]');
+        if (el) navigate(el);
+    }
 
     function navigate(el) {
         const currentSection = document.querySelector('.nav-item.active');
@@ -1042,8 +1056,8 @@
         document.getElementById('section-' + target).classList.add('active');
         document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
         if (target === 'code-repository') loadRepositories();
-        if (target === 'settings') loadGitSettings();
-        if (target === 'runners') loadRunnersUI();
+        if (target === 'settings') { loadGitSettings(); loadBuildPlatform(); }
+        if (target === 'user-info') { loadPATs(); }
     }
 
     function unsavedStay() {
@@ -2741,207 +2755,334 @@
     // Init
     renderPipelineCards();
 
-    /* ═══════════════════════════════════════════════════════
-       RUNNER MANAGEMENT
-    ═══════════════════════════════════════════════════════ */
+    // ── Build Platform ──────────────────────────────────────────────────────
+    let _bpGroups = [];
+    let _bpGroupModalId = null; // null = create, else = edit
+    let _bpServerModalGroupId = null;
 
-    let _editingRunnerId = null;
-
-    function loadRunnersUI() {
-        fetch('/api/runners')
-            .then(r => r.json())
-            .then(runners => renderRunnerCards(runners))
-            .catch(() => renderRunnerCards([]));
-        // Populate the runner selector inside the pipeline wizard
-        populatePipelineRunnerSelect();
+    async function loadBuildPlatform() {
+        try {
+            const res = await fetch('/api/build-platform/groups');
+            _bpGroups = await res.json();
+        } catch(e) { _bpGroups = []; }
+        renderBpGroups();
     }
 
-    function populatePipelineRunnerSelect() {
-        fetch('/api/runners').then(r => r.json()).then(runners => {
-            const sel = document.getElementById('pl-simplecd-runner-id');
-            if (!sel) return;
-            sel.innerHTML = '<option value="">-- Local (no runner) --</option>';
-            runners.forEach(r => {
-                const opt = document.createElement('option');
-                opt.value = r.id;
-                opt.textContent = r.name + ' [' + r.type + '/' + r.shell + ']' + (r.status ? '  (' + r.status + ')' : '');
-                sel.appendChild(opt);
-            });
-            // Show simplecd runner panel
-            const panel = document.getElementById('simplecd-runner-opts');
-            if (panel) panel.style.display = 'block';
-        }).catch(() => {});
-    }
-
-    const runnerStatusBadge = s => {
-        if (s === 'ONLINE')  return '<span class="badge badge-success">ONLINE</span>';
-        if (s === 'BUSY')    return '<span class="badge badge-running">BUSY</span>';
-        return '<span class="badge badge-pending">OFFLINE</span>';
-    };
-
-    const runnerTypeBadge = t => {
-        const colors = { LOCAL: '#009688', SSH: '#673ab7', DOCKER: '#1d4ed8', KUBERNETES: '#c2410c' };
-        const c = colors[t] || '#374151';
-        return `<span style="display:inline-block;padding:1px 8px;border-radius:999px;font-size:0.7rem;font-weight:700;background:${c}22;color:${c};border:1px solid ${c}44;">${t}</span>`;
-    };
-
-    function renderRunnerCards(runners) {
-        const list = document.getElementById('runner-card-list');
-        const empty = document.getElementById('runner-empty-state');
-        if (!runners || runners.length === 0) {
-            list.innerHTML = '';
-            if (empty) empty.style.display = '';
+    function renderBpGroups() {
+        const list = document.getElementById('bp-group-list');
+        if (!list) return;
+        if (!_bpGroups || _bpGroups.length === 0) {
+            list.innerHTML = '<p style="color:var(--muted);font-size:0.88rem;">No groups yet. Create a group to get started.</p>';
             return;
         }
-        if (empty) empty.style.display = 'none';
-        list.innerHTML = runners.map(r => `
-          <div class="panel" style="margin-bottom:0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;">
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
-                <strong style="font-size:0.92rem;">${escHtml(r.name)}</strong>
-                ${runnerStatusBadge(r.status)}
-                ${runnerTypeBadge(r.type)}
-                <span style="font-size:0.78rem;color:var(--muted);font-family:monospace;">${escHtml(r.shell || '')}</span>
-              </div>
-              <div style="font-size:0.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:14px;">
-                ${r.host ? `<span>Host: <strong style="color:var(--text);">${escHtml(r.host)}:${r.port||22}</strong></span>` : ''}
-                ${r.username ? `<span>User: <strong style="color:var(--text);">${escHtml(r.username)}</strong></span>` : ''}
-                ${r.containerOrPod ? `<span>Container/Pod: <strong style="color:var(--text);">${escHtml(r.containerOrPod)}</strong></span>` : ''}
-                ${r.workDir ? `<span>WorkDir: <code style="font-size:0.78rem;">${escHtml(r.workDir)}</code></span>` : ''}
-                ${r.labels ? `<span>Labels: <em>${escHtml(r.labels)}</em></span>` : ''}
-                ${r.lastPingAt ? `<span>Last ping: ${new Date(r.lastPingAt).toLocaleString()}</span>` : ''}
-              </div>
-              <div id="runner-ping-status-${escHtml(r.id)}" style="font-size:0.78rem;margin-top:4px;color:var(--muted);"></div>
+        list.innerHTML = _bpGroups.map(g => `
+            <div style="border:1px solid var(--border);border-radius:6px;margin-bottom:12px;overflow:hidden;">
+                <div style="background:#f8fafc;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:700;font-size:0.95rem;color:var(--text);">${escapeHtml(g.name)}</div>
+                        ${g.description ? '<div style="font-size:0.8rem;color:var(--muted);margin-top:1px;">' + escapeHtml(g.description) + '</div>' : ''}
+                    </div>
+                    <button class="btn" style="font-size:0.78rem;padding:4px 12px;" onclick="openAddServerModal('${escapeHtml(g.id)}','${escapeHtml(g.name)}')">+ Add Server</button>
+                    <button class="btn-ghost" style="font-size:0.78rem;padding:4px 10px;" onclick="showRegisterCmd('${escapeHtml(g.id)}','${escapeHtml(g.name)}')">Register Cmd</button>
+                    <button class="btn-danger-ghost" style="font-size:0.78rem;padding:4px 10px;" onclick="deleteGroup('${escapeHtml(g.id)}')">Delete</button>
+                </div>
+                <div id="bp-servers-${escapeHtml(g.id)}" style="padding:10px 16px;">
+                    <span style="color:var(--muted);font-size:0.82rem;">Loading servers…</span>
+                </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:start;">
-              <button type="button" class="provider-verify-btn" onclick="pingRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Ping</button>
-              <button type="button" class="provider-secondary-btn" onclick="editRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Edit</button>
-              <button type="button" class="provider-remove-btn" onclick="deleteRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Delete</button>
-            </div>
-          </div>`).join('');
+        `).join('');
+        _bpGroups.forEach(g => loadGroupServers(g.id));
     }
 
-    function escHtml(s) {
-        if (!s) return '';
-        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    async function loadGroupServers(groupId) {
+        const el = document.getElementById('bp-servers-' + groupId);
+        if (!el) return;
+        try {
+            const res = await fetch('/api/build-platform/groups/' + encodeURIComponent(groupId) + '/servers');
+            const servers = await res.json();
+            if (!servers || servers.length === 0) {
+                el.innerHTML = '<p style="color:var(--muted);font-size:0.82rem;padding:4px 0;">No build servers in this group. Use &ldquo;+ Add Server&rdquo; or run the registration command on a machine.</p>';
+                return;
+            }
+            el.innerHTML = servers.map(s => {
+                const sc = 'runner-status-' + (s.status || 'OFFLINE').toLowerCase();
+                const tc = 'runner-type-' + (s.type || 'LOCAL').toLowerCase();
+                let workDirBadge = '';
+                if (s.workDir) {
+                    let noteStyle = 'color:var(--muted);';
+                    let noteIcon = '';
+                    if (s.workDirNote && s.workDirNote.startsWith('created:')) {
+                        noteStyle = 'color:var(--green);font-weight:600;';
+                        noteIcon = '✓ ';
+                    } else if (s.workDirNote && s.workDirNote.startsWith('exists:')) {
+                        noteStyle = 'color:var(--muted);';
+                        noteIcon = '';
+                    } else if (s.workDirNote && s.workDirNote.startsWith('error:')) {
+                        noteStyle = 'color:var(--red);';
+                        noteIcon = '⚠ ';
+                    }
+                    const noteText = s.workDirNote ? ` (${noteIcon}${s.workDirNote.split(':').slice(1).join(':').trim()})` : '';
+                    workDirBadge = `<div style="font-size:0.75rem;margin-top:3px;font-family:monospace;${noteStyle}" title="Workspace directory">
+                        📁 ${escapeHtml(s.workDir)}${escapeHtml(noteText)}</div>`;
+                }
+                return `<div class="runner-card" style="margin-bottom:6px;" id="bps-card-${escapeHtml(s.id)}">
+                    <span class="runner-status-dot ${sc}" title="${escapeHtml(s.status||'OFFLINE')}"></span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:700;font-size:0.88rem;">${escapeHtml(s.agentName||s.id)}</div>
+                        <div style="font-size:0.76rem;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;">
+                            <span class="runner-type-badge ${tc}">${escapeHtml(s.type||'LOCAL')}</span>
+                            <span>${escapeHtml(s.shell||'BASH')}</span>
+                            <span style="background:#f3f4f6;border-radius:8px;padding:1px 6px;">${escapeHtml(s.os||'LINUX')}</span>
+                            ${s.host ? '<span>' + escapeHtml(s.host) + (s.port && s.port !== 22 ? ':'+s.port : '') + '</span>' : ''}
+                            <span id="bps-status-${escapeHtml(s.id)}" style="font-weight:600;">${escapeHtml(s.status||'OFFLINE')}</span>
+                        </div>
+                        ${workDirBadge}
+                    </div>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                        <button class="btn-ghost" style="font-size:0.75rem;padding:3px 9px;" onclick="pingBuildServer('${escapeHtml(s.id)}','${escapeHtml(groupId)}')">Ping</button>
+                        <button class="btn-danger-ghost" style="font-size:0.75rem;padding:3px 9px;" onclick="deleteBuildServer('${escapeHtml(s.id)}','${escapeHtml(groupId)}')">Remove</button>
+                    </div>
+                </div>`;
+            }).join('');
+        } catch(e) {
+            el.innerHTML = '<span style="color:var(--red);font-size:0.82rem;">Failed to load servers</span>';
+        }
     }
 
-    /* ── Modal open / close ── */
-    function openRunnerModal() {
-        _editingRunnerId = null;
-        document.getElementById('runner-modal-title').textContent = 'Add Runner';
-        document.getElementById('runner-id-field').value = '';
-        document.getElementById('runner-name').value = '';
-        document.getElementById('runner-type').value = 'LOCAL';
-        document.getElementById('runner-shell').value = 'BASH';
-        document.getElementById('runner-host').value = '';
-        document.getElementById('runner-port').value = '22';
-        document.getElementById('runner-username').value = '';
-        document.getElementById('runner-ssh-key').value = '';
-        document.getElementById('runner-container').value = '';
-        document.getElementById('runner-namespace').value = '';
-        document.getElementById('runner-workdir').value = '';
-        document.getElementById('runner-labels').value = '';
-        document.getElementById('runner-modal-status').textContent = '';
-        onRunnerTypeChange();
-        document.getElementById('runner-modal-overlay').classList.add('active');
+    // ── Group modal ──
+    function openGroupModal() {
+        _bpGroupModalId = null;
+        document.getElementById('bpgm-name').value = '';
+        document.getElementById('bpgm-desc').value = '';
+        document.getElementById('bp-group-modal').classList.add('active');
+    }
+    function closeGroupModal() { document.getElementById('bp-group-modal').classList.remove('active'); }
+    async function saveGroup() {
+        const name = document.getElementById('bpgm-name').value.trim();
+        if (!name) { alert('Group name is required.'); return; }
+        const body = { name, description: document.getElementById('bpgm-desc').value.trim() };
+        try {
+            const res = await fetch('/api/build-platform/groups', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (!res.ok) throw new Error(await res.text());
+            closeGroupModal();
+            loadBuildPlatform();
+        } catch(e) { alert('Failed to create group: ' + e.message); }
+    }
+    async function deleteGroup(id) {
+        if (!confirm('Delete this group and all its build servers?')) return;
+        await fetch('/api/build-platform/groups/' + encodeURIComponent(id), { method: 'DELETE' });
+        loadBuildPlatform();
     }
 
-    function closeRunnerModal() {
-        document.getElementById('runner-modal-overlay').classList.remove('active');
+    // ── Add Server modal ──
+    function openAddServerModal(groupId, groupName) {
+        _bpServerModalGroupId = groupId;
+        document.getElementById('bpsm-group-label').textContent = groupName;
+        document.getElementById('bpsm-agentName').value = '';
+        document.getElementById('bpsm-os').value = 'LINUX';
+        document.getElementById('bpsm-type').value = 'LOCAL';
+        document.getElementById('bpsm-shell').value = 'BASH';
+        document.getElementById('bpsm-host').value = '';
+        document.getElementById('bpsm-port').value = '22';
+        document.getElementById('bpsm-username').value = '';
+        document.getElementById('bpsm-sshKeyPath').value = '';
+        document.getElementById('bpsm-containerOrPod').value = '';
+        document.getElementById('bpsm-namespace').value = '';
+        document.getElementById('bpsm-workDir').value = '';
+        onBpsTypeChange();
+        document.getElementById('bp-server-modal').classList.add('active');
+    }
+    function closeAddServerModal() { document.getElementById('bp-server-modal').classList.remove('active'); }
+    function onBpsTypeChange() {
+        const type = document.getElementById('bpsm-type').value;
+        document.getElementById('bpsm-ssh-fields').style.display = type === 'SSH' ? '' : 'none';
+        const showC = type === 'DOCKER' || type === 'KUBERNETES';
+        document.getElementById('bpsm-container-fields').style.display = showC ? '' : 'none';
+        document.getElementById('bpsm-ns-field').style.display = type === 'KUBERNETES' ? '' : 'none';
+    }
+    async function saveServer() {
+        const agentName = document.getElementById('bpsm-agentName').value.trim();
+        if (!agentName) { alert('Agent name is required.'); return; }
+        const body = {
+            agentName,
+            os: document.getElementById('bpsm-os').value,
+            type: document.getElementById('bpsm-type').value,
+            shell: document.getElementById('bpsm-shell').value,
+            host: document.getElementById('bpsm-host').value.trim(),
+            port: parseInt(document.getElementById('bpsm-port').value) || 22,
+            username: document.getElementById('bpsm-username').value.trim(),
+            sshKeyPath: document.getElementById('bpsm-sshKeyPath').value.trim(),
+            containerOrPod: document.getElementById('bpsm-containerOrPod').value.trim(),
+            namespace: document.getElementById('bpsm-namespace').value.trim(),
+            workDir: document.getElementById('bpsm-workDir').value.trim()
+        };
+        try {
+            const res = await fetch('/api/build-platform/groups/' + encodeURIComponent(_bpServerModalGroupId) + '/servers',
+                { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (!res.ok) throw new Error(await res.text());
+            closeAddServerModal();
+            loadGroupServers(_bpServerModalGroupId);
+        } catch(e) { alert('Failed to add server: ' + e.message); }
     }
 
-    function editRunner(id) {
-        fetch('/api/runners').then(r => r.json()).then(runners => {
-            const r = runners.find(x => x.id === id);
-            if (!r) return;
-            _editingRunnerId = r.id;
-            document.getElementById('runner-modal-title').textContent = 'Edit Runner';
-            document.getElementById('runner-id-field').value = r.id;
-            document.getElementById('runner-name').value = r.name || '';
-            document.getElementById('runner-type').value = r.type || 'LOCAL';
-            document.getElementById('runner-shell').value = r.shell || 'BASH';
-            document.getElementById('runner-host').value = r.host || '';
-            document.getElementById('runner-port').value = r.port || 22;
-            document.getElementById('runner-username').value = r.username || '';
-            document.getElementById('runner-ssh-key').value = r.sshKeyPath || '';
-            document.getElementById('runner-container').value = r.containerOrPod || '';
-            document.getElementById('runner-namespace').value = r.namespace || '';
-            document.getElementById('runner-workdir').value = r.workDir || '';
-            document.getElementById('runner-labels').value = r.labels || '';
-            document.getElementById('runner-modal-status').textContent = '';
-            onRunnerTypeChange();
-            document.getElementById('runner-modal-overlay').classList.add('active');
+    // ── Registration command modal ──
+    let _regGroupId = null;
+    function showRegisterCmd(groupId, groupName) {
+        _regGroupId = groupId;
+        document.getElementById('reg-group-name').textContent = groupName;
+        document.getElementById('reg-pat-input').value = '';
+        document.getElementById('reg-linux-cmd').textContent = '';
+        document.getElementById('reg-win-cmd').textContent = '';
+        document.getElementById('reg-cmd-area').style.display = 'none';
+        document.getElementById('bp-register-modal').classList.add('active');
+    }
+    function buildRegisterCmds() {
+        const pat = document.getElementById('reg-pat-input').value.trim();
+        if (!pat) { alert('Please enter your PAT first.'); return; }
+        const base = window.location.origin;
+        const linuxCmd = `curl -s -X POST ${base}/api/build-platform/register \\
+  -H 'Authorization: Bearer ${pat}' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "groupId": "${_regGroupId}",
+    "agentName": "my-linux-agent",
+    "os": "LINUX",
+    "type": "LOCAL",
+    "shell": "BASH",
+    "workDir": "/tmp/simplecd"
+  }'`;
+        const winCmd = `$body = @{
+  groupId   = '${_regGroupId}'
+  agentName = 'my-win-agent'
+  os        = 'WINDOWS'
+  type      = 'LOCAL'
+  shell     = 'PWSH'
+  workDir   = 'C:\\SimpleCD\\work'
+} | ConvertTo-Json
+Invoke-RestMethod -Uri '${base}/api/build-platform/register' \`
+  -Method POST -Body $body -ContentType 'application/json' \`
+  -Headers @{Authorization='Bearer ${pat}'}`;
+        document.getElementById('reg-linux-cmd').textContent = linuxCmd;
+        document.getElementById('reg-win-cmd').textContent = winCmd;
+        document.getElementById('reg-cmd-area').style.display = 'block';
+    }
+    function closeRegisterModal() { document.getElementById('bp-register-modal').classList.remove('active'); }
+    function copyRegCmd(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        navigator.clipboard.writeText(el.textContent).then(() => {
+            const btn = el.parentElement.querySelector('.yaml-copy-btn');
+            if (btn) { const orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = orig, 1500); }
         });
     }
 
-    function onRunnerTypeChange() {
-        const type = document.getElementById('runner-type').value;
-        const sshFields = document.getElementById('runner-ssh-fields');
-        const containerFields = document.getElementById('runner-container-fields');
-        const nsGroup = document.getElementById('runner-namespace-group');
-        const containerLabel = document.getElementById('runner-container-label');
-        sshFields.style.display = (type === 'SSH') ? '' : 'none';
-        containerFields.style.display = (type === 'DOCKER' || type === 'KUBERNETES') ? '' : 'none';
-        nsGroup.style.display = (type === 'KUBERNETES') ? '' : 'none';
-        if (containerLabel) containerLabel.textContent = type === 'KUBERNETES' ? 'Pod Name' : 'Container Name';
-    }
-
-    function saveRunner() {
-        const name = document.getElementById('runner-name').value.trim();
-        if (!name) { document.getElementById('runner-modal-status').textContent = 'Name is required.'; return; }
-        const payload = {
-            name,
-            type:         document.getElementById('runner-type').value,
-            shell:        document.getElementById('runner-shell').value,
-            host:         document.getElementById('runner-host').value.trim(),
-            port:         parseInt(document.getElementById('runner-port').value) || 22,
-            username:     document.getElementById('runner-username').value.trim(),
-            sshKeyPath:   document.getElementById('runner-ssh-key').value.trim(),
-            containerOrPod: document.getElementById('runner-container').value.trim(),
-            namespace:    document.getElementById('runner-namespace').value.trim(),
-            workDir:      document.getElementById('runner-workdir').value.trim(),
-            labels:       document.getElementById('runner-labels').value.trim()
-        };
-        const id = document.getElementById('runner-id-field').value;
-        const url = id ? '/api/runners/' + id : '/api/runners';
-        const method = id ? 'PUT' : 'POST';
-        fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-            .then(r => r.json())
-            .then(() => { closeRunnerModal(); loadRunnersUI(); })
-            .catch(e => { document.getElementById('runner-modal-status').textContent = 'Error: ' + e.message; });
-    }
-
-    function deleteRunner(id) {
-        if (!confirm('Delete this runner?')) return;
-        fetch('/api/runners/' + id, { method: 'DELETE' })
-            .then(() => loadRunnersUI());
-    }
-
-    function pingRunner(id) {
-        const el = document.getElementById('runner-ping-status-' + id);
+    // ── Ping / delete server ──
+    async function pingBuildServer(id, groupId) {
+        const el = document.getElementById('bps-status-' + id);
         if (el) el.textContent = 'Pinging…';
-        fetch('/api/runners/' + id + '/ping', { method: 'POST' })
-            .then(r => r.json())
-            .then(data => {
-                if (el) el.textContent = 'Ping → ' + data.result + '  (' + data.status + ')';
-                loadRunnersUI();
-            })
-            .catch(e => { if (el) el.textContent = 'Ping error: ' + e.message; });
+        try {
+            const res = await fetch('/api/build-platform/servers/' + encodeURIComponent(id) + '/ping', { method: 'POST' });
+            const data = await res.json();
+            if (el) el.textContent = data.status || 'UNKNOWN';
+        } catch(e) { if (el) el.textContent = 'ERROR'; }
+    }
+    async function deleteBuildServer(id, groupId) {
+        if (!confirm('Remove this build server?')) return;
+        await fetch('/api/build-platform/servers/' + encodeURIComponent(id), { method: 'DELETE' });
+        loadGroupServers(groupId);
     }
 
-    function pingRunnerFromModal() {
-        const id = document.getElementById('runner-id-field').value;
-        if (!id) { document.getElementById('runner-modal-status').textContent = 'Save the runner first, then ping.'; return; }
-        document.getElementById('runner-modal-status').textContent = 'Pinging…';
-        fetch('/api/runners/' + id + '/ping', { method: 'POST' })
-            .then(r => r.json())
-            .then(data => { document.getElementById('runner-modal-status').textContent = 'Ping → ' + data.result; })
-            .catch(e => { document.getElementById('runner-modal-status').textContent = 'Error: ' + e.message; });
+    // ── Personal Access Tokens ────────────────────────────────────────────────
+
+    async function loadPATs() {
+        const container = document.getElementById('pat-list');
+        if (!container) return;
+        try {
+            const resp = await fetch('/api/tokens');
+            if (!resp.ok) { container.innerHTML = '<div style="color:var(--danger);font-size:0.88rem;">Failed to load tokens.</div>'; return; }
+            const tokens = await resp.json();
+            renderPATs(tokens);
+        } catch (e) {
+            container.innerHTML = '<div style="color:var(--danger);font-size:0.88rem;">Error: ' + e.message + '</div>';
+        }
     }
 
-    // Populate runner selector on page load (for pipeline wizard)
-    populatePipelineRunnerSelect();
+    function renderPATs(tokens) {
+        const container = document.getElementById('pat-list');
+        if (!tokens.length) {
+            container.innerHTML = '<div style="color:var(--muted);font-size:0.88rem;padding:10px 0;">No tokens yet. Create one to authenticate API requests without a browser session.</div>';
+            return;
+        }
+        container.innerHTML = tokens.map(t => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div>
+                    <div style="font-weight:600;font-size:0.9rem;color:var(--text);">${escapeHtml(t.name)}</div>
+                    <div style="font-size:0.79rem;color:var(--muted);margin-top:3px;">
+                        <code style="background:#f3f4f6;padding:1px 7px;border-radius:3px;">${escapeHtml(t.token)}</code>
+                    </div>
+                    <div style="font-size:0.76rem;color:var(--muted);margin-top:3px;">
+                        Created: ${new Date(t.createdAt).toLocaleString()}
+                        ${t.lastUsedAt ? ' &nbsp;&middot;&nbsp; Last used: ' + new Date(t.lastUsedAt).toLocaleString() : ''}
+                    </div>
+                </div>
+                <button class="btn-danger-ghost" style="font-size:0.78rem;padding:4px 12px;white-space:nowrap;" onclick="revokePAT('${escapeHtml(t.id)}','${escapeHtml(t.name)}')">Revoke</button>
+            </div>
+        `).join('');
+    }
+
+    function openPATModal() {
+        document.getElementById('pat-name').value = '';
+        document.getElementById('pat-modal').classList.add('open');
+        setTimeout(() => document.getElementById('pat-name').focus(), 80);
+    }
+
+    function closePATModal() {
+        document.getElementById('pat-modal').classList.remove('open');
+    }
+
+    async function savePAT() {
+        const name = document.getElementById('pat-name').value.trim();
+        if (!name) { alert('Token name is required.'); return; }
+        try {
+            const resp = await fetch('/api/tokens', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            });
+            if (!resp.ok) { const e = await resp.json(); alert(e.error || 'Failed to create token'); return; }
+            const token = await resp.json();
+            closePATModal();
+            document.getElementById('pat-created-value').textContent = token.token;
+            document.getElementById('pat-created-modal').classList.add('open');
+            loadPATs();
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
+    }
+
+    function copyPATValue() {
+        const val = document.getElementById('pat-created-value').textContent;
+        navigator.clipboard.writeText(val).then(() => {
+            const btn = event.target;
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+    }
+
+    function closePATCreatedModal() {
+        document.getElementById('pat-created-modal').classList.remove('open');
+    }
+
+    async function revokePAT(id, name) {
+        if (!confirm('Revoke token "' + name + '"? Any scripts using it will lose access.')) return;
+        try {
+            const resp = await fetch('/api/tokens/' + encodeURIComponent(id), { method: 'DELETE' });
+            if (resp.ok) { loadPATs(); } else { alert('Failed to revoke token.'); }
+        } catch (e) {
+            alert('Error: ' + e.message);
+        }
+    }
+
 
 </script>
 
@@ -3017,94 +3158,6 @@
   </div>
 </div>
 
-<!-- Runner Modal -->
-<div class="modal-overlay" id="runner-modal-overlay" onclick="closeRunnerModal()">
-  <div class="modal-content" onclick="event.stopPropagation()" style="max-width:560px;">
-    <div class="modal-header">
-      <button class="modal-close" onclick="closeRunnerModal()">×</button>
-      <h3 id="runner-modal-title">Add Runner</h3>
-      <p style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Connect a self-hosted agent that SimpleCd will dispatch builds to.</p>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="runner-id-field">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="form-group" style="grid-column:1/-1;">
-          <label>Runner Name <span style="color:#be123c;">*</span></label>
-          <input type="text" id="runner-name" placeholder="e.g. build-server-01" style="max-width:100%;">
-        </div>
-        <div class="form-group">
-          <label>Type <span style="color:#be123c;">*</span></label>
-          <select id="runner-type" onchange="onRunnerTypeChange()" style="max-width:100%;">
-            <option value="LOCAL">LOCAL — same machine</option>
-            <option value="SSH">SSH — remote server</option>
-            <option value="DOCKER">DOCKER — container exec</option>
-            <option value="KUBERNETES">KUBERNETES — pod exec</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Shell <span style="color:#be123c;">*</span></label>
-          <select id="runner-shell" style="max-width:100%;">
-            <option value="BASH">bash</option>
-            <option value="PWSH">pwsh (PowerShell Core)</option>
-            <option value="CMD">cmd (Windows CMD)</option>
-          </select>
-        </div>
-        <!-- SSH fields -->
-        <div id="runner-ssh-fields" style="display:none;grid-column:1/-1;display:none;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="form-group">
-              <label>Host</label>
-              <input type="text" id="runner-host" placeholder="192.168.1.10 or hostname" style="max-width:100%;">
-            </div>
-            <div class="form-group">
-              <label>SSH Port</label>
-              <input type="text" id="runner-port" placeholder="22" value="22" style="max-width:100%;">
-            </div>
-            <div class="form-group">
-              <label>Username</label>
-              <input type="text" id="runner-username" placeholder="ubuntu / deploy" style="max-width:100%;">
-            </div>
-            <div class="form-group">
-              <label>SSH Key Path</label>
-              <input type="text" id="runner-ssh-key" placeholder="/home/user/.ssh/id_rsa" style="max-width:100%;">
-            </div>
-          </div>
-        </div>
-        <!-- Docker / K8s fields -->
-        <div id="runner-container-fields" style="display:none;grid-column:1/-1;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div class="form-group">
-              <label id="runner-container-label">Container Name</label>
-              <input type="text" id="runner-container" placeholder="my-build-container" style="max-width:100%;">
-            </div>
-            <div class="form-group" id="runner-namespace-group" style="display:none;">
-              <label>Namespace</label>
-              <input type="text" id="runner-namespace" placeholder="default" style="max-width:100%;">
-            </div>
-          </div>
-        </div>
-        <div class="form-group" style="grid-column:1/-1;">
-          <label>Work Directory</label>
-          <input type="text" id="runner-workdir" placeholder="/opt/simplecd/workspaces  or  C:\SimpleCD\workspaces" style="max-width:100%;">
-        </div>
-        <div class="form-group" style="grid-column:1/-1;">
-          <label>Labels / Tags <span style="font-weight:400;color:var(--muted);">(comma-separated)</span></label>
-          <input type="text" id="runner-labels" placeholder="linux, java, maven" style="max-width:100%;">
-        </div>
-      </div>
-      <div id="runner-modal-status" style="font-size:0.82rem;margin-top:10px;color:var(--muted);"></div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="provider-secondary-btn" onclick="closeRunnerModal()">Cancel</button>
-      <button type="button" class="provider-verify-btn" onclick="pingRunnerFromModal()" style="border:1px solid var(--secondary-border);background:#fff;color:var(--secondary-text);">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Ping
-      </button>
-      <button type="button" onclick="saveRunner()">Save Runner</button>
-    </div>
-  </div>
-</div>
-
 <!-- Pipeline Drawer — 4-step wizard -->
 <div class="pipeline-drawer-overlay" id="pipeline-drawer-overlay" onclick="closePipelineDrawer()"></div>
 <div class="pipeline-drawer" id="pipeline-drawer">
@@ -3176,17 +3229,10 @@
       <div class="form-group">
         <label>Runner</label>
         <select id="pl-runner" onchange="refreshYaml()" style="max-width:100%;">
-          <option value="">-- LOCAL (default / same machine) --</option>
-          <option value="ubuntu-latest">ubuntu-latest (GitHub-hosted)</option>
-          <option value="windows-latest">windows-latest (GitHub-hosted)</option>
-          <option value="macos-latest">macos-latest (GitHub-hosted)</option>
+          <option value="ubuntu-latest">ubuntu-latest</option>
+          <option value="windows-latest">windows-latest</option>
+          <option value="macos-latest">macos-latest</option>
         </select>
-        <div id="simplecd-runner-opts" style="margin-top:8px;display:none;">
-          <label style="font-size:0.78rem;color:var(--muted);font-weight:400;">SimpleCD self-hosted runner</label>
-          <select id="pl-simplecd-runner-id" onchange="refreshYaml()" style="max-width:100%;margin-top:4px;">
-            <option value="">-- Local (no runner) --</option>
-          </select>
-        </div>
       </div>
       <div class="form-group">
         <label>Trigger Events</label>
@@ -3229,6 +3275,172 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       Save Pipeline
     </button>
+  </div>
+</div>
+<!-- ── Build Platform: Group Modal ── -->
+<div class="modal-overlay" id="bp-group-modal" onclick="if(event.target===this)closeGroupModal()">
+  <div class="modal-content" style="max-width:440px;width:96%;">
+    <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closeGroupModal()">&times;</button>
+      <h3>Create Build Server Group</h3>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Group Name <span style="color:var(--red);">*</span></label>
+        <input type="text" id="bpgm-name" placeholder="e.g. Production, CI, Dev">
+      </div>
+      <div class="form-group">
+        <label>Description <span style="color:var(--muted);font-size:0.8rem;">(optional)</span></label>
+        <input type="text" id="bpgm-desc" placeholder="Short description">
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:4px;">After creating the group you will get a registration token. Run the provided command on any machine to connect it as a build server.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-ghost" onclick="closeGroupModal()">Cancel</button>
+      <button type="button" class="btn" onclick="saveGroup()">Create Group</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Build Platform: Add Server Modal ── -->
+<div class="modal-overlay" id="bp-server-modal" onclick="if(event.target===this)closeAddServerModal()">
+  <div class="modal-content" style="max-width:540px;width:96%;">
+    <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closeAddServerModal()">&times;</button>
+      <h3>Add Build Server — <span id="bpsm-group-label" style="color:var(--accent);"></span></h3>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Agent Name <span style="color:var(--red);">*</span></label>
+        <input type="text" id="bpsm-agentName" placeholder="e.g. win-build-01">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>OS</label>
+          <select id="bpsm-os">
+            <option value="LINUX">Linux</option>
+            <option value="WINDOWS">Windows</option>
+            <option value="MACOS">macOS</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Type</label>
+          <select id="bpsm-type" onchange="onBpsTypeChange()">
+            <option value="LOCAL">LOCAL</option>
+            <option value="SSH">SSH</option>
+            <option value="DOCKER">DOCKER</option>
+            <option value="KUBERNETES">KUBERNETES</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Shell</label>
+          <select id="bpsm-shell">
+            <option value="BASH">bash</option>
+            <option value="PWSH">pwsh</option>
+            <option value="CMD">cmd</option>
+          </select>
+        </div>
+      </div>
+      <div id="bpsm-ssh-fields" style="display:none;margin-top:12px;">
+        <div style="display:grid;grid-template-columns:1fr 90px;gap:10px;">
+          <div class="form-group" style="margin-bottom:0;"><label>Host</label><input type="text" id="bpsm-host" placeholder="192.168.1.10"></div>
+          <div class="form-group" style="margin-bottom:0;"><label>Port</label><input type="number" id="bpsm-port" value="22" min="1" max="65535"></div>
+        </div>
+        <div class="form-group" style="margin-top:10px;"><label>Username</label><input type="text" id="bpsm-username" placeholder="root"></div>
+        <div class="form-group"><label>SSH Key Path <span style="color:var(--muted);font-size:0.8rem;">(optional)</span></label><input type="text" id="bpsm-sshKeyPath" placeholder="/home/user/.ssh/id_rsa"></div>
+      </div>
+      <div id="bpsm-container-fields" style="display:none;margin-top:12px;">
+        <div class="form-group"><label>Container / Pod Name</label><input type="text" id="bpsm-containerOrPod" placeholder="my-container"></div>
+        <div id="bpsm-ns-field" style="display:none;"><div class="form-group"><label>Namespace</label><input type="text" id="bpsm-namespace" placeholder="default"></div></div>
+      </div>
+      <div class="form-group" style="margin-top:10px;"><label>Work Directory <span style="color:var(--muted);font-size:0.8rem;">(optional)</span></label><input type="text" id="bpsm-workDir" placeholder="/tmp/simplecd"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-ghost" onclick="closeAddServerModal()">Cancel</button>
+      <button type="button" class="btn" onclick="saveServer()">Add Server</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Build Platform: Registration Command Modal ── -->
+<div class="modal-overlay" id="bp-register-modal" onclick="if(event.target===this)closeRegisterModal()">
+  <div class="modal-content" style="max-width:680px;width:96%;">
+    <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closeRegisterModal()">&times;</button>
+      <h3>Register Build Server — <span id="reg-group-name" style="color:var(--accent);"></span></h3>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">Paste your Personal Access Token to generate the registration command. Run it on the target machine — the server will appear in this group automatically.</p>
+
+      <label class="form-label">Your Personal Access Token (PAT)</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+        <input type="password" id="reg-pat-input" class="form-control" placeholder="scd_..." style="flex:1;font-family:monospace;" />
+        <button type="button" class="btn" onclick="buildRegisterCmds()" style="white-space:nowrap;">Generate Commands</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Don&rsquo;t have a token? Go to <strong>admin &#x25BE;</strong> &rarr; <strong>User Settings</strong> &rarr; <strong>Personal Access Tokens</strong> to create one.</p>
+
+      <div id="reg-cmd-area" style="display:none;">
+        <div class="yaml-preview-label">
+          Linux / macOS (bash / curl)
+          <button class="yaml-copy-btn" onclick="copyRegCmd('reg-linux-cmd')">Copy</button>
+        </div>
+        <pre class="yaml-preview" id="reg-linux-cmd" style="max-height:200px;"></pre>
+
+        <div class="yaml-preview-label" style="margin-top:14px;">
+          Windows (PowerShell)
+          <button class="yaml-copy-btn" onclick="copyRegCmd('reg-win-cmd')">Copy</button>
+        </div>
+        <pre class="yaml-preview" id="reg-win-cmd" style="max-height:200px;"></pre>
+
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:14px;">Edit <code>agentName</code>, <code>os</code>, <code>type</code>, <code>shell</code>, and <code>workDir</code> as needed before running.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-ghost" onclick="closeRegisterModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAT Create Modal -->
+<div class="modal-overlay" id="pat-modal">
+  <div class="modal-box" style="max-width:440px;">
+    <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closePATModal()">&times;</button>
+      <h3>New Personal Access Token</h3>
+    </div>
+    <div class="modal-body">
+      <label class="form-label">Token Name *</label>
+      <input type="text" id="pat-name" class="form-control" placeholder="e.g. Build Server prod-linux-01, Deploy Script" />
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;">Give the token a descriptive name so you remember where it is used.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-ghost" onclick="closePATModal()">Cancel</button>
+      <button type="button" class="btn" onclick="savePAT()">Generate Token</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAT Created (show-once) Modal -->
+<div class="modal-overlay" id="pat-created-modal">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closePATCreatedModal()">&times;</button>
+      <h3>Token Generated</h3>
+    </div>
+    <div class="modal-body">
+      <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:0.85rem;color:#92400e;">
+        &#9888;&#65039; Copy this token now &mdash; it will <strong>not</strong> be shown again after you close this dialog.
+      </div>
+      <label class="form-label">Your Personal Access Token</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <code id="pat-created-value" style="background:#f3f4f6;padding:8px 12px;border-radius:4px;font-size:0.85rem;word-break:break-all;flex:1;display:block;"></code>
+        <button class="btn" onclick="copyPATValue()" style="white-space:nowrap;">Copy</button>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:12px;">Use as: <code>Authorization: Bearer &lt;token&gt;</code> in your HTTP requests.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn" onclick="closePATCreatedModal()">Done</button>
+    </div>
   </div>
 </div>
 </body>
