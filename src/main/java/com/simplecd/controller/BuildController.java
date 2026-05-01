@@ -11,6 +11,7 @@ import com.simplecd.model.RemoteRepository;
 import com.simplecd.service.BuildService;
 import com.simplecd.service.GitHubRepositoryDiscoveryService;
 import com.simplecd.service.GitProviderSettingsService;
+import com.simplecd.service.RunnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,16 @@ public class BuildController {
     private final BuildService buildService;
     private final GitProviderSettingsService gitProviderSettingsService;
     private final GitHubRepositoryDiscoveryService gitHubRepositoryDiscoveryService;
+    private final RunnerService runnerService;
 
     public BuildController(BuildService buildService,
                            GitProviderSettingsService gitProviderSettingsService,
-                           GitHubRepositoryDiscoveryService gitHubRepositoryDiscoveryService) {
+                           GitHubRepositoryDiscoveryService gitHubRepositoryDiscoveryService,
+                           RunnerService runnerService) {
         this.buildService = buildService;
         this.gitProviderSettingsService = gitProviderSettingsService;
         this.gitHubRepositoryDiscoveryService = gitHubRepositoryDiscoveryService;
+        this.runnerService = runnerService;
     }
 
     @GetMapping("/")
@@ -43,14 +47,16 @@ public class BuildController {
         model.addAttribute("countFailed",  jobs.stream().filter(j -> j.getStatus() == BuildStatus.FAILED).count());
         model.addAttribute("successRate",  jobs.isEmpty() ? "—" : (jobs.stream().filter(j -> j.getStatus() == BuildStatus.SUCCESS).count() * 100 / jobs.size()) + "%");
         model.addAttribute("hasArtifacts", jobs.stream().anyMatch(j -> j.getArtifactPath() != null));
+        model.addAttribute("runners", runnerService.getAll());
         return "index";
     }
 
     @PostMapping("/build")
     public String startBuild(@RequestParam String repoUrl,
-                             @RequestParam String branch) {
+                             @RequestParam String branch,
+                             @RequestParam(required = false, defaultValue = "") String runnerId) {
 
-        buildService.startBuild(repoUrl, branch);
+        buildService.startBuild(repoUrl, branch, runnerId.isBlank() ? null : runnerId);
         return "redirect:/";
     }
 

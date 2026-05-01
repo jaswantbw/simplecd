@@ -96,4 +96,15 @@ public class BuildJob {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    // ---- runner fields ----
+
+    private String runnerId;
+    private String runnerName;
+
+    public String getRunnerId() { return runnerId; }
+    public void setRunnerId(String runnerId) { this.runnerId = runnerId; }
+
+    public String getRunnerName() { return runnerName; }
+    public void setRunnerName(String runnerName) { this.runnerName = runnerName; }
 }

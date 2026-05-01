@@ -393,6 +393,10 @@ public class BuildService {
     }
 
     public BuildJob startBuild(String repoUrl, String branch) {
+        return startBuild(repoUrl, branch, null);
+    }
+
+    public BuildJob startBuild(String repoUrl, String branch, String runnerId) {
 
         String jobId = UUID.randomUUID().toString();
 
@@ -402,6 +406,10 @@ public class BuildService {
         job.setBranch(branch);
         job.setStatus(BuildStatus.QUEUED);
         job.setStartTime(LocalDateTime.now());
+
+        if (runnerId != null && !runnerId.isBlank()) {
+            job.setRunnerId(runnerId);
+        }
 
         jobs.put(jobId, job);
 

@@ -524,6 +524,10 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span>Pipelines</span>
     </a>
+    <a class="nav-item" data-section="runners" onclick="navigate(this)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        <span>Runners</span>
+    </a>
     <a class="nav-item" data-section="artifacts" onclick="navigate(this)">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         <span>Artifacts</span>
@@ -748,6 +752,27 @@
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     <p>No pipelines yet.<br>Click <strong>Create Pipeline</strong> to define your first one.</p>
                 </div>
+            </div>
+        </div>
+
+        <!-- RUNNERS -->
+        <div class="section" id="section-runners">
+            <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <h2>Runners</h2>
+                    <p>Self-hosted agents that execute pipeline steps — local machine, SSH server, Docker container, or Kubernetes pod.</p>
+                </div>
+                <button onclick="openRunnerModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Runner
+                </button>
+            </div>
+
+            <!-- Runner cards injected by JS -->
+            <div id="runner-card-list" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;"></div>
+            <div class="empty-state" id="runner-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                <p>No runners registered yet.<br>Click <strong>Add Runner</strong> to connect your first agent.</p>
             </div>
         </div>
 
@@ -988,6 +1013,7 @@
         'dashboard': 'Dashboard',
         'code-repository': 'Code Repository',
         'pipelines': 'Pipelines',
+        'runners': 'Runners',
         'artifacts': 'Artifacts',
         'logs': 'Logs',
         'reports': 'Reports',
@@ -1017,6 +1043,7 @@
         document.getElementById('topbar-title').textContent = sectionTitles[target] || target;
         if (target === 'code-repository') loadRepositories();
         if (target === 'settings') loadGitSettings();
+        if (target === 'runners') loadRunnersUI();
     }
 
     function unsavedStay() {
@@ -2713,6 +2740,209 @@
 
     // Init
     renderPipelineCards();
+
+    /* ═══════════════════════════════════════════════════════
+       RUNNER MANAGEMENT
+    ═══════════════════════════════════════════════════════ */
+
+    let _editingRunnerId = null;
+
+    function loadRunnersUI() {
+        fetch('/api/runners')
+            .then(r => r.json())
+            .then(runners => renderRunnerCards(runners))
+            .catch(() => renderRunnerCards([]));
+        // Populate the runner selector inside the pipeline wizard
+        populatePipelineRunnerSelect();
+    }
+
+    function populatePipelineRunnerSelect() {
+        fetch('/api/runners').then(r => r.json()).then(runners => {
+            const sel = document.getElementById('pl-simplecd-runner-id');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- Local (no runner) --</option>';
+            runners.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                opt.textContent = r.name + ' [' + r.type + '/' + r.shell + ']' + (r.status ? '  (' + r.status + ')' : '');
+                sel.appendChild(opt);
+            });
+            // Show simplecd runner panel
+            const panel = document.getElementById('simplecd-runner-opts');
+            if (panel) panel.style.display = 'block';
+        }).catch(() => {});
+    }
+
+    const runnerStatusBadge = s => {
+        if (s === 'ONLINE')  return '<span class="badge badge-success">ONLINE</span>';
+        if (s === 'BUSY')    return '<span class="badge badge-running">BUSY</span>';
+        return '<span class="badge badge-pending">OFFLINE</span>';
+    };
+
+    const runnerTypeBadge = t => {
+        const colors = { LOCAL: '#009688', SSH: '#673ab7', DOCKER: '#1d4ed8', KUBERNETES: '#c2410c' };
+        const c = colors[t] || '#374151';
+        return `<span style="display:inline-block;padding:1px 8px;border-radius:999px;font-size:0.7rem;font-weight:700;background:${c}22;color:${c};border:1px solid ${c}44;">${t}</span>`;
+    };
+
+    function renderRunnerCards(runners) {
+        const list = document.getElementById('runner-card-list');
+        const empty = document.getElementById('runner-empty-state');
+        if (!runners || runners.length === 0) {
+            list.innerHTML = '';
+            if (empty) empty.style.display = '';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+        list.innerHTML = runners.map(r => `
+          <div class="panel" style="margin-bottom:0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+                <strong style="font-size:0.92rem;">${escHtml(r.name)}</strong>
+                ${runnerStatusBadge(r.status)}
+                ${runnerTypeBadge(r.type)}
+                <span style="font-size:0.78rem;color:var(--muted);font-family:monospace;">${escHtml(r.shell || '')}</span>
+              </div>
+              <div style="font-size:0.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:14px;">
+                ${r.host ? `<span>Host: <strong style="color:var(--text);">${escHtml(r.host)}:${r.port||22}</strong></span>` : ''}
+                ${r.username ? `<span>User: <strong style="color:var(--text);">${escHtml(r.username)}</strong></span>` : ''}
+                ${r.containerOrPod ? `<span>Container/Pod: <strong style="color:var(--text);">${escHtml(r.containerOrPod)}</strong></span>` : ''}
+                ${r.workDir ? `<span>WorkDir: <code style="font-size:0.78rem;">${escHtml(r.workDir)}</code></span>` : ''}
+                ${r.labels ? `<span>Labels: <em>${escHtml(r.labels)}</em></span>` : ''}
+                ${r.lastPingAt ? `<span>Last ping: ${new Date(r.lastPingAt).toLocaleString()}</span>` : ''}
+              </div>
+              <div id="runner-ping-status-${escHtml(r.id)}" style="font-size:0.78rem;margin-top:4px;color:var(--muted);"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:start;">
+              <button type="button" class="provider-verify-btn" onclick="pingRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Ping</button>
+              <button type="button" class="provider-secondary-btn" onclick="editRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Edit</button>
+              <button type="button" class="provider-remove-btn" onclick="deleteRunner('${escHtml(r.id)}')" style="font-size:0.78rem;padding:5px 10px;">Delete</button>
+            </div>
+          </div>`).join('');
+    }
+
+    function escHtml(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Modal open / close ── */
+    function openRunnerModal() {
+        _editingRunnerId = null;
+        document.getElementById('runner-modal-title').textContent = 'Add Runner';
+        document.getElementById('runner-id-field').value = '';
+        document.getElementById('runner-name').value = '';
+        document.getElementById('runner-type').value = 'LOCAL';
+        document.getElementById('runner-shell').value = 'BASH';
+        document.getElementById('runner-host').value = '';
+        document.getElementById('runner-port').value = '22';
+        document.getElementById('runner-username').value = '';
+        document.getElementById('runner-ssh-key').value = '';
+        document.getElementById('runner-container').value = '';
+        document.getElementById('runner-namespace').value = '';
+        document.getElementById('runner-workdir').value = '';
+        document.getElementById('runner-labels').value = '';
+        document.getElementById('runner-modal-status').textContent = '';
+        onRunnerTypeChange();
+        document.getElementById('runner-modal-overlay').classList.add('active');
+    }
+
+    function closeRunnerModal() {
+        document.getElementById('runner-modal-overlay').classList.remove('active');
+    }
+
+    function editRunner(id) {
+        fetch('/api/runners').then(r => r.json()).then(runners => {
+            const r = runners.find(x => x.id === id);
+            if (!r) return;
+            _editingRunnerId = r.id;
+            document.getElementById('runner-modal-title').textContent = 'Edit Runner';
+            document.getElementById('runner-id-field').value = r.id;
+            document.getElementById('runner-name').value = r.name || '';
+            document.getElementById('runner-type').value = r.type || 'LOCAL';
+            document.getElementById('runner-shell').value = r.shell || 'BASH';
+            document.getElementById('runner-host').value = r.host || '';
+            document.getElementById('runner-port').value = r.port || 22;
+            document.getElementById('runner-username').value = r.username || '';
+            document.getElementById('runner-ssh-key').value = r.sshKeyPath || '';
+            document.getElementById('runner-container').value = r.containerOrPod || '';
+            document.getElementById('runner-namespace').value = r.namespace || '';
+            document.getElementById('runner-workdir').value = r.workDir || '';
+            document.getElementById('runner-labels').value = r.labels || '';
+            document.getElementById('runner-modal-status').textContent = '';
+            onRunnerTypeChange();
+            document.getElementById('runner-modal-overlay').classList.add('active');
+        });
+    }
+
+    function onRunnerTypeChange() {
+        const type = document.getElementById('runner-type').value;
+        const sshFields = document.getElementById('runner-ssh-fields');
+        const containerFields = document.getElementById('runner-container-fields');
+        const nsGroup = document.getElementById('runner-namespace-group');
+        const containerLabel = document.getElementById('runner-container-label');
+        sshFields.style.display = (type === 'SSH') ? '' : 'none';
+        containerFields.style.display = (type === 'DOCKER' || type === 'KUBERNETES') ? '' : 'none';
+        nsGroup.style.display = (type === 'KUBERNETES') ? '' : 'none';
+        if (containerLabel) containerLabel.textContent = type === 'KUBERNETES' ? 'Pod Name' : 'Container Name';
+    }
+
+    function saveRunner() {
+        const name = document.getElementById('runner-name').value.trim();
+        if (!name) { document.getElementById('runner-modal-status').textContent = 'Name is required.'; return; }
+        const payload = {
+            name,
+            type:         document.getElementById('runner-type').value,
+            shell:        document.getElementById('runner-shell').value,
+            host:         document.getElementById('runner-host').value.trim(),
+            port:         parseInt(document.getElementById('runner-port').value) || 22,
+            username:     document.getElementById('runner-username').value.trim(),
+            sshKeyPath:   document.getElementById('runner-ssh-key').value.trim(),
+            containerOrPod: document.getElementById('runner-container').value.trim(),
+            namespace:    document.getElementById('runner-namespace').value.trim(),
+            workDir:      document.getElementById('runner-workdir').value.trim(),
+            labels:       document.getElementById('runner-labels').value.trim()
+        };
+        const id = document.getElementById('runner-id-field').value;
+        const url = id ? '/api/runners/' + id : '/api/runners';
+        const method = id ? 'PUT' : 'POST';
+        fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+            .then(r => r.json())
+            .then(() => { closeRunnerModal(); loadRunnersUI(); })
+            .catch(e => { document.getElementById('runner-modal-status').textContent = 'Error: ' + e.message; });
+    }
+
+    function deleteRunner(id) {
+        if (!confirm('Delete this runner?')) return;
+        fetch('/api/runners/' + id, { method: 'DELETE' })
+            .then(() => loadRunnersUI());
+    }
+
+    function pingRunner(id) {
+        const el = document.getElementById('runner-ping-status-' + id);
+        if (el) el.textContent = 'Pinging…';
+        fetch('/api/runners/' + id + '/ping', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (el) el.textContent = 'Ping → ' + data.result + '  (' + data.status + ')';
+                loadRunnersUI();
+            })
+            .catch(e => { if (el) el.textContent = 'Ping error: ' + e.message; });
+    }
+
+    function pingRunnerFromModal() {
+        const id = document.getElementById('runner-id-field').value;
+        if (!id) { document.getElementById('runner-modal-status').textContent = 'Save the runner first, then ping.'; return; }
+        document.getElementById('runner-modal-status').textContent = 'Pinging…';
+        fetch('/api/runners/' + id + '/ping', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => { document.getElementById('runner-modal-status').textContent = 'Ping → ' + data.result; })
+            .catch(e => { document.getElementById('runner-modal-status').textContent = 'Error: ' + e.message; });
+    }
+
+    // Populate runner selector on page load (for pipeline wizard)
+    populatePipelineRunnerSelect();
+
 </script>
 
 <!-- Unsaved Changes Dialog -->
@@ -2783,6 +3013,94 @@
     <div class="pl-logs-footer">
       <span class="pl-logs-status-bar" id="pl-logs-statusbar"></span>
       <button type="button" class="btn-ghost" style="font-size:0.78rem;padding:5px 12px;" onclick="closePipelineLogs()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Runner Modal -->
+<div class="modal-overlay" id="runner-modal-overlay" onclick="closeRunnerModal()">
+  <div class="modal-content" onclick="event.stopPropagation()" style="max-width:560px;">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeRunnerModal()">×</button>
+      <h3 id="runner-modal-title">Add Runner</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Connect a self-hosted agent that SimpleCd will dispatch builds to.</p>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="runner-id-field">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Runner Name <span style="color:#be123c;">*</span></label>
+          <input type="text" id="runner-name" placeholder="e.g. build-server-01" style="max-width:100%;">
+        </div>
+        <div class="form-group">
+          <label>Type <span style="color:#be123c;">*</span></label>
+          <select id="runner-type" onchange="onRunnerTypeChange()" style="max-width:100%;">
+            <option value="LOCAL">LOCAL — same machine</option>
+            <option value="SSH">SSH — remote server</option>
+            <option value="DOCKER">DOCKER — container exec</option>
+            <option value="KUBERNETES">KUBERNETES — pod exec</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Shell <span style="color:#be123c;">*</span></label>
+          <select id="runner-shell" style="max-width:100%;">
+            <option value="BASH">bash</option>
+            <option value="PWSH">pwsh (PowerShell Core)</option>
+            <option value="CMD">cmd (Windows CMD)</option>
+          </select>
+        </div>
+        <!-- SSH fields -->
+        <div id="runner-ssh-fields" style="display:none;grid-column:1/-1;display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label>Host</label>
+              <input type="text" id="runner-host" placeholder="192.168.1.10 or hostname" style="max-width:100%;">
+            </div>
+            <div class="form-group">
+              <label>SSH Port</label>
+              <input type="text" id="runner-port" placeholder="22" value="22" style="max-width:100%;">
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="runner-username" placeholder="ubuntu / deploy" style="max-width:100%;">
+            </div>
+            <div class="form-group">
+              <label>SSH Key Path</label>
+              <input type="text" id="runner-ssh-key" placeholder="/home/user/.ssh/id_rsa" style="max-width:100%;">
+            </div>
+          </div>
+        </div>
+        <!-- Docker / K8s fields -->
+        <div id="runner-container-fields" style="display:none;grid-column:1/-1;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label id="runner-container-label">Container Name</label>
+              <input type="text" id="runner-container" placeholder="my-build-container" style="max-width:100%;">
+            </div>
+            <div class="form-group" id="runner-namespace-group" style="display:none;">
+              <label>Namespace</label>
+              <input type="text" id="runner-namespace" placeholder="default" style="max-width:100%;">
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Work Directory</label>
+          <input type="text" id="runner-workdir" placeholder="/opt/simplecd/workspaces  or  C:\SimpleCD\workspaces" style="max-width:100%;">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Labels / Tags <span style="font-weight:400;color:var(--muted);">(comma-separated)</span></label>
+          <input type="text" id="runner-labels" placeholder="linux, java, maven" style="max-width:100%;">
+        </div>
+      </div>
+      <div id="runner-modal-status" style="font-size:0.82rem;margin-top:10px;color:var(--muted);"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="provider-secondary-btn" onclick="closeRunnerModal()">Cancel</button>
+      <button type="button" class="provider-verify-btn" onclick="pingRunnerFromModal()" style="border:1px solid var(--secondary-border);background:#fff;color:var(--secondary-text);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Ping
+      </button>
+      <button type="button" onclick="saveRunner()">Save Runner</button>
     </div>
   </div>
 </div>
@@ -2858,10 +3176,17 @@
       <div class="form-group">
         <label>Runner</label>
         <select id="pl-runner" onchange="refreshYaml()" style="max-width:100%;">
-          <option value="ubuntu-latest">ubuntu-latest</option>
-          <option value="windows-latest">windows-latest</option>
-          <option value="macos-latest">macos-latest</option>
+          <option value="">-- LOCAL (default / same machine) --</option>
+          <option value="ubuntu-latest">ubuntu-latest (GitHub-hosted)</option>
+          <option value="windows-latest">windows-latest (GitHub-hosted)</option>
+          <option value="macos-latest">macos-latest (GitHub-hosted)</option>
         </select>
+        <div id="simplecd-runner-opts" style="margin-top:8px;display:none;">
+          <label style="font-size:0.78rem;color:var(--muted);font-weight:400;">SimpleCD self-hosted runner</label>
+          <select id="pl-simplecd-runner-id" onchange="refreshYaml()" style="max-width:100%;margin-top:4px;">
+            <option value="">-- Local (no runner) --</option>
+          </select>
+        </div>
       </div>
       <div class="form-group">
         <label>Trigger Events</label>
